@@ -1,46 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                             :+:      :+:    :+:  */
+/*   srcs.c                                              :+:      :+:    :+:  */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aalannys <aalannys@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/09/07 15:42:41 by aalannys            #+#   #+#            */
-/*   Updated: 2021/09/07 15:42:41 by aalannys           ###    #######.fr     */
+/*   Created: 2021/09/07 16:26:58 by aalannys            #+#    #+#           */
+/*   Updated: 2021/09/07 16:26:58 by aalannys           ###    #######.fr     */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
-void	error_exit(char *prog)
+void	my_env(t_mshell *shell)
 {
-	if (!prog)
-		perror("Minishell");
-	else
-	{
-		printf("Minishell: ");
-		perror(prog);
-	}
-	exit(errno);
+	ft_lstiter(shell->env_copy, print_node);
 }
 
-void	print_node(void *node)
-{
-	t_envvar	*var;
-
-	var = (t_envvar *)node;
-	printf("%s=%s\n", var->key, var->value);
-}
-
-void	free_arr(char **arr, int size)
-{
-	int i;
-
-	i = 0;
-	while (i < size)
-	{
-		free(arr[i]);
-		i++;
-	}
-	free(arr);
-}
+//void	my_cd(t_mshell *shell)
+//{
+//}

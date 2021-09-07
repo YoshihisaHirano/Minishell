@@ -23,9 +23,11 @@ typedef	struct	s_mshell
 } t_mshell;
 
 void	handle_sigs(void);
-void	error_exit(void);
-void	*free_node(void *node);
-void	*print_node(void *node);
+void	error_exit(char *prog);
+void	free_arr(char **arr, int size);
+void	print_node(void *node);
 void	parse_env(t_mshell *shell, char **env);
+void	my_env(t_mshell *shell);
+t_list	*get_by_key(t_mshell *shell, char *key);
 
 #endif

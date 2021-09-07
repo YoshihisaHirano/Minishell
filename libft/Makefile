@@ -10,7 +10,7 @@ CFLAGS	=	-Wall -Wextra -Werror
 all:		$(NAME)
 
 $(NAME):	${OBJ} ${B_OBJ}
-			ar rc $(NAME) ${OBJ}
+			ar rc $(NAME) ${OBJ} ${B_OBJ}
 			ranlib $(NAME)
 
 bonus:		${B_OBJ}

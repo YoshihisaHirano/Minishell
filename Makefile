@@ -1,4 +1,4 @@
-SRC		=	main.c signals.c errors.c my_env/env_var.c
+SRC		=	main.c signals.c utils.c my_env/env_var.c
 PROG	=	minishell
 LIBDIR	=	./libft
 LIB		=	$(LIBDIR)/libft.a

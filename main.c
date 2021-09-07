@@ -14,7 +14,7 @@
 
 void	init_shell(t_mshell *shell, char **env)
 {
-	shell = (t_mshell){.last_exit_code = 0, .env_copy = NULL};
+	*shell = (t_mshell){.last_exit_code = 0, .env_copy = NULL};
 	parse_env(shell, env);
 	handle_sigs();
 }
@@ -27,6 +27,8 @@ int main(int argc, char **argv, char **env)
 	(void)argc;
 	(void)argv;
 	init_shell(&shell, env);
+	my_env(&shell);
+	return (0);
 	while(1)
 	{
 		str = readline(PROMPT);
