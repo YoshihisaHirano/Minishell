@@ -123,7 +123,10 @@ void	add_var(t_mshell *shell, char *key, char *val)
 	new_var = malloc(sizeof(t_envvar));
 	if (!new_var)
 		error_exit(NULL);
-	*new_var = (t_envvar){.key = ft_strdup(key), .value = ft_strdup(val)};
+	if (val)
+		*new_var = (t_envvar){.key = ft_strdup(key), .value = ft_strdup(val)};
+	else
+		*new_var = (t_envvar){.key = ft_strdup(key), .value = NULL};
 	new_node = ft_lstnew(new_var);
 	node_before_last->next = new_node;
 	new_node->next = last_node;

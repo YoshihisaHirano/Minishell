@@ -4,11 +4,11 @@
 # include <stdlib.h>
 # include <signal.h>
 # include <errno.h>
+# include <dirent.h>
 # include "readline/include/readline/readline.h"
 # include "readline/include/readline/history.h"
 # include "readline/include/readline/rltypedefs.h"
 # include "libft/libft.h"
-# include <dirent.h>
 # define PROMPT "Minishell$ "
 
 typedef struct s_envvar
@@ -28,6 +28,7 @@ void	error_exit(char *prog);
 void	free_node(void *node);
 void	print_node(void *node);
 void	print_error(char *prog);
+int		invalid_key(char *key);
 /* env manipulations */
 void	parse_env(t_mshell *shell, char **env);
 t_list	*get_by_key(t_mshell *shell, char *key);
@@ -36,8 +37,9 @@ char	**lst_to_arr(t_mshell *shell);
 void	add_var(t_mshell *shell, char *key, char *val);
 /* builtins */
 void	my_env(t_mshell *shell);
-void	my_pwd(t_mshell *shell);
+int		my_pwd(t_mshell *shell);
 int		my_cd(t_mshell *shell, char *path);
 void	my_exit(t_mshell *shell);
+int		my_export(t_mshell *shell, char *arg);
 
 #endif

@@ -1,9 +1,9 @@
-SRC		=	main.c signals.c utils.c my_env/env_var.c builtins/builtins.c builtins/my_cd.c
+SRC		=	main.c signals.c utils.c my_env/env_var.c builtins/builtins.c builtins/my_cd.c builtins/my_export.c
 PROG	=	minishell
 LIBDIR	=	./libft
 LIB		=	$(LIBDIR)/libft.a
 CC		=	gcc
-CFLAGS	=	-Wall -Wextra -Werror -L readline/lib/ -lreadline -lhistory -L $(LIBDIR) -lft
+CFLAGS	=	-Wall -Wextra -Werror -L readline/lib/ -lreadline -lhistory -L $(LIBDIR) -lft -g
 HEADER	=	minishell.h
 
 .PHONY	:	all re clean fclean

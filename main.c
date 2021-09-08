@@ -27,8 +27,10 @@ int main(int argc, char **argv, char **env)
 	(void)argc;
 	(void)argv;
 	init_shell(&shell, env);
+//	my_env(&shell);
+//	printf("\n");
+//	my_export(&shell, "ARG=5");
 	my_env(&shell);
-	printf("\n");
 	my_pwd(&shell);
 	my_cd(&shell, "..");
 	printf("\n --------------- \n");
@@ -39,7 +41,9 @@ int main(int argc, char **argv, char **env)
 	printf("\n --------------- \n");
 	my_env(&shell);
 	printf("\n");
-	my_pwd(&shell);
+//	my_pwd(&shell);
+//	char **spltstr = ft_split("PATH", '=');
+//	printf("%s, %p\n", spltstr[0], spltstr[1]);
 	return (0);
 	while(1)
 	{

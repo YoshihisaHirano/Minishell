@@ -12,24 +12,31 @@
 
 #include "../minishell.h"
 
-void	my_export(t_mshell *shell, char *arg)
-{
-	t_list		*node;
-	t_envvar	*var;
-	char		**key_val;
+/*
+!!! The correct syntax to export a variable (with whatever value, if any, it has
+ already been assigned) is export NAME. //TODO ?
+The correct syntax to assign and export a variable (with the assigned value) at the same time is export NAME=value
+ */
 
-	//format checking is necessary
-	key_val = ft_split(arg, '=');
-	if (!key_val)
-		error_exit("export");
-	node = get_by_key(shell, arg);
-	if (!node)
+int	my_export(t_mshell *shell, char *arg)
+{
+	char	**splt_arg;
+	t_list	*elt;
+
+	splt_arg = ft_split(arg, '=');
+	if (!splt_arg)
+		error_exit(NULL);
+	if (invalid_key(splt_arg[0]))
 	{
-		var = malloc(sizeof(t_envvar));
-		if (!var)
-			error_exit("export");
-		*var = (t_envvar){.key = key_val[0], .value = key_val[1]};
+		ft_putstr_fd("export: not an identifier: ", 2);
+		ft_putendl_fd(splt_arg[0], 2);
+		shell->last_exit_code = 1;
+		return (1);
 	}
+	elt = get_by_key(shell, splt_arg[0]);
+	if (elt)
+		set_by_key(shell, splt_arg[0], splt_arg[1]);
 	else
-		((t_envvar *)(node->content))->value = key_val[1];
+		add_var(shell, splt_arg[0], splt_arg[1]);
+	return (0);
 }

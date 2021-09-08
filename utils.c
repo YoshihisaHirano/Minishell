@@ -34,7 +34,10 @@ void	print_node(void *node)
 	t_envvar	*var;
 
 	var = (t_envvar *)node;
-	printf("%s=%s\n", var->key, var->value);
+	printf("%s=", var->key);
+	if (var->value)
+		printf("%s", var->value);
+	printf("\n");
 }
 
 void	free_node(void *node)
@@ -47,4 +50,19 @@ void	free_node(void *node)
 	free(content->value);
 	free(content->key);
 	free(content);
+}
+
+/* Only ASCII letters (of either case), _ and digits are supported, and the
+ * first character must not be a digit. */
+int	invalid_key(char *key)
+{
+	if (ft_isdigit(*key))
+		return (1);
+	while (*key)
+	{
+		if (!ft_isalnum(*key) && *key != '_')
+			return (1);
+		key++;
+	}
+	return (0);
 }
