@@ -16,7 +16,7 @@ void	init_shell(t_mshell *shell, char **env)
 {
 	*shell = (t_mshell){.last_exit_code = 0, .env_copy = NULL};
 	parse_env(shell, env);
-	handle_sigs();
+//	handle_sigs();
 }
 
 int main(int argc, char **argv, char **env)
@@ -31,16 +31,19 @@ int main(int argc, char **argv, char **env)
 //	printf("\n");
 //	my_export(&shell, "ARG=5");
 	my_env(&shell);
-	my_pwd(&shell);
-	my_cd(&shell, "..");
-	printf("\n --------------- \n");
-	my_env(&shell);
 	printf("\n");
-	my_pwd(&shell);
-	my_cd(&shell, "..");
-	printf("\n --------------- \n");
-	my_env(&shell);
-	printf("\n");
+	my_unset(&shell, "HOME");
+//	my_env(&shell);
+//	my_pwd(&shell);
+//	my_cd(&shell, "..");
+//	printf("\n --------------- \n");
+//	my_env(&shell);
+//	printf("\n");
+//	my_pwd(&shell);
+//	my_cd(&shell, "..");
+//	printf("\n --------------- \n");
+//	my_env(&shell);
+//	printf("\n");
 //	my_pwd(&shell);
 //	char **spltstr = ft_split("PATH", '=');
 //	printf("%s, %p\n", spltstr[0], spltstr[1]);
@@ -52,6 +55,7 @@ int main(int argc, char **argv, char **env)
 			add_history(str);
 		else if (!str) //Ctrl-d handling lol
 		{
+			ft_lstclear(&(shell.env_copy), free_node);
 			rl_clear_history();
 			exit(0);
 		}

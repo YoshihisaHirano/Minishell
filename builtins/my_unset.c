@@ -14,11 +14,25 @@
 
 void	del_var(t_mshell *shell, t_list *node)
 {
+	t_list	*before_del;
+	t_list	*after_del;
 
+	before_del = shell->env_copy;
+	printf("%s - key, %s - val\n", ((t_envvar *)(before_del->content))->key,
+		   ((t_envvar *)(before_del->content))->value);
+	while (before_del->next != node)
+		before_del = before_del->next;
+	after_del = node->next;
+	printf("%s - key, %s - val\n", ((t_envvar *)(after_del->content))->key,
+		   ((t_envvar *)(after_del->content))->value);
+	ft_lstdelone(node, free_node);
+	before_del->next = after_del;
 }
 
 int	my_unset(t_mshell *shell, char *arg)
 {
+	t_list	*var;
+
 	if (invalid_key(arg))
 	{
 		ft_putstr_fd("unset: ", 2);
@@ -27,6 +41,12 @@ int	my_unset(t_mshell *shell, char *arg)
 		shell->last_exit_code = 1;
 		return (1);
 	}
-
+	var = get_by_key(shell, arg);
+	if (!var)
+	{
+		shell->last_exit_code = 1;
+		return (1);
+	}
+	del_var(shell, var);
 	return (0);
 }

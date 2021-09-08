@@ -13,8 +13,8 @@
 
 typedef struct s_envvar
 {
-	char				*key;
-	char 				*value;
+	char	*key;
+	char	*value;
 } t_envvar;
 
 typedef	struct	s_mshell
@@ -29,6 +29,7 @@ void	free_node(void *node);
 void	print_node(void *node);
 void	print_error(char *prog);
 int		invalid_key(char *key);
+void	free_arr(char **arr);
 /* env manipulations */
 void	parse_env(t_mshell *shell, char **env);
 t_list	*get_by_key(t_mshell *shell, char *key);
@@ -41,5 +42,6 @@ int		my_pwd(t_mshell *shell);
 int		my_cd(t_mshell *shell, char *path);
 void	my_exit(t_mshell *shell);
 int		my_export(t_mshell *shell, char *arg);
+int		my_unset(t_mshell *shell, char *arg);
 
 #endif

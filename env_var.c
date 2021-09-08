@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "minishell.h"
 
 void	parse_env(t_mshell *shell, char **env)
 { //TODO is it necessary to do something with "_" env variable?
@@ -28,12 +28,13 @@ void	parse_env(t_mshell *shell, char **env)
 		str_var = ft_split(env[i], '=');
 		if (!str_var)
 			error_exit(NULL);
-		*var = (t_envvar){.key = str_var[0], .value = str_var[1]};
+		var->key = ft_strdup(str_var[0]);
+		var->value = ft_strdup(str_var[1]);
 		node = ft_lstnew(var);
 		if (!node)
 			error_exit(NULL);
 		ft_lstadd_back(&shell->env_copy, node);
-		free(str_var);
+		free_arr(str_var);
 		i++;
 	}
 }
