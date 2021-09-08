@@ -18,13 +18,13 @@ void	print_error(char *prog)
 		perror("Minishell");
 	else
 	{
-		printf("Minishell: ");
+		write(2, "Minishell: ", 11);
 		perror(prog);
 	}
 }
 
 void	error_exit(char *prog)
-{
+{ //on malloc errors the whole program exits: should it be changed?
 	print_error(prog);
 	exit(errno);
 }

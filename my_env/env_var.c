@@ -13,7 +13,7 @@
 #include "../minishell.h"
 
 void	parse_env(t_mshell *shell, char **env)
-{
+{ //TODO is it necessary to do something with "_" env variable?
 	t_envvar	*var;
 	t_list		*node;
 	int			i;
@@ -69,7 +69,8 @@ int	set_by_key(t_mshell *shell, char *key, char *val) /* returns 0 on success */
 		if (!ft_strncmp(curr_key, key, ft_strlen(curr_key))
 			&& !ft_strncmp(curr_key, key, ft_strlen(key)))
 		{
-			free(curr_var->value);
+			if (curr_var->value)
+				free(curr_var->value);
 			curr_var->value = NULL;
 			curr_var->value = ft_strdup(val);
 			return (0);
@@ -106,4 +107,24 @@ char	**lst_to_arr(t_mshell *shell)
 		i++;
 	}
 	return (envp);
+}
+
+void	add_var(t_mshell *shell, char *key, char *val)
+{ /* var with name '_' always goes last */
+	t_list		*last_node;
+	t_list		*node_before_last;
+	t_list		*new_node;
+	t_envvar	*new_var;
+
+	last_node = get_by_key(shell, "_");
+	node_before_last = shell->env_copy;
+	while (node_before_last->next != last_node)
+		node_before_last = node_before_last->next;
+	new_var = malloc(sizeof(t_envvar));
+	if (!new_var)
+		error_exit(NULL);
+	*new_var = (t_envvar){.key = ft_strdup(key), .value = ft_strdup(val)};
+	new_node = ft_lstnew(new_var);
+	node_before_last->next = new_node;
+	new_node->next = last_node;
 }

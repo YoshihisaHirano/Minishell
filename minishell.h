@@ -33,8 +33,11 @@ void	parse_env(t_mshell *shell, char **env);
 t_list	*get_by_key(t_mshell *shell, char *key);
 int		set_by_key(t_mshell *shell, char *key, char *val);
 char	**lst_to_arr(t_mshell *shell);
+void	add_var(t_mshell *shell, char *key, char *val);
 /* builtins */
 void	my_env(t_mshell *shell);
 void	my_pwd(t_mshell *shell);
+int		my_cd(t_mshell *shell, char *path);
+void	my_exit(t_mshell *shell);
 
 #endif

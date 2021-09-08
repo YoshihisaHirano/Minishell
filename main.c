@@ -28,6 +28,17 @@ int main(int argc, char **argv, char **env)
 	(void)argv;
 	init_shell(&shell, env);
 	my_env(&shell);
+	printf("\n");
+	my_pwd(&shell);
+	my_cd(&shell, "..");
+	printf("\n --------------- \n");
+	my_env(&shell);
+	printf("\n");
+	my_pwd(&shell);
+	my_cd(&shell, "..");
+	printf("\n --------------- \n");
+	my_env(&shell);
+	printf("\n");
 	my_pwd(&shell);
 	return (0);
 	while(1)
