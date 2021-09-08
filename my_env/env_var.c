@@ -33,7 +33,7 @@ void	parse_env(t_mshell *shell, char **env)
 		if (!node)
 			error_exit(NULL);
 		ft_lstadd_back(&shell->env_copy, node);
-		free_arr(str_var, 2);
+		free(str_var);
 		i++;
 	}
 }
@@ -41,17 +41,69 @@ void	parse_env(t_mshell *shell, char **env)
 t_list	*get_by_key(t_mshell *shell, char *key)
 {
 	t_list	*temp;
-	char	*node_key;
+	char	*curr_key;
 
 	temp = shell->env_copy;
 	while (temp)
 	{
-		node_key = ((t_envvar *)(temp->content))->key;
-		if (!ft_strncmp(node_key, key, ft_strlen(node_key)))
+		curr_key = ((t_envvar *)(temp->content))->key;
+		if (!ft_strncmp(curr_key, key, ft_strlen(curr_key))
+			&& !ft_strncmp(curr_key, key, ft_strlen(key)))
 			return (temp);
 		temp = temp->next;
 	}
 	return (NULL);
 }
 
-//void	set_by_key(t_mshell *shell, char *key, char *val)
+int	set_by_key(t_mshell *shell, char *key, char *val) /* returns 0 on success */
+{
+	t_list		*temp;
+	char		*curr_key;
+	t_envvar	*curr_var;
+
+	temp = shell->env_copy;
+	while (temp)
+	{
+		curr_var = (t_envvar *)(temp->content);
+		curr_key = curr_var->key;
+		if (!ft_strncmp(curr_key, key, ft_strlen(curr_key))
+			&& !ft_strncmp(curr_key, key, ft_strlen(key)))
+		{
+			free(curr_var->value);
+			curr_var->value = NULL;
+			curr_var->value = ft_strdup(val);
+			return (0);
+		}
+		temp = temp->next;
+	}
+	return (1);
+}
+
+char	**lst_to_arr(t_mshell *shell)
+{
+	int			i;
+	char		**envp;
+	t_envvar	*var;
+	t_list		*temp;
+	char		*str_tmp;
+
+	envp = malloc(sizeof(char *) * ft_lstsize(shell->env_copy));
+	if (!envp)
+		error_exit(NULL);
+	temp = shell->env_copy;
+	i = 0;
+	while (temp)
+	{
+		var = (t_envvar *)(temp->content);
+		str_tmp = ft_strjoin(var->key, "=");
+		if (!str_tmp)
+			error_exit(NULL);
+		envp[i] = ft_strjoin(str_tmp, var->value);
+		if (!envp[i])
+			error_exit(NULL);
+		free(str_tmp);
+		temp = temp->next;
+		i++;
+	}
+	return (envp);
+}
