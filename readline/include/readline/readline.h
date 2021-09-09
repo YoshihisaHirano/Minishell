@@ -30,7 +30,7 @@ extern "C" {
 #  include "rlstdc.h"
 #  include "rltypedefs.h"
 #  include "keymaps.h"
-//#  include "tilde.h"
+#  include "tilde.h"
 //#else
 //#  include <readline/rlstdc.h>
 //#  include <readline/rltypedefs.h>

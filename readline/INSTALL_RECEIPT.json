@@ -8,7 +8,7 @@
   ],
   "built_as_bottle": true,
   "poured_from_bottle": true,
-  "installed_as_dependency": true,
+  "installed_as_dependency": false,
   "installed_on_request": true,
   "changed_files": [
     "INSTALL_RECEIPT.json",
@@ -16,7 +16,7 @@
     "share/doc/readline/INSTALL",
     "share/readline/rl-fgets.c"
   ],
-  "time": 1630835461,
+  "time": 1630839760,
   "source_modified_time": 1605728412,
   "compiler": "clang",
   "aliases": [
@@ -33,7 +33,7 @@
       "version_scheme": 0
     },
     "path": "/Users/aalannys/.brew/Library/Taps/homebrew/homebrew-core/Formula/readline.rb",
-    "tap_git_head": "4059b5a6e960ca2ce9a1ff563d7e39346888fafd",
+    "tap_git_head": "cef1a1da4cb83902923cb03bbc1c2545d9b0d1fe",
     "tap": "homebrew/core"
   },
   "arch": "x86_64",

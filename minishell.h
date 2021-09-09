@@ -23,6 +23,12 @@ typedef	struct	s_mshell
 	int		last_exit_code;
 } t_mshell;
 
+typedef	struct	s_cmd
+{
+	t_mshell	*shell;
+	char		**arg_arr;
+} t_cmd;
+
 void	handle_sigs(void);
 void	error_exit(char *prog);
 void	free_node(void *node);
@@ -30,6 +36,7 @@ void	print_node(void *node);
 void	print_error(char *prog);
 int		invalid_key(char *key);
 void	free_arr(char **arr);
+char	*expand_var(char *var, t_mshell *shell);
 /* env manipulations */
 void	parse_env(t_mshell *shell, char **env);
 t_list	*get_by_key(t_mshell *shell, char *key);

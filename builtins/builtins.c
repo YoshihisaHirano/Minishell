@@ -46,3 +46,12 @@ void	my_exit(t_mshell *shell)
 	ft_lstclear(&shell->env_copy, free_node);
 	exit(0);
 }
+
+//void	my_echo(t_mshell *shell, t_cmd *cmd) //additional arg is the
+//// exec_cmd_struct
+//{
+//	if (!ft_strncmp(cmd->arg_arr[0], "-n", ft_strlen(cmd->arg_arr[0])))
+//	{
+//
+//	}
+//}
