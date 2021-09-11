@@ -47,7 +47,7 @@ char	*ft_strndup(char *src, int size)
 typedef struct s_list_params
 {
 	char	**cmd_arr;
-	char	*tmp_str;
+	char	*str_to_cmd;
 	char	*path_app;
 	int		fd[2];
 	char	*here_doc_limiter;
@@ -114,7 +114,9 @@ int	parser(char *input_str, t_list **list)
 	t_list_params	*el;
 	t_list			*node;
 	char			*input_ptr;
+	int 	i;
 
+	i = 0;
 	input_ptr = input_str;
 	while (*input_ptr)
 	{
@@ -128,12 +130,16 @@ int	parser(char *input_str, t_list **list)
 			printf("> mode here\n");
 		if (*input_ptr == '|')
 			printf("pipe detected\n");
+		el->str_to_cmd = malloc(ft_strlen(input_str));
+
+		free(el->str_to_cmd);
 		input_ptr++;
 	}
 
 	free(input_str);
 	return (0);
 }
+// TODO copy str for cmd arr in tmp str???
 
 int	main(void)
 {
@@ -142,7 +148,7 @@ int	main(void)
 	t_list_params *param_el;
 
 
-	char *s = "<<       new.txt cat";
+	char *s = "<<new.txt cat ";
 	char *input = ft_strdup(s);
 	list = NULL;
 	parser(input, &list);
