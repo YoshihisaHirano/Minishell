@@ -25,7 +25,7 @@
 #define REDRCT_APPEND 3
 #define REDRCT_INPUT 4
 #define HERE_DOC 5
-#define TOKEN_SET "<>| "
+#define TOKEN_SET ">|"
 
 char	*ft_chr_check(const char *s, int c)
 {
@@ -34,6 +34,8 @@ char	*ft_chr_check(const char *s, int c)
 
 	sym = (char)c;
 	chr = (char *)s;
+	if (sym == '\0')
+		return (chr);
 	while (*chr)
 	{
 		if (*chr == sym)
@@ -69,9 +71,9 @@ typedef struct s_list_params
 	int		fd[2];
 	char	*here_doc_limiter;
 	int		input_mod;
-	char 	*input_file;
 	int 	output_mode;
-
+	char 	*input_file;
+	char 	*output_file;
 }			t_list_params;
 
 t_list_params	*create_empty_el(void)
@@ -85,6 +87,7 @@ t_list_params	*create_empty_el(void)
 	el->path_app = NULL;
 	el->cmd_arr = NULL;
 	el->input_file = NULL;
+	el->output_file = NULL;
 	return (el);
 }
 
@@ -109,9 +112,37 @@ int	set_input_mode(char **input_str, t_list_params *params_el)
 	}
 	while (**input_str == ' ')
 		(*input_str)++;
-	while ((*input_str)[size_to_copy] != ' ' && (*input_str)[size_to_copy])
+	while (!ft_chr_check(" ><|", (*input_str)[size_to_copy]))
 		size_to_copy++;
-	*param_to_set = ft_strtrim(ft_strndup((*input_str),size_to_copy), " ");
+	*param_to_set = ft_strtrim(ft_strndup((*input_str), size_to_copy), " ");
+	(*input_str) += size_to_copy;
+	return (mode);
+}
+
+int	set_output_mode(char **input_str, t_list_params *params_el)
+{
+	int 	size_to_copy;
+	int 	mode;
+
+	size_to_copy = 0;
+	if (**input_str == '|')
+	{
+		(*input_str)++;
+		return (PIPE);
+	}
+	if (!ft_strncmp(*input_str, ">>", 2))
+		mode = REDRCT_APPEND;
+	else
+		mode = REDRCT_OUTPUT;
+	if (mode == REDRCT_APPEND)
+		(*input_str) += 2;
+	else
+		(*input_str)++;
+	while (**input_str == ' ')
+		(*input_str)++;
+	while (!ft_chr_check(" ><|", (*input_str)[size_to_copy]))
+		size_to_copy++;
+	params_el->output_file = ft_strndup((*input_str), size_to_copy);
 	(*input_str) += size_to_copy;
 	return (mode);
 }
@@ -129,10 +160,9 @@ void	set_params_to_el(char **input_str, t_list_params *el)
 				break ;
 			el->input_mod = set_input_mode(input_str, el);
 		}
-		if (ft_chr_check("|>", **input_str))
+		if (ft_chr_check(TOKEN_SET, **input_str))
 		{
-			(*input_str)++; // to del
-			// set_output
+			el->output_mode = set_output_mode(input_str, el);
 			break ;
 		}
 		el->str_to_cmd[i++] = **input_str;
@@ -140,7 +170,6 @@ void	set_params_to_el(char **input_str, t_list_params *el)
 	}
 	el->str_to_cmd[i] = '\0';
 }
-
 
 int	parser(char *input_str, t_list **list)
 {
@@ -162,8 +191,7 @@ int	main(void)
 	t_list *tmp;
 	t_list_params *param_el;
 
-
-	char *s = "<< lim1 cat << lim2 more cmd < inputfile1 cmd44";
+	char *s = "cat<<lim1|kjnb>out>out2";
 	char *input = ft_strdup(s);
 	list = NULL;
 	parser(input, &list);
@@ -172,11 +200,12 @@ int	main(void)
 	while(tmp)
 	{
 		printf("--------------------------\n");
-		param_el =  ((t_list_params *) tmp->content);
-		printf("input_mod: |%d|\nlimiter: |%s|\ninput_file: |%s|\ntmp_str:"
-			   "|%s|\n",
+		param_el = ((t_list_params *) tmp->content);
+		printf("input_mod: %d\nlimiter: |%s|\ninput_file: |%s|\ntmp_str:"
+			   "|%s|\noutput_mode: %d\noutput_file:|%s|\n",
 			   param_el->input_mod,
-			   param_el->here_doc_limiter, param_el->input_file, param_el->str_to_cmd);
+			   param_el->here_doc_limiter, param_el->input_file,
+			   param_el->str_to_cmd, param_el->output_mode, param_el->output_file);
 		tmp = tmp->next;
 	}
 	return (0);
