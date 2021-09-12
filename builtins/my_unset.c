@@ -18,13 +18,9 @@ void	del_var(t_mshell *shell, t_list *node)
 	t_list	*after_del;
 
 	before_del = shell->env_copy;
-	printf("%s - key, %s - val\n", ((t_envvar *)(before_del->content))->key,
-		   ((t_envvar *)(before_del->content))->value);
 	while (before_del->next != node)
 		before_del = before_del->next;
 	after_del = node->next;
-	printf("%s - key, %s - val\n", ((t_envvar *)(after_del->content))->key,
-		   ((t_envvar *)(after_del->content))->value);
 	ft_lstdelone(node, free_node);
 	before_del->next = after_del;
 }
