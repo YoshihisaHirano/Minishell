@@ -27,6 +27,22 @@
 #define HERE_DOC 5
 #define TOKEN_SET "<>| "
 
+char	*ft_chr_check(const char *s, int c)
+{
+	char	*chr;
+	char	sym;
+
+	sym = (char)c;
+	chr = (char *)s;
+	while (*chr)
+	{
+		if (*chr == sym)
+			return (chr);
+		chr++;
+	}
+	return (NULL);
+}
+
 char	*ft_strndup(char *src, int size)
 {
 	char		*cpy_ptr;
@@ -56,7 +72,7 @@ typedef struct s_list_params
 	char 	*input_file;
 	int 	output_mode;
 
-}							t_list_params;
+}			t_list_params;
 
 t_list_params	*create_empty_el(void)
 {
@@ -72,103 +88,71 @@ t_list_params	*create_empty_el(void)
 	return (el);
 }
 
-/*  cat << stop ....
- *  <fileinput
- *  << LIMITER
- * */
-int	check_for_input_mode(char **input_str, t_list_params *params_el)
+int	set_input_mode(char **input_str, t_list_params *params_el)
 {
-	char	*input_str_ptr;
 	int 	size_to_copy;
+	char	**param_to_set;
+	int 	mode;
 
-	input_str_ptr = *input_str;
 	size_to_copy = 0;
-	if (!ft_strncmp(input_str_ptr, "<<", 2))
+	if (!ft_strncmp(*input_str, "<<", 2))
 	{
-		input_str_ptr += 2;
-		while (input_str_ptr[size_to_copy] == ' ')
-			size_to_copy++;
-		while (input_str_ptr[size_to_copy] != ' ')
-			size_to_copy++;
-		params_el->here_doc_limiter = ft_strtrim(ft_strndup(input_str_ptr,
-															size_to_copy), " ");
-		(*input_str) += size_to_copy + 2;
-		return (HERE_DOC);
+		param_to_set = &(params_el->here_doc_limiter);
+		(*input_str) += 2;
+		mode = HERE_DOC;
 	}
-	if (*input_str_ptr ==  '<')
+	else
 	{
-		input_str_ptr++;
-		while (input_str_ptr[size_to_copy] == ' ')
-			size_to_copy++;
-		while(!size_to_copy || input_str_ptr[size_to_copy] != ' ')
-			size_to_copy++;
-		params_el->input_file = ft_strtrim(ft_strndup(input_str_ptr,
-													  size_to_copy), " ");
-		(*input_str) += size_to_copy + 2;
-		return (REDRCT_INPUT);
+		param_to_set = &(params_el->input_file);
+		(*input_str)++;
+		mode = REDRCT_INPUT;
 	}
-	return (0);
+	while (**input_str == ' ')
+		(*input_str)++;
+	while ((*input_str)[size_to_copy] != ' ' && (*input_str)[size_to_copy])
+		size_to_copy++;
+	*param_to_set = ft_strtrim(ft_strndup((*input_str),size_to_copy), " ");
+	(*input_str) += size_to_copy;
+	return (mode);
 }
+
+void	set_params_to_el(char **input_str, t_list_params *el)
+{
+	int	i;
+
+	i = 0;
+	while (**input_str)
+	{
+		if (**input_str == '<')
+		{
+			if (el->input_mod)
+				break ;
+			el->input_mod = set_input_mode(input_str, el);
+		}
+		if (ft_chr_check("|>", **input_str))
+		{
+			(*input_str)++; // to del
+			// set_output
+			break ;
+		}
+		el->str_to_cmd[i++] = **input_str;
+		(*input_str)++;
+	}
+	el->str_to_cmd[i] = '\0';
+}
+
 
 int	parser(char *input_str, t_list **list)
 {
 	t_list_params	*el;
-	char			*input_ptr;
-	int 	i;
-	int		on_current_el;
 
-	input_ptr = input_str;
-	while (*input_ptr)
+	while (*input_str)
 	{
-		i = 0;
-		on_current_el = 1;
 		el = create_empty_el();
 		el->str_to_cmd = malloc(ft_strlen(input_str));
-		while (on_current_el && *input_ptr)
-		{
-			if (*input_ptr == '<')
-			{
-				el->input_mod = check_for_input_mode(&input_ptr, el);
-				ft_lstadd_back(list, ft_lstnew(el));
-			}
-			el->str_to_cmd[i++] = *input_ptr;
-			if (ft_strchr("|>", *input_ptr))
-			{
-				on_current_el = 0;
-				// set_output
-			}
-			input_ptr++;
-		}
-		el->str_to_cmd[i++] = ' ';
-		el->str_to_cmd[i] = '\0';
+		set_params_to_el(&input_str, el);
+		ft_lstadd_back(list, ft_lstnew(el));
 	}
-
-//	while (*input_ptr)
-//	{
-//		el = create_empty_el();
-//		el->str_to_cmd = malloc(ft_strlen(input_str));
-//		if (*input_ptr == '<')
-//		{
-//			el->input_mod = check_for_input_mode(&input_ptr, el);
-//			ft_lstadd_back(list, ft_lstnew(el));
-//		}
-//		if (*input_ptr == '>')
-//			printf("> mode here\n");
-//		if (*input_ptr == '|')
-//			printf("pipe detected\n");
-//		while (*input_ptr == ' ')
-//			input_ptr++;
-//		while (!ft_strchr(TOKEN_SET, *input_ptr))
-//		{
-//			el->str_to_cmd[i++] = *input_ptr;
-//			input_ptr++;
-//		}
-//		el->str_to_cmd[i++] = ' ';
-//		el->str_to_cmd[i++] = '\0';
-//		input_ptr++;
-//	}
-
-	free(input_str);
 	return (0);
 }
 
@@ -179,17 +163,18 @@ int	main(void)
 	t_list_params *param_el;
 
 
-	char *s = "cat <<stop";
+	char *s = "<< lim1 cat << lim2 more cmd < inputfile1 cmd44";
 	char *input = ft_strdup(s);
 	list = NULL;
 	parser(input, &list);
 
 	tmp = list;
-	printf("--------------------------\n");
 	while(tmp)
 	{
+		printf("--------------------------\n");
 		param_el =  ((t_list_params *) tmp->content);
-		printf("input_mod: %d\nlimiter: %s\ninputfile: %s\ntmp_str: %s\n",
+		printf("input_mod: |%d|\nlimiter: |%s|\ninput_file: |%s|\ntmp_str:"
+			   "|%s|\n",
 			   param_el->input_mod,
 			   param_el->here_doc_limiter, param_el->input_file, param_el->str_to_cmd);
 		tmp = tmp->next;
