@@ -159,6 +159,7 @@ void	set_params_to_el(char **input_str, t_list_params *el)
 			if (el->input_mod)
 				break ;
 			el->input_mod = set_input_mode(input_str, el);
+			continue ;
 		}
 		if (ft_chr_check(TOKEN_SET, **input_str))
 		{
@@ -185,28 +186,61 @@ int	parser(char *input_str, t_list **list)
 	return (0);
 }
 
-int	main(void)
+void show_params(t_list *list)
 {
-	t_list			*list;
-	t_list *tmp;
 	t_list_params *param_el;
-
-	char *s = "cat<<lim1|kjnb>out>out2";
-	char *input = ft_strdup(s);
-	list = NULL;
-	parser(input, &list);
-
+	t_list *tmp;
+	char *modes[] = {"none", "PIPE", "REDRCT_OUTPUT", "REDRCT_APPEND",
+					 "REDRCT_INPUT", "HERE_DOC"};
+	tmp = list;
 	tmp = list;
 	while(tmp)
 	{
 		printf("--------------------------\n");
 		param_el = ((t_list_params *) tmp->content);
-		printf("input_mod: %d\nlimiter: |%s|\ninput_file: |%s|\ntmp_str:"
-			   "|%s|\noutput_mode: %d\noutput_file:|%s|\n",
-			   param_el->input_mod,
-			   param_el->here_doc_limiter, param_el->input_file,
-			   param_el->str_to_cmd, param_el->output_mode, param_el->output_file);
+		if (param_el->cmd_arr)
+		{
+			char **arr = param_el->cmd_arr;
+			printf("cdm_arr:\n");
+			while(*arr)
+			{
+				printf("---> %s\n", *arr);
+				arr++;
+			}
+		}
+		if (param_el->str_to_cmd)
+			printf("str_to_cmd: %s\n", param_el->str_to_cmd);
+		if (param_el->path_app)
+			printf("path_app: %s\n", param_el->str_to_cmd);
+		if (param_el->here_doc_limiter)
+			printf("here_doc_limiter: %s\n", param_el->here_doc_limiter);
+		printf("input_mod: %s\noutput_mode: %s\n", modes[param_el->input_mod],
+			   modes[param_el->output_mode]);
+		if (param_el->input_file)
+			printf("input_file: |%s|\n", param_el->input_file);
+		if (param_el->output_file)
+			printf("output_file: |%s|\n", param_el->output_file);
 		tmp = tmp->next;
 	}
+}
+
+int	main(void)
+{
+	t_list			*list;
+
+
+	char *s = "<new.txt cat < new.txt rev > output";
+	list = NULL;
+	parser(s, &list);
+	t_list *tmp = list;
+	while (tmp)
+	{
+		((t_list_params *)tmp->content)->cmd_arr = ft_split(((t_list_params
+				*)tmp->content)->str_to_cmd, ' ');
+		tmp = tmp->next;
+	}
+	show_params(list);
+
+
 	return (0);
 }
