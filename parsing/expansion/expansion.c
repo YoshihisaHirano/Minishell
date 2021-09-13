@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../../minishell.h"
 
 void	deal_with_spaces(char **start, char **str, char **res)
 {
@@ -28,11 +28,13 @@ void	deal_with_spaces(char **start, char **str, char **res)
 void	update_var_len(char *var, size_t *var_len)
 {
 	while (*var && !ft_isspace(*var) && *var != '\'' && *var != '\"'
-		   && *var!='$')
+		   && *var!='$' && *var != '?')
 	{
 		(*var_len)++;
 		var++;
 	}
+	if (*var == '?')
+		(*var_len)++;
 }
 
 char	*change_to_expanded(char **var, t_mshell *shell)
@@ -44,18 +46,16 @@ char	*change_to_expanded(char **var, t_mshell *shell)
 
 	var_len = 1;
 	copy = *var;
-	while (*copy != '$')
-		copy++;
 	copy++;
+	update_var_len(copy, &var_len);
+	*var += var_len;
 	if (*copy == '?')
 		return (ft_itoa(shell->last_exit_code));
-	update_var_len(copy, &var_len);
 	if (var_len == 1)
 		return (ft_strdup("$"));
 	temp = ft_substr(copy, 0, var_len - 1);
 	node = get_by_key(shell, temp);
 	free(temp);
-	*var += var_len;
 	if (!node)
 		return (ft_strdup(""));
 	return (((t_envvar *)(node->content))->value);

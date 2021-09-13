@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test.c                                              :+:      :+:    :+:  */
+/*   preprocessor.c                                      :+:      :+:   :+:  */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aalannys <aalannys@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../../minishell.h"
 
 /*
  1. check if all quotes are closed
@@ -80,13 +80,13 @@ char	*preprocessor(char *str, t_mshell *shell)
 	move_spaces(&str, &start);
 	while (*str)
 	{
-		if (*str == '\'')
+		if (*str == '\'' && !(q.doubl % 2))
 			q.singl++;
-		if (*str == '\"')
+		if (*str == '\"' && !(q.singl % 2))
 			q.doubl++;
 		if (ft_isspace(*str) && !(q.doubl % 2) && !(q.singl % 2))
 			res = add_elt(&start, str, res);
-		if (*str == '$' && (!(q.singl % 2) || ((q.singl % 2) && (q.doubl % 2))))
+		if (*str == '$' && !(q.singl % 2))
 		{
 			res = add_expanded(&start, &str, res, shell);
 			continue ;

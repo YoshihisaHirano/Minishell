@@ -10,8 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
-#include "../minishell.h"
+#include "../../minishell.h"
 
 int	check_quotes(char *str, t_mshell *shell)
 {
