@@ -70,23 +70,23 @@ char	*add_rest(char *start, char *str, char *res)
 
 char	*preprocessor(char *str, t_mshell *shell)
 {
-	t_quotes	quotes;
+	t_quotes	q;
 	char		*res;
 	char		*start;
 
-	quotes = (t_quotes){.doubl = 0, .single = 0};
+	q = (t_quotes){.doubl = 0, .singl = 0};
 	res = "";
 	start = str;
 	move_spaces(&str, &start);
 	while (*str)
 	{
 		if (*str == '\'')
-			quotes.single++;
+			q.singl++;
 		if (*str == '\"')
-			quotes.doubl++;
-		if (ft_isspace(*str) && !(quotes.doubl % 2) && !(quotes.single % 2))
+			q.doubl++;
+		if (ft_isspace(*str) && !(q.doubl % 2) && !(q.singl % 2))
 			res = add_elt(&start, str, res);
-		if (*str == '$' && !(quotes.single % 2))
+		if (*str == '$' && (!(q.singl % 2) || ((q.singl % 2) && (q.doubl % 2))))
 		{
 			res = add_expanded(&start, &str, res, shell);
 			continue ;

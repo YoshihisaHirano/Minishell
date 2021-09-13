@@ -83,7 +83,7 @@ int main(int argc, char **argv, char **env)
 //		printf("%s\n", dq[i]);
 //		i++;
 //	}
-	char *str1 = "\"a\"$BOB$HOME'U\"S\"ER'a\"a\"";
+	char *str1 = "echo \"$HOME'$USER'\"";
 	char *res = preprocessor(str1, &shell);
 	printf("%s\n", res);
 	return (0);

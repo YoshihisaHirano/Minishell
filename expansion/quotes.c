@@ -36,3 +36,9 @@ int	check_quotes(char *str, t_mshell *shell)
 	}
 	return (0);
 }
+
+char	*remove_quotes(char *pre_res)
+{
+	(void)pre_res;
+	return (NULL);
+}

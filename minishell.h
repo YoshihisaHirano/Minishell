@@ -19,7 +19,7 @@ typedef struct s_envvar
 
 typedef struct	s_quotes
 {
-	int	single;
+	int	singl;
 	int	doubl;
 } t_quotes;
 
@@ -37,8 +37,6 @@ void	print_error(char *prog);
 int		invalid_key(char *key);
 void	free_arr(char **arr);
 void	move_spaces(char **str, char **start);
-/* variable expansion */
-char	*add_expanded(char **start, char **str, char *res, t_mshell *shell);
 /* env manipulations */
 void	parse_env(t_mshell *shell, char **env);
 t_list	*get_by_key(t_mshell *shell, char *key);
@@ -53,6 +51,8 @@ void	my_exit(t_mshell *shell);
 int		my_export(t_mshell *shell, char *arg);
 int		my_unset(t_mshell *shell, char *arg);
 /* parsing */
+int		check_quotes(char *str, t_mshell *shell);
+char	*add_expanded(char **start, char **str, char *res, t_mshell *shell);
 char	*preprocessor(char *str, t_mshell *shell);
 
 #endif
