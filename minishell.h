@@ -52,6 +52,7 @@ int		my_export(t_mshell *shell, char *arg);
 int		my_unset(t_mshell *shell, char *arg);
 /* parsing */
 int		check_quotes(char *str, t_mshell *shell);
+void	remove_quotes(char **pre_res);
 char	*add_expanded(char **start, char **str, char *res, t_mshell *shell);
 char	*preprocessor(char *str, t_mshell *shell);
 
