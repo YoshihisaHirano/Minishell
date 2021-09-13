@@ -229,7 +229,7 @@ int	main(void)
 	t_list			*list;
 
 
-	char *s = "<new.txt cat < new.txt rev > output";
+	char *s = "< < <";
 	list = NULL;
 	parser(s, &list);
 	t_list *tmp = list;
