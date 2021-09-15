@@ -49,9 +49,9 @@ char	*remove_quotes(char *res)
 	j = 0;
 	while (res[i])
 	{
-		if (res[i] == '\"')
+		if (res[i] == '\"' && !(q.singl % 2))
 			q.doubl++;
-		if (res[i] == '\'')
+		if (res[i] == '\'' && !(q.doubl % 2))
 			q.singl++;
 		if ((q.doubl % 2 && res[i] == '\'') || (q.singl % 2 && res[i] =='\"')
 			|| (res[i] != '\'' && res[i] != '\"'))

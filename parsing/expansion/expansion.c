@@ -51,7 +51,7 @@ char	*change_to_expanded(char **var, t_mshell *shell)
 	*var += var_len;
 	if (*copy == '?')
 		return (ft_itoa(shell->last_exit_code));
-	if (var_len == 1)
+	if (var_len == 1 && *copy != '\'' && *copy != '\"')
 		return (ft_strdup("$"));
 	temp = ft_substr(copy, 0, var_len - 1);
 	node = get_by_key(shell, temp);
