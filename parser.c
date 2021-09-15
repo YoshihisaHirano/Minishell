@@ -25,7 +25,8 @@
 #define REDRCT_APPEND 3
 #define REDRCT_INPUT 4
 #define HERE_DOC 5
-#define TOKEN_SET ">|"
+
+int	validation(t_list *param_list);
 
 char	*ft_chr_check(const char *s, int c)
 {
@@ -43,24 +44,6 @@ char	*ft_chr_check(const char *s, int c)
 		chr++;
 	}
 	return (NULL);
-}
-
-char	*ft_strndup(char *src, int size)
-{
-	char		*cpy_ptr;
-	size_t		i;
-
-	i = 0;
-	cpy_ptr = malloc(size + 1);
-	if (!cpy_ptr)
-		return (NULL);
-	while (i < size && src[i])
-	{
-		cpy_ptr[i] = src[i];
-		i++;
-	}
-	cpy_ptr[i] = '\0';
-	return (cpy_ptr);
 }
 
 typedef struct s_list_params
@@ -110,11 +93,11 @@ int	set_input_mode(char **input_str, t_list_params *params_el)
 		(*input_str)++;
 		mode = REDRCT_INPUT;
 	}
-	while (**input_str == ' ')
+	while (**input_str == ' ' || **input_str == '\t')
 		(*input_str)++;
-	while (!ft_chr_check(" ><|", (*input_str)[size_to_copy]))
+	while (!ft_chr_check(" \t><|", (*input_str)[size_to_copy]))
 		size_to_copy++;
-	*param_to_set = ft_strtrim(ft_strndup((*input_str), size_to_copy), " ");
+	*param_to_set = ft_strtrim(ft_substr((*input_str), 0, size_to_copy), " ");
 	(*input_str) += size_to_copy;
 	return (mode);
 }
@@ -138,11 +121,11 @@ int	set_output_mode(char **input_str, t_list_params *params_el)
 		(*input_str) += 2;
 	else
 		(*input_str)++;
-	while (**input_str == ' ')
+	while (**input_str == ' ' || **input_str == '\t')
 		(*input_str)++;
-	while (!ft_chr_check(" ><|", (*input_str)[size_to_copy]))
+	while (!ft_chr_check(" \t><|", (*input_str)[size_to_copy]))
 		size_to_copy++;
-	params_el->output_file = ft_strndup((*input_str), size_to_copy);
+	params_el->output_file = ft_substr(*input_str, 0, size_to_copy);
 	(*input_str) += size_to_copy;
 	return (mode);
 }
@@ -161,7 +144,7 @@ void	set_params_to_el(char **input_str, t_list_params *el)
 			el->input_mod = set_input_mode(input_str, el);
 			continue ;
 		}
-		if (ft_chr_check(TOKEN_SET, **input_str))
+		if (ft_chr_check(">|", **input_str))
 		{
 			el->output_mode = set_output_mode(input_str, el);
 			break ;
@@ -170,6 +153,9 @@ void	set_params_to_el(char **input_str, t_list_params *el)
 		(*input_str)++;
 	}
 	el->str_to_cmd[i] = '\0';
+	el->cmd_arr = ft_split(el->str_to_cmd, ' ');
+	free(el->str_to_cmd);
+	el->str_to_cmd = NULL;
 }
 
 int	parser(char *input_str, t_list **list)
@@ -204,12 +190,12 @@ void show_params(t_list *list)
 			printf("cdm_arr:\n");
 			while(*arr)
 			{
-				printf("---> %s\n", *arr);
+				printf("---> |%s|\n", *arr);
 				arr++;
 			}
 		}
 		if (param_el->str_to_cmd)
-			printf("str_to_cmd: %s\n", param_el->str_to_cmd);
+			printf("str_to_cmd: |%s|\n", param_el->str_to_cmd);
 		if (param_el->path_app)
 			printf("path_app: %s\n", param_el->str_to_cmd);
 		if (param_el->here_doc_limiter)
@@ -229,18 +215,11 @@ int	main(void)
 	t_list			*list;
 
 
-	char *s = "< < <";
+	char *s = "cat << $USER ";
 	list = NULL;
 	parser(s, &list);
-	t_list *tmp = list;
-	while (tmp)
-	{
-		((t_list_params *)tmp->content)->cmd_arr = ft_split(((t_list_params
-				*)tmp->content)->str_to_cmd, ' ');
-		tmp = tmp->next;
-	}
 	show_params(list);
-
+	validation(list);
 
 	return (0);
 }
