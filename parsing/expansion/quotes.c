@@ -36,8 +36,30 @@ int	check_quotes(char *str, t_mshell *shell)
 	return (0);
 }
 
-//void	remove_quotes(char **pre_res)
-//{
-//	(void)pre_res;
-//	return (NULL);
-//}
+char	*remove_quotes(char *res)
+{
+	t_quotes	q;
+	char		*rm_quotes;
+	int			i;
+	int			j;
+
+	q = (t_quotes){.doubl = 0, .singl = 0};
+	rm_quotes = ft_calloc(ft_strlen(res) + 1, 1);
+	i = 0;
+	j = 0;
+	while (res[i])
+	{
+		if (res[i] == '\"')
+			q.doubl++;
+		if (res[i] == '\'')
+			q.singl++;
+		if ((q.doubl % 2 && res[i] == '\'') || (q.singl % 2 && res[i] =='\"')
+			|| (res[i] != '\'' && res[i] != '\"'))
+		{
+			rm_quotes[j] = res[i];
+			j++;
+		}
+		i++;
+	}
+	return (rm_quotes);
+}

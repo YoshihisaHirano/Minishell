@@ -58,12 +58,12 @@ char	*change_to_expanded(char **var, t_mshell *shell)
 	free(temp);
 	if (!node)
 		return (ft_strdup(""));
-	return (((t_envvar *)(node->content))->value);
+	return (ft_strdup(((t_envvar *)(node->content))->value));
 }
 
 char	*add_expanded(char **start, char **str, char *res, t_mshell *shell)
 {
-	int		dst;
+	size_t 	dst;
 	char	*tmp;
 	char	*tmp2;
 	char	*expanded;

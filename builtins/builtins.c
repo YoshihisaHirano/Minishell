@@ -43,12 +43,14 @@ int	my_pwd(t_mshell *shell) //TODO error on extra arguments present
 
 void	my_exit(t_mshell *shell)
 { //TODO full memory clear, not only env (?)
+	//check num, error if > than usigned long long
+	// bash prints 'exit'
 	ft_lstclear(&shell->env_copy, free_node);
 	exit(0);
 }
 
 //void	my_echo(t_mshell *shell, t_cmd *cmd) //additional arg is the
-//// exec_cmd_struct
+// exec_cmd_struct
 //{
 //	if (!ft_strncmp(cmd->arg_arr[0], "-n", ft_strlen(cmd->arg_arr[0])))
 //	{

@@ -76,7 +76,7 @@ char	**ft_split(char const *s, char c)
 	size_t	i;
 
 	str_qty = find_word_qty(s, c);
-	char_arr = (char **) malloc(sizeof(char *) * str_qty + 1);
+	char_arr = (char **) malloc(sizeof(char *) * (str_qty + 1));
 	if (!char_arr)
 		return (NULL);
 	char_arr[str_qty] = NULL;

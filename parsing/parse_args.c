@@ -10,19 +10,78 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
-char	**split_args()
+void	add_str(char ***res, char **start, char *prep)
+{
+	char	**new_arr;
+	int		arr_size;
+	char	*temp;
+	int		i;
+
+	temp = ft_substr(*start, 0, prep - *start);
+	*start += ft_strlen(temp) + 1;
+	arr_size = 0;
+	while ((*res)[arr_size])
+		arr_size++;
+	new_arr = malloc(sizeof(char *) * (arr_size + 2));
+	if (!new_arr)
+		error_exit(NULL);
+	i = 0;
+	while (i < arr_size)
+	{
+		new_arr[i] = (*res)[i];
+		i++;
+	}
+	new_arr[i] = temp;
+	new_arr[i + 1] = NULL;
+	free(*res);
+	*res = new_arr;
+}
+
+char	**split_args(char *prep)
+{
+	t_quotes	q;
+	char		**res;
+	char		*start;
+
+	q = (t_quotes){.doubl = 0, .singl = 0};
+	res = malloc(sizeof(char *));
+	if (!res)
+		error_exit(NULL);
+	res[0] = NULL;
+	start = prep;
+	while (*prep)
+	{
+		if (*prep == '\'')
+			q.singl++;
+		if (*prep == '\"')
+			q.doubl++;
+		// isspace or any special character like "><|" ?????
+		if (ft_isspace(*prep) && !(q.doubl % 2) && !(q.singl % 2))
+			add_str(&res, &start, prep);
+		prep++;
+	}
+	add_str(&res, &start, prep);
+	return (res);
+}
 
 char	**parse_args(char *args, t_mshell *shell)
 {
 	char	*preprocessed;
 	char	**res;
+	int		i;
 
 	if (check_quotes(args, shell))
 		return (NULL);
 	preprocessed = preprocessor(args, shell);
-	res = split_args(preprocessed, shell);
-	remove_quotes(res);
+	res = split_args(preprocessed);
+	free(preprocessed);
+	i = 0;
+	while (res[i])
+	{
+		res[i] = remove_quotes(res[i]);
+		i++;
+	}
 	return (res);
 }
