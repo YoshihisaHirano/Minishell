@@ -34,26 +34,26 @@ void	move_spaces(char **str, char **start)
 	*start = *str;
 }
 
-char	*add_elt(char **start, char *str, char *res)
+char	*add_elt(char **start, char **str, char *res)
 {
-	int		dst;
+	size_t	dst;
 	char	*tmp;
 	char	*added;
 
-	dst = str - *start;
+	dst = *str - *start;
 	tmp = ft_substr(*start, 0, dst + 1);
 	added = ft_strjoin(res, tmp);
 	free(tmp);
 	if (*res)
 		free(res);
 	*start += dst;
-	move_spaces(&str, start);
+	move_spaces(str, start);
 	return (added);
 }
 
 char	*add_rest(char *start, char *str, char *res)
 {
-	int		dst;
+	size_t	dst;
 	char	*tmp;
 	char	*new_res;
 
@@ -85,7 +85,10 @@ char	*preprocessor(char *str, t_mshell *shell)
 		if (*str == '\"' && !(q.singl % 2))
 			q.doubl++;
 		if (ft_isspace(*str) && !(q.doubl % 2) && !(q.singl % 2))
-			res = add_elt(&start, str, res);
+		{
+			res = add_elt(&start, &str, res);
+			continue ;
+		}
 		if (*str == '$' && !(q.singl % 2))
 		{
 			res = add_expanded(&start, &str, res, shell);

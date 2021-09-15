@@ -83,9 +83,19 @@ int main(int argc, char **argv, char **env)
 //		printf("%s\n", dq[i]);
 //		i++;
 //	}
-	char *str1 = "echo \"$HOME\'$USER\'$?hello\"$";
-	char *res = preprocessor(str1, &shell);
-	printf("%s\n", res);
+	char *str1 = "echo    \'$HOME     $\'  '\"$USER\"'";
+//	char *res = preprocessor(str1, &shell);
+//	printf("%s\n", res);
+	char **res = parse_args(str1, &shell);
+	int i = 0; // debug
+	while (res[i])
+	{
+		printf("%s\n", res[i]);
+		free(res[i]);
+		i++;
+	}
+	ft_lstclear(&shell.env_copy, free_node);
+	free(res);
 	return (0);
 	while(1)
 	{

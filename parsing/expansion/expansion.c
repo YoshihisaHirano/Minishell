@@ -51,19 +51,19 @@ char	*change_to_expanded(char **var, t_mshell *shell)
 	*var += var_len;
 	if (*copy == '?')
 		return (ft_itoa(shell->last_exit_code));
-	if (var_len == 1)
+	if (var_len == 1 && *copy != '\'' && *copy != '\"')
 		return (ft_strdup("$"));
 	temp = ft_substr(copy, 0, var_len - 1);
 	node = get_by_key(shell, temp);
 	free(temp);
 	if (!node)
 		return (ft_strdup(""));
-	return (((t_envvar *)(node->content))->value);
+	return (ft_strdup(((t_envvar *)(node->content))->value));
 }
 
 char	*add_expanded(char **start, char **str, char *res, t_mshell *shell)
 {
-	int		dst;
+	size_t 	dst;
 	char	*tmp;
 	char	*tmp2;
 	char	*expanded;
