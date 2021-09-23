@@ -1,43 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                             :+:      :+:    :+:  */
+/*   miscellaneous.c                                     :+:      :+:    :+:  */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aalannys <aalannys@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/09/07 15:42:41 by aalannys            #+#   #+#            */
-/*   Updated: 2021/09/07 15:42:41 by aalannys           ###    #######.fr     */
+/*   Created: 2021/09/23 18:22:04 by aalannys            #+#    #+#           */
+/*   Updated: 2021/09/23 18:22:04 by aalannys            ###    #######.fr    */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
-
-void	print_error(char *prog)
-{
-	if (!prog)
-		perror("Minishell");
-	else
-	{
-		write(2, "Minishell: ", 11);
-		perror(prog);
-	}
-}
+#include "../minishell.h"
 
 void	error_exit(char *prog)
 { //on malloc errors the whole program exits: should it be changed?
 	print_error(prog);
 	exit(errno);
-}
-
-void	print_node(void *node)
-{
-	t_envvar	*var;
-
-	var = (t_envvar *)node;
-	printf("%s=", var->key);
-	if (var->value)
-		printf("%s", var->value);
-	printf("\n");
 }
 
 /* Only ASCII letters (of either case), _ and digits are supported, and the
@@ -53,4 +31,17 @@ int	invalid_key(char *key)
 		key++;
 	}
 	return (0);
+}
+
+size_t	chr_arr_len(char **arr)
+{
+	size_t	res;
+
+	res = 0;
+	while (*arr)
+	{
+		res++;
+		arr++;
+	}
+	return (res);
 }

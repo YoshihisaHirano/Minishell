@@ -28,8 +28,7 @@ int	my_export(t_mshell *shell, char *arg)
 		error_exit(NULL);
 	if (invalid_key(splt_arg[0]))
 	{
-		ft_putstr_fd("export: not an identifier: ", 2);
-		ft_putendl_fd(splt_arg[0], 2);
+		print_err_msg("export", arg, "export: not an identifier: ");
 		shell->last_exit_code = 1;
 		return (1);
 	}

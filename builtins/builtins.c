@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   srcs.c                                              :+:      :+:    :+:  */
+/*   builtins.c                                          :+:      :+:    :+:  */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aalannys <aalannys@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -39,14 +39,6 @@ int	my_pwd(t_mshell *shell) //TODO error on extra arguments present
 	else
 		printf("%s\n", ((t_envvar *)(node->content))->value);
 	return (0);
-}
-
-void	my_exit(t_mshell *shell)
-{ //TODO full memory clear, not only env (?)
-	//check num, error if > than usigned long long
-	// bash prints 'exit'
-	ft_lstclear(&shell->env_copy, free_node);
-	exit(0);
 }
 
 //void	my_echo(t_mshell *shell, t_cmd *cmd) //additional arg is the
