@@ -29,20 +29,24 @@ int	my_unset(t_mshell *shell, t_list_params *params)
 {
 	t_list	*var;
 	char	*arg;
+	int		i;
 
-	arg = params->cmd_arr[1];
-	if (invalid_key(arg))
+	i = 0;
+	while (params->cmd_arr[i])
 	{
-		print_err_msg("unset", arg, ": invalid parameter name");
-		shell->last_exit_code = 1;
-		return (1);
+		arg = params->cmd_arr[i];
+		if (invalid_key(arg))
+		{
+			print_err_msg("unset", arg, "invalid parameter name");
+			shell->last_exit_code = 1;
+		}
+		var = get_by_key(shell, arg);
+		if (var)
+		{
+			del_var(shell, var);
+			shell->last_exit_code = 0;
+		}
+		i++;
 	}
-	var = get_by_key(shell, arg);
-	if (!var)
-	{
-		shell->last_exit_code = 1;
-		return (1);
-	}
-	del_var(shell, var);
 	return (0);
 }
