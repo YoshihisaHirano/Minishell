@@ -14,7 +14,7 @@
 
 void	error_exit(char *prog)
 { //on malloc errors the whole program exits: should it be changed?
-	print_error(prog);
+	print_error(prog, NULL);
 	exit(errno);
 }
 
