@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 void	free_node(void *node)
 {
@@ -27,10 +27,25 @@ void	free_arr(char **arr)
 	int	i;
 
 	i = 0;
+	if (!arr)
+		return ;
 	while (arr[i])
 	{
 		free(arr[i]);
 		i++;
 	}
 	free(arr);
+}
+
+void	free_params_lst(void *param_node)
+{
+	t_list_params	*content;
+
+	content = (t_list_params *)param_node;
+	free_arr(content->cmd_arr);
+	free(content->str_to_cmd);
+	free(content->path_app);
+	free(content->here_doc_limiter);
+	free(content->input_file);
+	free(content->output_file);
 }

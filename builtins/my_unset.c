@@ -31,9 +31,7 @@ int	my_unset(t_mshell *shell, char *arg)
 
 	if (invalid_key(arg))
 	{
-		ft_putstr_fd("unset: ", 2);
-		ft_putstr_fd(arg, 2);
-		ft_putendl_fd(": invalid parameter name", 2);
+		print_err_msg("unset", arg, ": invalid parameter name");
 		shell->last_exit_code = 1;
 		return (1);
 	}
