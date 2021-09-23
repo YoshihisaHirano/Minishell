@@ -30,8 +30,7 @@ int	my_pwd(t_mshell *shell) //TODO error on extra arguments present
 		curr_dir = getcwd(curr_dir, 1);
 		if (!curr_dir)
 		{
-			print_error("pwd");
-			shell->last_exit_code = 1;
+			print_error("pwd", shell);
 			return (1);
 		}
 		printf("%s\n", curr_dir);

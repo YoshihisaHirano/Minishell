@@ -51,7 +51,7 @@ void	error_exit(char *prog);
 void	free_node(void *node);
 void	free_params_lst(void *param_node);
 void	print_node(void *node);
-void	print_error(char *prog);
+void	print_error(char *prog, t_mshell *shell);
 int		invalid_key(char *key);
 void	free_arr(char **arr);
 void	move_spaces(char **str, char **start);
@@ -67,10 +67,10 @@ void	add_var(t_mshell *shell, char *key, char *val);
 /* builtins */
 void	my_env(t_mshell *shell);
 int		my_pwd(t_mshell *shell);
-int		my_cd(t_mshell *shell, char *path);
-void	my_exit(t_mshell *shell);
-int		my_export(t_mshell *shell, char *arg);
-int		my_unset(t_mshell *shell, char *arg);
+int		my_cd(t_mshell *shell, t_list_params *params);
+int		my_export(t_mshell *shell, t_list_params *params);
+int		my_unset(t_mshell *shell, t_list_params *params);
+void	my_exit(t_mshell *shell, t_list_params *params);
 /* parsing */
 int		check_quotes(char *str, t_mshell *shell);
 char	*remove_quotes(char *pre_res);

@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-void	print_error(char *prog)
+void	print_error(char *prog, t_mshell *shell)
 {
 	if (!prog)
 		perror("Minishell");
@@ -21,6 +21,8 @@ void	print_error(char *prog)
 		write(2, "Minishell: ", 11);
 		perror(prog);
 	}
+	if (shell)
+		shell->last_exit_code = 1;
 }
 
 void	print_node(void *node)
