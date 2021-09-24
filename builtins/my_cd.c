@@ -22,8 +22,7 @@ int	check_pwds(t_mshell *shell) /* sets pwds if they are unset */
 	curr_path = getcwd(NULL, 1);
 	if (!curr_path)
 	{
-		print_error("cd");
-		shell->last_exit_code = 1;
+		print_error("cd", shell);
 		return (1);
 	}
 	pwd = get_by_key(shell, "PWD");
@@ -39,7 +38,7 @@ int	check_pwds(t_mshell *shell) /* sets pwds if they are unset */
  		cd /usr hello
 		cd: string not in pwd: /usr /TODO?
  */
-int	my_cd(t_mshell *shell, char *path)
+int	my_cd(t_mshell *shell, t_list_params *params)
 {
 	int		res;
 	char	*curr_path;
@@ -47,19 +46,17 @@ int	my_cd(t_mshell *shell, char *path)
 
 	if (check_pwds(shell))
 		return (1);
-	res = chdir(path);
+	res = chdir(params->cmd_arr[1]);
 	if (res == -1)
 	{
-		print_error("cd");
-		shell->last_exit_code = 1;
+		print_error("cd", shell);
 		return (1);
 	}
 	curr_path = NULL;
 	curr_path = getcwd(curr_path, 1);
 	if (!curr_path)
 	{
-		print_error("cd");
-		shell->last_exit_code = 1;
+		print_error("cd", shell);
 		return (1);
 	}
 	pwd = get_by_key(shell, "PWD");

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                             :+:      :+:    :+:  */
+/*   print.c                                             :+:      :+:    :+:  */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aalannys <aalannys@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
-void	print_error(char *prog)
+void	print_error(char *prog, t_mshell *shell)
 {
 	if (!prog)
 		perror("Minishell");
@@ -21,12 +21,8 @@ void	print_error(char *prog)
 		write(2, "Minishell: ", 11);
 		perror(prog);
 	}
-}
-
-void	error_exit(char *prog)
-{ //on malloc errors the whole program exits: should it be changed?
-	print_error(prog);
-	exit(errno);
+	if (shell)
+		shell->last_exit_code = 1;
 }
 
 void	print_node(void *node)
@@ -40,17 +36,18 @@ void	print_node(void *node)
 	printf("\n");
 }
 
-/* Only ASCII letters (of either case), _ and digits are supported, and the
- * first character must not be a digit. */
-int	invalid_key(char *key)
+void	print_err_msg(char *prog, char *arg, char *msg)
 {
-	if (ft_isdigit(*key))
-		return (1);
-	while (*key)
+	ft_putstr_fd("Minishell: ", 2);
+	if (prog)
 	{
-		if (!ft_isalnum(*key) && *key != '_')
-			return (1);
-		key++;
+		ft_putstr_fd(prog, 2);
+		ft_putstr_fd(": ", 2);
 	}
-	return (0);
+	if (arg)
+	{
+		ft_putstr_fd(arg, 2);
+		ft_putstr_fd(": ", 2);
+	}
+	ft_putendl_fd(msg, 2);
 }

@@ -18,18 +18,21 @@
 The correct syntax to assign and export a variable (with the assigned value) at the same time is export NAME=value
  */
 
-int	my_export(t_mshell *shell, char *arg)
+// TODO export can add multiple vars to environment if they are properly
+//  formatted i.e. 'VAR_NAME=', vars with wrong format it just ignores
+int	my_export(t_mshell *shell, t_list_params *params)
 {
 	char	**splt_arg;
 	t_list	*elt;
+	char	*arg;
 
+	arg = params->cmd_arr[1];
 	splt_arg = ft_split(arg, '=');
 	if (!splt_arg)
 		error_exit(NULL);
 	if (invalid_key(splt_arg[0]))
 	{
-		ft_putstr_fd("export: not an identifier: ", 2);
-		ft_putendl_fd(splt_arg[0], 2);
+		print_err_msg("export", arg, "not an identifier");
 		shell->last_exit_code = 1;
 		return (1);
 	}
