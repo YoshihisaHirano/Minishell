@@ -59,7 +59,7 @@ int	check_arg(char *arg, int *exit_code)
 }
 
 void	my_exit(t_mshell *shell, t_list_params *params)
-{ //TODO full memory clear, not only env (?)
+{
 	//check num, error if > than signed long long && error if arg is not
 	// numeric are the same
 	// if ar is not numeric it still quits bash (255) but if there are other

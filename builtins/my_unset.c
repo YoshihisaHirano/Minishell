@@ -25,13 +25,13 @@ void	del_var(t_mshell *shell, t_list *node)
 	before_del->next = after_del;
 }
 
-int	my_unset(t_mshell *shell, t_list_params *params)
+void	my_unset(t_mshell *shell, t_list_params *params)
 {
 	t_list	*var;
 	char	*arg;
 	int		i;
 
-	i = 0;
+	i = 1;
 	while (params->cmd_arr[i])
 	{
 		arg = params->cmd_arr[i];
@@ -48,5 +48,4 @@ int	my_unset(t_mshell *shell, t_list_params *params)
 		}
 		i++;
 	}
-	return (0);
 }

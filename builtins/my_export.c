@@ -12,34 +12,67 @@
 
 #include "../minishell.h"
 
-/*
-!!! The correct syntax to export a variable (with whatever value, if any, it has
- already been assigned) is export NAME. //TODO ?
-The correct syntax to assign and export a variable (with the assigned value) at the same time is export NAME=value
- */
-
-// TODO export can add multiple vars to environment if they are properly
-//  formatted i.e. 'VAR_NAME=', vars with wrong format it just ignores
-int	my_export(t_mshell *shell, t_list_params *params)
+char	**split_by_eq(char *arg)
 {
-	char	**splt_arg;
-	t_list	*elt;
-	char	*arg;
+	char	**var;
+	int		i;
 
-	arg = params->cmd_arr[1];
-	splt_arg = ft_split(arg, '=');
-	if (!splt_arg)
-		error_exit(NULL);
-	if (invalid_key(splt_arg[0]))
-	{
-		print_err_msg("export", arg, "not an identifier");
-		shell->last_exit_code = 1;
-		return (1);
-	}
+	var = malloc(sizeof(char *) * 3);
+	if (!var)
+		error_exit("export");
+	i = 0;
+	while (i < 3)
+		var[i++] = NULL;
+	i = 1;
+	while (arg[i] != '=')
+		i++;
+	var[0] = ft_substr(arg, 0, i);
+	if (ft_strlen(var[0]) == ft_strlen(arg))
+		return (var);
+	i++;
+	arg += i;
+	var[1] = ft_substr(arg, 0, ft_strlen(arg));
+	return (var);
+}
+
+void	set_val(char **splt_arg, t_mshell *shell)
+{
+	t_list	*elt;
+
 	elt = get_by_key(shell, splt_arg[0]);
 	if (elt)
 		set_by_key(shell, splt_arg[0], splt_arg[1]);
 	else
 		add_var(shell, splt_arg[0], splt_arg[1]);
-	return (0);
+}
+
+// export can add multiple vars to environment if they are properly
+//  formatted i.e. 'VAR_NAME=', vars with wrong format it just ignores
+void	my_export(t_mshell *shell, t_list_params *params)
+{
+	char	**splt_arg;
+	char	*arg;
+	int		i;
+
+	i = 1;
+	while (params->cmd_arr[i])
+	{
+		arg = params->cmd_arr[i];
+		splt_arg = split_by_eq(arg);
+		if (invalid_key(splt_arg[0]))
+		{
+			print_err_msg("export", arg, "not an identifier");
+			i++;
+			continue ;
+		}
+		shell->last_exit_code = 0;
+		if (!splt_arg[1])
+		{
+			i++;
+			continue ;
+		}
+		set_val(splt_arg, shell);
+		free_arr(splt_arg);
+		i++;
+	}
 }

@@ -68,8 +68,8 @@ void	add_var(t_mshell *shell, char *key, char *val);
 void	my_env(t_mshell *shell);
 int		my_pwd(t_mshell *shell);
 int		my_cd(t_mshell *shell, t_list_params *params);
-int		my_export(t_mshell *shell, t_list_params *params);
-int		my_unset(t_mshell *shell, t_list_params *params);
+void	my_export(t_mshell *shell, t_list_params *params);
+void	my_unset(t_mshell *shell, t_list_params *params);
 void	my_exit(t_mshell *shell, t_list_params *params);
 /* parsing */
 int		check_quotes(char *str, t_mshell *shell);
