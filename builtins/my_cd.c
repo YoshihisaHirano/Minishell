@@ -38,29 +38,28 @@ int	check_pwds(t_mshell *shell) /* sets pwds if they are unset */
  		cd /usr hello
 		cd: string not in pwd: /usr /TODO?
  */
-int	my_cd(t_mshell *shell, t_list_params *params)
+void	my_cd(t_mshell *shell, char **cmd_arr)
 {
 	int		res;
 	char	*curr_path;
 	t_list	*pwd;
 
 	if (check_pwds(shell))
-		return (1);
-	res = chdir(params->cmd_arr[1]);
+		return ;
+	res = chdir(cmd_arr[1]);
 	if (res == -1)
 	{
 		print_error("cd", shell);
-		return (1);
+		return ;
 	}
 	curr_path = NULL;
 	curr_path = getcwd(curr_path, 1);
 	if (!curr_path)
 	{
 		print_error("cd", shell);
-		return (1);
+		return ;
 	}
 	pwd = get_by_key(shell, "PWD");
 	set_by_key(shell, "OLDPWD", ((t_envvar *)(pwd->content))->value);
 	set_by_key(shell, "PWD", curr_path);
-	return (0);
 }

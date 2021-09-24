@@ -48,16 +48,16 @@ void	set_val(char **splt_arg, t_mshell *shell)
 
 // export can add multiple vars to environment if they are properly
 //  formatted i.e. 'VAR_NAME=', vars with wrong format it just ignores
-void	my_export(t_mshell *shell, t_list_params *params)
+void	my_export(t_mshell *shell, char **cmd_arr)
 {
 	char	**splt_arg;
 	char	*arg;
 	int		i;
 
 	i = 1;
-	while (params->cmd_arr[i])
+	while (cmd_arr[i])
 	{
-		arg = params->cmd_arr[i];
+		arg = cmd_arr[i];
 		splt_arg = split_by_eq(arg);
 		if (invalid_key(splt_arg[0]))
 		{

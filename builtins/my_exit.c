@@ -27,6 +27,7 @@ void	exit_routine(t_mshell *shell)
 {
 	ft_lstclear(&shell->env_copy, free_node);
 	ft_lstclear(&shell->cmds, free_params_lst);
+	ft_lstclear(&shell->builtins, free_builtins);
 //	rl_clear_history();
 	write(1, "exit", 4);
 }
@@ -58,7 +59,7 @@ int	check_arg(char *arg, int *exit_code)
 	return (ARG_OK);
 }
 
-void	my_exit(t_mshell *shell, t_list_params *params)
+void	my_exit(t_mshell *shell, char **cmd_arr)
 {
 	//check num, error if > than signed long long && error if arg is not
 	// numeric are the same
@@ -68,14 +69,14 @@ void	my_exit(t_mshell *shell, t_list_params *params)
 	int res;
 
 	exit_code = shell->last_exit_code;
-	res = check_arg(params->cmd_arr[1], &exit_code);
+	res = check_arg(cmd_arr[1], &exit_code);
 	if (res == NOT_NUMERIC)
 	{
 		exit_routine(shell);
-		print_err_msg("exit", params->cmd_arr[1], "numeric argument required");
+		print_err_msg("exit", cmd_arr[1], "numeric argument required");
 		exit(exit_code);
 	}
-	if (res == ARG_OK && chr_arr_len(params->cmd_arr) <= 2)
+	if (res == ARG_OK && chr_arr_len(cmd_arr) <= 2)
 	{
 		exit_routine(shell);
 		exit(exit_code);

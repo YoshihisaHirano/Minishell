@@ -25,16 +25,16 @@ void	del_var(t_mshell *shell, t_list *node)
 	before_del->next = after_del;
 }
 
-void	my_unset(t_mshell *shell, t_list_params *params)
+void	my_unset(t_mshell *shell, char **cmd_arr)
 {
 	t_list	*var;
 	char	*arg;
 	int		i;
 
 	i = 1;
-	while (params->cmd_arr[i])
+	while (cmd_arr[i])
 	{
-		arg = params->cmd_arr[i];
+		arg = cmd_arr[i];
 		if (invalid_key(arg))
 		{
 			print_err_msg("unset", arg, "invalid parameter name");

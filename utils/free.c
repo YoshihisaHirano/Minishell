@@ -48,4 +48,14 @@ void	free_params_lst(void *param_node)
 	free(content->here_doc_limiter);
 	free(content->input_file);
 	free(content->output_file);
+	free(content);
+}
+
+void	free_builtins(void *content)
+{
+	t_builtins	*bn;
+
+	bn = (t_builtins *)content;
+	free(bn->name);
+	free(bn);
 }

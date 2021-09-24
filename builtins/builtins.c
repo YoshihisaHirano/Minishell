@@ -12,17 +12,19 @@
 
 #include "../minishell.h"
 
-void	my_env(t_mshell *shell)
+void	my_env(t_mshell *shell, char **cmd_arr)
 {
+	(void)cmd_arr;
 	ft_lstiter(shell->env_copy, print_node);
 	//TODO error on extra arguments present ???
 }
 
-int	my_pwd(t_mshell *shell)
+void	my_pwd(t_mshell *shell, char **cmd_arr)
 {
 	t_list	*node;
 	char	*curr_dir;
 
+	(void)cmd_arr;
 	curr_dir = NULL;
 	node = get_by_key(shell, "PWD");
 	if (!node || !((t_envvar *)(node->content))->value
@@ -32,22 +34,21 @@ int	my_pwd(t_mshell *shell)
 		if (!curr_dir)
 		{
 			print_error("pwd", shell);
-			return (1);
+			return ;
 		}
 		printf("%s\n", curr_dir);
 	}
 	else
 		printf("%s\n", ((t_envvar *)(node->content))->value);
-	return (0);
 }
 
-void	my_echo(t_mshell *shell, t_list_params *params)
+void	my_echo(t_mshell *shell, char **cmd_arr)
 {
 	char	*option;
 	int		i;
 	int		new_line;
 
-	option = params->cmd_arr[1];
+	option = cmd_arr[1];
 	i = 1;
 	new_line = 1;
 	if (!ft_strncmp("-n", option, ft_strlen(option)))
@@ -55,12 +56,12 @@ void	my_echo(t_mshell *shell, t_list_params *params)
 		new_line = 0;
 		i++;
 	}
-	while (i < chr_arr_len(params->cmd_arr) - 1)
+	while (i < chr_arr_len(cmd_arr) - 1)
 	{
-		printf("%s ", params->cmd_arr[i]);
+		printf("%s ", cmd_arr[i]);
 		i++;
 	}
-	printf("%s", params->cmd_arr[i]);
+	printf("%s", cmd_arr[i]);
 	if (new_line)
 		printf("\n");
 }
