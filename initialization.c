@@ -14,19 +14,19 @@
 
 void	assign_func(t_builtins *builtin)
 {
-	if (!ft_strncmp(builtin->name, "echo"), ft_strlen(builtin->name))
+	if (!ft_strncmp(builtin->name, "echo", ft_strlen(builtin->name)))
 		builtin->func = my_echo;
-	if (!ft_strncmp(builtin->name, "env"), ft_strlen(builtin->name))
+	if (!ft_strncmp(builtin->name, "env", ft_strlen(builtin->name)))
 		builtin->func = my_env;
-	if (!ft_strncmp(builtin->name, "pwd"), ft_strlen(builtin->name))
+	if (!ft_strncmp(builtin->name, "pwd", ft_strlen(builtin->name)))
 		builtin->func = my_pwd;
-	if (!ft_strncmp(builtin->name, "cd"), ft_strlen(builtin->name))
+	if (!ft_strncmp(builtin->name, "cd", ft_strlen(builtin->name)))
 		builtin->func = my_cd;
-	if (!ft_strncmp(builtin->name, "export"), ft_strlen(builtin->name))
+	if (!ft_strncmp(builtin->name, "export", ft_strlen(builtin->name)))
 		builtin->func = my_export;
-	if (!ft_strncmp(builtin->name, "unset"), ft_strlen(builtin->name))
+	if (!ft_strncmp(builtin->name, "unset", ft_strlen(builtin->name)))
 		builtin->func = my_unset;
-	if (!ft_strncmp(builtin->name, "exit"), ft_strlen(builtin->name))
+	if (!ft_strncmp(builtin->name, "exit", ft_strlen(builtin->name)))
 		builtin->func = my_exit;
 }
 
@@ -35,7 +35,7 @@ void	init_builtins(t_mshell *shell)
 	char		*names;
 	char		**splt_names;
 	int			i;
-	t_builtins	bn;
+	t_builtins	*bn;
 	t_list		*elt;
 
 	names = "echo env pwd cd export unset exit";
@@ -46,9 +46,9 @@ void	init_builtins(t_mshell *shell)
 	while (i < 7)
 	{
 		bn = malloc(sizeof(t_builtins));
-		bn.name = splt_names[i];
-		assign_func(&bn);
-		elt = ft_lstnew(&bn);
+		bn->name = splt_names[i];
+		assign_func(bn);
+		elt = ft_lstnew(bn);
 		ft_lstadd_back(&shell->builtins, elt);
 		i++;
 	}
@@ -60,5 +60,5 @@ void	init_shell(t_mshell *shell, char **env)
 						.builtins = NULL};
 	parse_env(shell, env);
 	init_builtins(shell);
-//	handle_sigs();
+	handle_sigs();
 }

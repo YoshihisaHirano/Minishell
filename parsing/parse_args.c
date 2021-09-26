@@ -15,15 +15,15 @@
 void	add_str(char ***res, char **start, char *prep)
 {
 	char	**new_arr;
-	int		arr_size;
+	size_t 	arr_size;
 	char	*temp;
-	int		i;
+	size_t	i;
 
 	temp = ft_substr(*start, 0, prep - *start);
 	*start += ft_strlen(temp) + 1;
-	arr_size = 0;
-	while ((*res)[arr_size])
-		arr_size++;
+	if (!(*temp))
+		return ;
+	arr_size = chr_arr_len(*res);
 	new_arr = malloc(sizeof(char *) * (arr_size + 2));
 	if (!new_arr)
 		error_exit(NULL);

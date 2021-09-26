@@ -28,8 +28,8 @@ void	exit_routine(t_mshell *shell)
 	ft_lstclear(&shell->env_copy, free_node);
 	ft_lstclear(&shell->cmds, free_params_lst);
 	ft_lstclear(&shell->builtins, free_builtins);
-//	rl_clear_history();
-	write(1, "exit", 4);
+	rl_clear_history();
+	write(1, "exit\n", 5);
 }
 
 int	check_arg(char *arg, int *exit_code)
@@ -49,7 +49,7 @@ int	check_arg(char *arg, int *exit_code)
 		*exit_code = 255;
 		return (NOT_NUMERIC);
 	}
-	code = ft_atoi_ul(arg);
+	code = ft_atoi_ll(arg);
 	if (code < 0 && code != LLONG_MIN)
 	{
 		*exit_code = 255;

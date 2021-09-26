@@ -16,6 +16,7 @@ void	my_env(t_mshell *shell, char **cmd_arr)
 {
 	(void)cmd_arr;
 	ft_lstiter(shell->env_copy, print_node);
+	shell->last_exit_code = 0;
 	//TODO error on extra arguments present ???
 }
 
@@ -33,19 +34,20 @@ void	my_pwd(t_mshell *shell, char **cmd_arr)
 		curr_dir = getcwd(curr_dir, 1);
 		if (!curr_dir)
 		{
-			print_error("pwd", shell);
+			print_error("pwd", shell, NULL);
 			return ;
 		}
 		printf("%s\n", curr_dir);
 	}
 	else
 		printf("%s\n", ((t_envvar *)(node->content))->value);
+	shell->last_exit_code = 0;
 }
 
 void	my_echo(t_mshell *shell, char **cmd_arr)
 {
 	char	*option;
-	int		i;
+	size_t	i;
 	int		new_line;
 
 	option = cmd_arr[1];
@@ -64,4 +66,5 @@ void	my_echo(t_mshell *shell, char **cmd_arr)
 	printf("%s", cmd_arr[i]);
 	if (new_line)
 		printf("\n");
+	shell->last_exit_code = 0;
 }

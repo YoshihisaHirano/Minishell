@@ -68,6 +68,14 @@ char	*add_rest(char *start, char *str, char *res)
 	return (new_res);
 }
 
+void	update_qstatus(char curr, t_quotes *quotes)
+{
+	if (curr == '\'' && !(quotes->doubl % 2))
+		quotes->singl++;
+	if (curr == '\"' && !(quotes->singl % 2))
+		quotes->doubl++;
+}
+
 char	*preprocessor(char *str, t_mshell *shell)
 {
 	t_quotes	q;
@@ -80,10 +88,7 @@ char	*preprocessor(char *str, t_mshell *shell)
 	move_spaces(&str, &start);
 	while (*str)
 	{
-		if (*str == '\'' && !(q.doubl % 2))
-			q.singl++;
-		if (*str == '\"' && !(q.singl % 2))
-			q.doubl++;
+		update_qstatus(*str, &q);
 		if (ft_isspace(*str) && !(q.doubl % 2) && !(q.singl % 2))
 		{
 			res = add_elt(&start, &str, res);

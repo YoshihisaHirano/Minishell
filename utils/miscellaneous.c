@@ -12,9 +12,9 @@
 
 #include "../minishell.h"
 
-void	error_exit(char *prog)
-{ //on malloc errors the whole program exits: should it be changed?
-	print_error(prog, NULL);
+void	error_exit(char *prog) //on malloc errors the whole program exits: should it be changed?
+{
+	print_error(prog, NULL, NULL);
 	exit(errno);
 }
 
