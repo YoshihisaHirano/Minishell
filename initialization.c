@@ -59,6 +59,7 @@ void	init_shell(t_mshell *shell, char **env)
 	*shell = (t_mshell){.last_exit_code = 0, .env_copy = NULL,
 						.builtins = NULL};
 	parse_env(shell, env);
+	//TODO SHLVL+=1
 	init_builtins(shell);
 	handle_sigs();
 }

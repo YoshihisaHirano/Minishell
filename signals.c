@@ -25,6 +25,7 @@ void	ctl_c_handle(int x)
 
 void	handle_sigs(void)
 {
+//	rl_catch_signals = 0; TODO find out wtf is this
 	signal(SIGINT, ctl_c_handle);
 	signal(SIGQUIT, SIG_IGN);
 }

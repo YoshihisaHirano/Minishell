@@ -50,13 +50,14 @@ void	my_echo(t_mshell *shell, char **cmd_arr)
 	size_t	i;
 	int		new_line;
 
-	option = cmd_arr[1];
 	i = 1;
+	option = cmd_arr[i];
 	new_line = 1;
-	if (!ft_strncmp("-n", option, ft_strlen(option)))
+	while (!ft_strncmp("-n", option, ft_strlen(option)))
 	{
 		new_line = 0;
 		i++;
+		option = cmd_arr[i];
 	}
 	while (i < chr_arr_len(cmd_arr) - 1)
 	{
