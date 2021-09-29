@@ -28,7 +28,7 @@ void	deal_with_spaces(char **start, char **str, char **res)
 void	update_var_len(char *var, size_t *var_len)
 {
 	while (*var && !ft_isspace(*var) && *var != '\'' && *var != '\"'
-		   && *var!='$' && *var != '?')
+		   && *var != '$' && *var != '?' && *var != '=')
 	{
 		(*var_len)++;
 		var++;

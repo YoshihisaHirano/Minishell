@@ -12,6 +12,7 @@
 
 #include "minishell.h"
 
+// TODO add signal handling in fork!
 void	ctl_c_handle(int x)
 {
 	(void)x;

@@ -54,6 +54,9 @@ int	use_chdir(t_mshell *shell, char **cmd_arr)
 	return (res);
 }
 
+/* 'mkdir test_dir ; cd test_dir ; rm -rf ../test_dir ; cd . ; cd .. ; pwd'
+ * edge case but need to properly do rm -rf first
+ */
 void	my_cd(t_mshell *shell, char **cmd_arr)
 {
 	int		res;

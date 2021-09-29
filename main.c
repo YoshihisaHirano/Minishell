@@ -86,6 +86,7 @@ void	execute(char *cmd_str, t_mshell *shell)
 	run_command(shell, cmd_arr);
 }
 
+// TODO 'echo "$TEST$TEST$TEST"' Segfault
 int main(int argc, char **argv, char **env)
 {
 	char		*str;
@@ -102,9 +103,9 @@ int main(int argc, char **argv, char **env)
 	{
 		str = readline(PROMPT);
 		if (!str) //Ctrl-d handling lol
-		{ //TODO need to put "exit" message on the same line with the prompt
+		{ //TODO need to put "exit" message on the same line with the prompt ???
 			exit_code = shell.last_exit_code;
-//			exit_routine(&shell);
+			exit_routine(&shell);
 			ft_putstr_fd("exit\n", 1);
 			exit(exit_code);
 		}
