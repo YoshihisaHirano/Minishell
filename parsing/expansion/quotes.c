@@ -53,7 +53,7 @@ char	*remove_quotes(char *res)
 			q.doubl++;
 		if (res[i] == '\'' && !(q.doubl % 2))
 			q.singl++;
-		if ((q.doubl % 2 && res[i] == '\'') || (q.singl % 2 && res[i] =='\"')
+		if ((q.doubl % 2 && res[i] == '\'') || (q.singl % 2 && res[i] == '\"')
 			|| (res[i] != '\'' && res[i] != '\"'))
 		{
 			rm_quotes[j] = res[i];

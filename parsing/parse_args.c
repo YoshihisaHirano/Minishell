@@ -75,7 +75,7 @@ char	**parse_args(char *args, t_mshell *shell)
 	if (check_quotes(args, shell))
 		return (NULL);
 	preprocessed = preprocessor(args, shell);
-	printf("%s\n", preprocessed);
+//	printf("%s -- processed\n", preprocessed);
 	res = split_args(preprocessed);
 	free(preprocessed);
 	i = 0;

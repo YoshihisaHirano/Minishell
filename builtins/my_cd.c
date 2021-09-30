@@ -19,7 +19,7 @@ int	check_pwds(t_mshell *shell) /* sets pwds if they are unset */
 	char	*curr_path;
 
 	curr_path = NULL;
-	curr_path = getcwd(NULL, 1);
+	curr_path = getcwd(curr_path, 1);
 	if (!curr_path)
 	{
 		print_error("cd", shell, NULL);
@@ -56,7 +56,7 @@ int	use_chdir(t_mshell *shell, char **cmd_arr)
 
 /* 'mkdir test_dir ; cd test_dir ; rm -rf ../test_dir ; cd . ; cd .. ; pwd'
  * edge case but need to properly do rm -rf first
- */
+ TODO*/
 void	my_cd(t_mshell *shell, char **cmd_arr)
 {
 	int		res;

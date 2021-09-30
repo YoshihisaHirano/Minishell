@@ -27,6 +27,11 @@ void	deal_with_spaces(char **start, char **str, char **res)
 
 void	update_var_len(char *var, size_t *var_len)
 {
+	if (ft_isdigit(*var))
+	{
+		(*var_len)++;
+		return ;
+	}
 	while (*var && !ft_isspace(*var) && *var != '\'' && *var != '\"'
 		   && *var != '$' && *var != '?' && *var != '=')
 	{
@@ -46,7 +51,8 @@ char	*change_to_expanded(char **var, t_mshell *shell)
 
 	var_len = 1;
 	copy = *var;
-	copy++;
+	if (*(copy + 1) != '\"')
+		copy++;
 	update_var_len(copy, &var_len);
 	*var += var_len;
 	if (*copy == '?')

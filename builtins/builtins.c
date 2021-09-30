@@ -46,24 +46,25 @@ void	my_pwd(t_mshell *shell, char **cmd_arr)
 
 void	my_echo(t_mshell *shell, char **cmd_arr)
 {
-	char	*option;
+	char	*param;
 	size_t	i;
 	int		new_line;
 
 	i = 1;
-	option = cmd_arr[i];
+	param = cmd_arr[i];
+	if (!param)
+	{
+		printf("\n");
+		return ;
+	}
 	new_line = 1;
-	while (!ft_strncmp("-n", option, ft_strlen(option)))
+	while (!ft_strncmp("-n", param, ft_strlen(param)) && ft_strlen(param) > 0)
 	{
 		new_line = 0;
-		i++;
-		option = cmd_arr[i];
+		param = cmd_arr[++i];
 	}
 	while (i < chr_arr_len(cmd_arr) - 1)
-	{
-		printf("%s ", cmd_arr[i]);
-		i++;
-	}
+		printf("%s ", cmd_arr[i++]);
 	printf("%s", cmd_arr[i]);
 	if (new_line)
 		printf("\n");

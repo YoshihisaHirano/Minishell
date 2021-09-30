@@ -102,15 +102,17 @@ int main(int argc, char **argv, char **env)
 	while(1)
 	{
 		str = readline(PROMPT);
+		if (str && *str)
+		{
+			execute(str, &shell);
+			add_history(str);
+		}
 		if (!str) //Ctrl-d handling lol
 		{ //TODO need to put "exit" message on the same line with the prompt ???
 			exit_code = shell.last_exit_code;
 			exit_routine(&shell);
-			ft_putstr_fd("exit\n", 1);
 			exit(exit_code);
 		}
-		execute(str, &shell);
-		add_history(str);
 	}
 	return (0);
 }
