@@ -50,13 +50,13 @@ int	check_arg(char *arg, int *exit_code)
 		return (NOT_NUMERIC);
 	}
 	code = ft_atoi_ll(arg);
-	if (code < 0 && code != LLONG_MIN)
+	if (code >= 0 || (is_minus == -1 && code == LLONG_MIN))
 	{
-		*exit_code = 255;
-		return (NOT_NUMERIC);
+		*exit_code = (unsigned char)(code * is_minus);
+		return (ARG_OK);
 	}
-	*exit_code = (unsigned char)code;
-	return (ARG_OK);
+	*exit_code = 255;
+	return (NOT_NUMERIC);
 }
 
 void	my_exit(t_mshell *shell, char **cmd_arr)
@@ -82,4 +82,5 @@ void	my_exit(t_mshell *shell, char **cmd_arr)
 		exit(exit_code);
 	}
 	print_err_msg("exit", NULL, "too many arguments");
+	shell->last_exit_code = 1;
 }

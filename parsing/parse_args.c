@@ -15,20 +15,21 @@
 void	add_str(char ***res, char **start, char *prep)
 {
 	char	**new_arr;
-	size_t 	arr_size;
 	char	*temp;
 	size_t	i;
 
 	temp = ft_substr(*start, 0, prep - *start);
 	*start += ft_strlen(temp) + 1;
 	if (!(*temp))
+	{
+		free(temp);
 		return ;
-	arr_size = chr_arr_len(*res);
-	new_arr = malloc(sizeof(char *) * (arr_size + 2));
+	}
+	new_arr = malloc(sizeof(char *) * (chr_arr_len(*res) + 2));
 	if (!new_arr)
 		error_exit(NULL);
 	i = 0;
-	while (i < arr_size)
+	while (i < chr_arr_len(*res))
 	{
 		new_arr[i] = (*res)[i];
 		i++;

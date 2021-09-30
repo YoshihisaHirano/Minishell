@@ -21,7 +21,8 @@ void	print_error(char *prog, t_mshell *shell, char *arg)
 		write(2, "Minishell: ", 11);
 		if (prog && arg)
 		{
-			printf("%s: ", prog);
+			ft_putstr_fd(prog, 2);
+			ft_putstr_fd(": ", 2);
 			perror(arg);
 		}
 		if (!arg)

@@ -12,7 +12,8 @@
 
 #include "minishell.h"
 
-// TODO add signal handling in fork!
+// TODO add signal handling in fork?
+// TODO should change last exit code to 1?
 void	ctl_c_handle(int x)
 {
 	(void)x;
