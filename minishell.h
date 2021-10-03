@@ -9,9 +9,9 @@
 # include <sys/types.h>
 # include <sys/stat.h>
 # include "libft/libft.h"
-# include "readline.h"
-# include "history.h"
-# include "rltypedefs.h"
+//# include "readline.h"
+//# include "history.h"
+//# include "rltypedefs.h"
 # define ARG_OK 1
 # define NOT_NUMERIC 2
 # define PROMPT "Minishell$ "
@@ -36,9 +36,10 @@ typedef struct s_list_params
 	int		fd[2];
 	char	*here_doc_limiter;
 	int		input_mod;
-	int		output_mode;
-	char	*input_file;
-	char	*output_file;
+	int 	output_mode;
+	char 	*input_file;
+	int		fd_output;
+	char 	*output_file;
 }			t_list_params;
 
 typedef struct s_mshell

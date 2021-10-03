@@ -1,0 +1,33 @@
+SRC		=	parsing/input_parsing/get_app_path.c\
+			parsing/input_parsing/parser.c\
+			parsing/input_parsing/validation.c
+PROG	=	minishell
+LIBDIR	=	./libft
+LIB		=	$(LIBDIR)/libft.a
+CC		=	gcc
+CFLAGS	=	-Wall -Wextra -Werror -L $(LIBDIR) -lft -g
+HEADER	=	minishell.h
+MAKEFILE	= Makefile
+
+.PHONY	:	all re clean fclean x
+
+all		:	$(PROG)
+
+$(LIB)	:
+			make -s -C $(LIBDIR)
+
+$(PROG)	:	$(MAKEFILE) $(HEADER) $(SRC) $(LIB)
+			$(CC) $(CFLAGS) $(SRC) -o $(PROG)
+
+clean	:
+			rm -f $(PROG)
+			make clean -C $(LIBDIR)
+
+fclean	:
+			make fclean -C $(LIBDIR)
+			rm -f $(PROG)
+
+x		:	$(PROG)
+			./minishell
+
+re		:	fclean all
