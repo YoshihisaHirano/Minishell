@@ -160,6 +160,9 @@ void	set_params_to_el(char **input_str, t_list_params *el)
 {
 	int	i;
 
+
+
+	
 	i = 0;
 	while (**input_str)
 	{
@@ -174,7 +177,7 @@ void	set_params_to_el(char **input_str, t_list_params *el)
 			el->output_mode = set_output_mode(input_str, el);
 			break ;
 		}
-		if (**input_str == '>' )
+		if (**input_str == '>'git)
 			el->output_mode = set_output_mode(input_str, el);
 		el->str_to_cmd[i++] = **input_str;
 		(*input_str)++;
