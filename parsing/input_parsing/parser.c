@@ -158,12 +158,10 @@ int	set_output_mode(char **input_str, t_list_params *params_el)
 
 void	set_params_to_el(char **input_str, t_list_params *el)
 {
-	int	i;
+	int		i;
 
-
-
-	
 	i = 0;
+	el->str_to_cmd = malloc(ft_strlen(*input_str) + 1);
 	while (**input_str)
 	{
 		if (**input_str == '<')
@@ -177,15 +175,12 @@ void	set_params_to_el(char **input_str, t_list_params *el)
 			el->output_mode = set_output_mode(input_str, el);
 			break ;
 		}
-		if (**input_str == '>'git)
+		if (**input_str == '>')
 			el->output_mode = set_output_mode(input_str, el);
 		el->str_to_cmd[i++] = **input_str;
 		(*input_str)++;
 	}
 	el->str_to_cmd[i] = '\0';
-	el->cmd_arr = ft_split(ft_strtrim(el->str_to_cmd, " \t"), ' ');
-	free(el->str_to_cmd);
-	el->str_to_cmd = NULL;
 }
 
 int	parser(char *input_str, t_list **list)
@@ -195,7 +190,6 @@ int	parser(char *input_str, t_list **list)
 	while (*input_str)
 	{
 		el = create_empty_el();
-		el->str_to_cmd = malloc(ft_strlen(input_str));
 		set_params_to_el(&input_str, el);
 		ft_lstadd_back(list, ft_lstnew(el));
 	}
@@ -211,7 +205,7 @@ int	main(int argc, char **argv, char **envp)
 ////////
 //	char *s = "grep<lol\tnew<new.txt";
 //	char *s = "ls | rev";
-	char *s = "cat < intput   | rev";
+	char *s = "cat $somevar";
 	list = NULL;
 	parser(s, &list);
 	validation(list, envp);
