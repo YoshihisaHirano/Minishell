@@ -39,6 +39,8 @@ void show_params(t_list *list)
 	while(tmp)
 	{
 		printf("--------------------------\n");
+		printf("▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼\n");
+		printf("--------------------------\n");
 		param_el = ((t_list_params *) tmp->content);
 		if (param_el->path_app)
 			printf("path_app: %s\n", param_el->path_app);
@@ -100,13 +102,36 @@ t_list_params	*create_empty_el(void)
 	return (el);
 }
 
+int get_io_name(char **param_to_set, char **s)
+{
+	int 	size;
+	int		double_quotes;
+	int		single_quotes;
+
+	size = 0;
+	double_quotes = 0;
+	single_quotes = 0;
+	while ((*s)[size])
+	{
+		if ((*s)[size] == '\"')
+			double_quotes++;
+		if ((*s)[size] == '\'')
+			single_quotes++;
+		if (ft_chr_check(" \r\f\t\v\n><|", (*s)[size]) &&
+			!(double_quotes % 2) && !(single_quotes % 2))
+				break ;
+		size++;
+	}
+	*param_to_set = ft_substr((*s), 0, size);
+	(*s) += size;
+	return (0);
+}
+
 int	set_input_mode(char **input_str, t_list_params *params_el)
 {
-	int 	size_to_copy;
 	char	**param_to_set;
 	int 	mode;
 
-	size_to_copy = 0;
 	if (!ft_strncmp(*input_str, "<<", 2))
 	{
 		param_to_set = &(params_el->here_doc_limiter);
@@ -119,21 +144,16 @@ int	set_input_mode(char **input_str, t_list_params *params_el)
 		(*input_str)++;
 		mode = REDRCT_INPUT;
 	}
-	while (**input_str == ' ' || **input_str == '\t')
+	while (ft_isspace(**input_str))
 		(*input_str)++;
-	while (!ft_chr_check(" \t><|", (*input_str)[size_to_copy]))
-		size_to_copy++;
-	*param_to_set = ft_strtrim(ft_substr((*input_str), 0, size_to_copy), " \t");
-	(*input_str) += size_to_copy;
+	get_io_name(param_to_set, input_str);
 	return (mode);
 }
 
 int	set_output_mode(char **input_str, t_list_params *params_el)
 {
-	int 	size_to_copy;
 	int 	mode;
 
-	size_to_copy = 0;
 	if (**input_str == '|')
 	{
 		(*input_str)++;
@@ -147,12 +167,9 @@ int	set_output_mode(char **input_str, t_list_params *params_el)
 		(*input_str) += 2;
 	else
 		(*input_str)++;
-	while (**input_str == ' ' || **input_str == '\t')
+	while (ft_isspace(**input_str))
 		(*input_str)++;
-	while (!ft_chr_check(" \t><|", (*input_str)[size_to_copy]))
-		size_to_copy++;
-	params_el->output_file = ft_substr(*input_str, 0, size_to_copy);
-	(*input_str) += size_to_copy;
+	get_io_name(&(params_el->output_file), input_str);
 	return (mode);
 }
 
@@ -178,7 +195,8 @@ void	set_params_to_el(char **input_str, t_list_params *el)
 		if (**input_str == '>')
 			el->output_mode = set_output_mode(input_str, el);
 		el->str_to_cmd[i++] = **input_str;
-		(*input_str)++;
+		if (**input_str)
+			(*input_str)++;
 	}
 	el->str_to_cmd[i] = '\0';
 }
@@ -196,6 +214,8 @@ int	parser(char *input_str, t_list **list)
 	return (0);
 }
 
+/*TODO extra > or < pr | ??*/
+
 int	main(int argc, char **argv, char **envp)
 {
 	t_list			*list;
@@ -204,8 +224,8 @@ int	main(int argc, char **argv, char **envp)
 	argv++;
 ////////
 //	char *s = "grep<lol\tnew<new.txt";
-//	char *s = "ls | rev";
-	char *s = "cat $somevar";
+//	char *s = "\"cat -e\">out";
+	char *s = "bash<<\"fi\'l\'e\"\"name\">>\"som\"ef\"i\'l\'e\"   ";
 	list = NULL;
 	parser(s, &list);
 	validation(list, envp);

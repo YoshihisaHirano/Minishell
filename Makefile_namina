@@ -1,6 +1,6 @@
 SRC		=	parsing/input_parsing/get_app_path.c\
 			parsing/input_parsing/parser.c\
-			parsing/input_parsing/validation.c
+			parsing/input_parsing/validation.c parsing/expansion/quotes.c
 PROG	=	minishell
 LIBDIR	=	./libft
 LIB		=	$(LIBDIR)/libft.a
