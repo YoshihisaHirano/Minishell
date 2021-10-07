@@ -36,10 +36,10 @@ void show_params(t_list *list)
 	char *modes[] = {"none", "PIPE", "REDRCT_OUTPUT", "REDRCT_APPEND",
 					 "REDRCT_INPUT", "HERE_DOC"};
 	tmp = list;
+	printf("--------------------------\n");
+	printf("▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼\n");
 	while(tmp)
 	{
-		printf("--------------------------\n");
-		printf("▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼\n");
 		printf("--------------------------\n");
 		param_el = ((t_list_params *) tmp->content);
 		if (param_el->path_app)
@@ -57,7 +57,7 @@ void show_params(t_list *list)
 		if (param_el->str_to_cmd)
 			printf("str_to_cmd: |%s|\n", param_el->str_to_cmd);
 		if (param_el->here_doc_limiter)
-			printf("here_doc_limiter: %s\n", param_el->here_doc_limiter);
+			printf("here_doc_limiter: |%s|\n", param_el->here_doc_limiter);
 		printf("input_mod: %s\noutput_mode: %s\n", modes[param_el->input_mod],
 			   modes[param_el->output_mode]);
 		if (param_el->input_file)
@@ -130,75 +130,77 @@ int get_io_name(char **param_to_set, char **s)
 int	set_input_mode(char **input_str, t_list_params *params_el)
 {
 	char	**param_to_set;
-	int 	mode;
 
+	if (params_el->input_mod)
+		return (-1);
 	if (!ft_strncmp(*input_str, "<<", 2))
 	{
 		param_to_set = &(params_el->here_doc_limiter);
 		(*input_str) += 2;
-		mode = HERE_DOC;
+		params_el->input_mod = HERE_DOC;
 	}
 	else
 	{
 		param_to_set = &(params_el->input_file);
 		(*input_str)++;
-		mode = REDRCT_INPUT;
+		params_el->input_mod = REDRCT_INPUT;
 	}
 	while (ft_isspace(**input_str))
 		(*input_str)++;
 	get_io_name(param_to_set, input_str);
-	return (mode);
+	return (0);
 }
 
 int	set_output_mode(char **input_str, t_list_params *params_el)
 {
-	int 	mode;
-
+	if (params_el->output_mode)
+		return (-1);
 	if (**input_str == '|')
 	{
+		params_el->output_mode = PIPE;
 		(*input_str)++;
-		return (PIPE);
+		return (0);
 	}
-	if (!ft_strncmp(*input_str, ">>", 2))
-		mode = REDRCT_APPEND;
+	else if (!ft_strncmp(*input_str, ">>", 2))
+		params_el->output_mode = REDRCT_APPEND;
 	else
-		mode = REDRCT_OUTPUT;
-	if (mode == REDRCT_APPEND)
+		params_el->output_mode = REDRCT_OUTPUT;
+	if (params_el->output_mode == REDRCT_APPEND)
 		(*input_str) += 2;
 	else
 		(*input_str)++;
 	while (ft_isspace(**input_str))
 		(*input_str)++;
 	get_io_name(&(params_el->output_file), input_str);
-	return (mode);
+	return (0);
 }
 
-void	set_params_to_el(char **input_str, t_list_params *el)
+int	set_params_to_el(char **input_str, t_list_params *el)
 {
 	int		i;
+	int		res;
 
 	i = 0;
 	el->str_to_cmd = malloc(ft_strlen(*input_str) + 1);
 	while (**input_str)
 	{
 		if (**input_str == '<')
+			res = set_input_mode(input_str, el);
+		else if (**input_str == '|' || **input_str == '>')
+			res = set_output_mode(input_str, el);
+		else
 		{
-			if (el->input_mod)
-				break ;
-			el->input_mod = set_input_mode(input_str, el);
+			el->str_to_cmd[i++] = **input_str;
+			if (**input_str)
+				(*input_str)++;
 		}
-		if (**input_str == '|')
-		{
-			el->output_mode = set_output_mode(input_str, el);
+		if (el->output_mode == PIPE)
 			break ;
-		}
-		if (**input_str == '>')
-			el->output_mode = set_output_mode(input_str, el);
-		el->str_to_cmd[i++] = **input_str;
-		if (**input_str)
-			(*input_str)++;
+		if (res == -1)
+			return (res);
 	}
 	el->str_to_cmd[i] = '\0';
+	return (0);
 }
 
 int	parser(char *input_str, t_list **list)
@@ -208,7 +210,11 @@ int	parser(char *input_str, t_list **list)
 	while (*input_str)
 	{
 		el = create_empty_el();
-		set_params_to_el(&input_str, el);
+		if (set_params_to_el(&input_str, el))
+		{
+			printf("Okay, Houston...we've had a problem here\n");
+			// get out
+		}
 		ft_lstadd_back(list, ft_lstnew(el));
 	}
 	return (0);
@@ -225,7 +231,7 @@ int	main(int argc, char **argv, char **envp)
 ////////
 //	char *s = "grep<lol\tnew<new.txt";
 //	char *s = "\"cat -e\">out";
-	char *s = "bash<<\"fi\'l\'e\"\"name\">>\"som\"ef\"i\'l\'e\"   ";
+	char *s = "bash | out";
 	list = NULL;
 	parser(s, &list);
 	validation(list, envp);
