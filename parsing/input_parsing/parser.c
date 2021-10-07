@@ -18,7 +18,6 @@
 //# include "readline/include/readline/readline.h"
 //# include "readline/include/readline/history.h"
 //# include "readline/include/readline/rltypedefs.h"
-# include "../../libft/libft.h"
 # include "../../minishell.h"
 
 #define PIPE 1
@@ -68,24 +67,6 @@ void show_params(t_list *list)
 	}
 }
 
-char	*ft_chr_check(const char *s, int c)
-{
-	char	*chr;
-	char	sym;
-
-	sym = (char)c;
-	chr = (char *)s;
-	if (sym == '\0')
-		return (chr);
-	while (*chr)
-	{
-		if (*chr == sym)
-			return (chr);
-		chr++;
-	}
-	return (NULL);
-}
-
 t_list_params	*create_empty_el(void)
 {
 	t_list_params	*el;
@@ -102,37 +83,12 @@ t_list_params	*create_empty_el(void)
 	return (el);
 }
 
-int get_io_name(char **param_to_set, char **s)
-{
-	int 	size;
-	int		double_quotes;
-	int		single_quotes;
-
-	size = 0;
-	double_quotes = 0;
-	single_quotes = 0;
-	while ((*s)[size])
-	{
-		if ((*s)[size] == '\"')
-			double_quotes++;
-		if ((*s)[size] == '\'')
-			single_quotes++;
-		if (ft_chr_check(" \r\f\t\v\n><|", (*s)[size]) &&
-			!(double_quotes % 2) && !(single_quotes % 2))
-				break ;
-		size++;
-	}
-	*param_to_set = ft_substr((*s), 0, size);
-	(*s) += size;
-	return (0);
-}
-
 int	set_input_mode(char **input_str, t_list_params *params_el)
 {
 	char	**param_to_set;
 
 	if (params_el->input_mod)
-		return (-1);
+		return (handle_token_error(input_str, **input_str));
 	if (!ft_strncmp(*input_str, "<<", 2))
 	{
 		param_to_set = &(params_el->here_doc_limiter);
@@ -154,7 +110,7 @@ int	set_input_mode(char **input_str, t_list_params *params_el)
 int	set_output_mode(char **input_str, t_list_params *params_el)
 {
 	if (params_el->output_mode)
-		return (-1);
+		return (handle_token_error(input_str, **input_str));
 	if (**input_str == '|')
 	{
 		params_el->output_mode = PIPE;
@@ -175,19 +131,21 @@ int	set_output_mode(char **input_str, t_list_params *params_el)
 	return (0);
 }
 
+
 int	set_params_to_el(char **input_str, t_list_params *el)
 {
 	int		i;
-	int		res;
+	int		set_mode_status;
 
 	i = 0;
-	el->str_to_cmd = malloc(ft_strlen(*input_str) + 1);
 	while (**input_str)
 	{
-		if (**input_str == '<')
-			res = set_input_mode(input_str, el);
+		if (**input_str == '\"' || **input_str == '\'')
+			handle_quotes(input_str, el, &i);
+		else if (**input_str == '<')
+			set_mode_status = set_input_mode(input_str, el);
 		else if (**input_str == '|' || **input_str == '>')
-			res = set_output_mode(input_str, el);
+			set_mode_status = set_output_mode(input_str, el);
 		else
 		{
 			el->str_to_cmd[i++] = **input_str;
@@ -196,8 +154,8 @@ int	set_params_to_el(char **input_str, t_list_params *el)
 		}
 		if (el->output_mode == PIPE)
 			break ;
-		if (res == -1)
-			return (res);
+		if (set_mode_status == -1)
+			return (set_mode_status);
 	}
 	el->str_to_cmd[i] = '\0';
 	return (0);
@@ -210,28 +168,31 @@ int	parser(char *input_str, t_list **list)
 	while (*input_str)
 	{
 		el = create_empty_el();
+		el->str_to_cmd = malloc(ft_strlen(input_str) + 1);
 		if (set_params_to_el(&input_str, el))
 		{
-			printf("Okay, Houston...we've had a problem here\n");
+			printf("Okay, Houston...we've had a problem here. Moon is "
+				   "fucked\n");
 			// get out
 		}
+		struct s_mshell shell;
+		check_quotes(el->str_to_cmd, &shell);
 		ft_lstadd_back(list, ft_lstnew(el));
 	}
 	return (0);
 }
 
-/*TODO extra > or < pr | ??*/
-
+/*TODO extra > or < pr | ?? throw error. for pipe one more handler in valid*/
+/*TODO 'cats  "\"c\'at\"  >lol\'"  -->>str_to_cmd: |"c'at"  | output_file: |lol'| */
+/*TODO validator has intput-output-||| */
 int	main(int argc, char **argv, char **envp)
 {
 	t_list			*list;
 ////////
-	argc++;
-	argv++;
+	(void)argc;
+	(void)argv;
 ////////
-//	char *s = "grep<lol\tnew<new.txt";
-//	char *s = "\"cat -e\">out";
-	char *s = "bash | out";
+	char *s = "\"c\'at\"  >lol\'";
 	list = NULL;
 	parser(s, &list);
 	validation(list, envp);
