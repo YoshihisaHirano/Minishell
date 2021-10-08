@@ -115,7 +115,7 @@ int	set_output_mode(char **input_str, t_list_params *params_el)
 	{
 		params_el->output_mode = PIPE;
 		(*input_str)++;
-		return (0);
+		return (1);
 	}
 	else if (!ft_strncmp(*input_str, ">>", 2))
 		params_el->output_mode = REDRCT_APPEND;
@@ -132,12 +132,13 @@ int	set_output_mode(char **input_str, t_list_params *params_el)
 }
 
 
-int	set_params_to_el(char **input_str, t_list_params *el)
+int	set_params_to_el(char **input_str, t_list_params *el, t_mshell *shell)
 {
 	int		i;
 	int		set_mode_status;
 
 	i = 0;
+	set_mode_status = 0;
 	while (**input_str)
 	{
 		if (**input_str == '\"' || **input_str == '\'')
@@ -152,16 +153,17 @@ int	set_params_to_el(char **input_str, t_list_params *el)
 			if (**input_str)
 				(*input_str)++;
 		}
-		if (el->output_mode == PIPE)
-			break ;
-		if (set_mode_status == -1)
+		if (set_mode_status == -1 || set_mode_status == 1)
 			return (set_mode_status);
 	}
 	el->str_to_cmd[i] = '\0';
+	if (!shell)
+		return (0);
+	el->cmd_arr = parse_args(el->str_to_cmd, shell);
 	return (0);
 }
 
-int	parser(char *input_str, t_list **list)
+int	parser(char *input_str, t_list **list, t_mshell *shell)
 {
 	t_list_params	*el;
 
@@ -169,32 +171,34 @@ int	parser(char *input_str, t_list **list)
 	{
 		el = create_empty_el();
 		el->str_to_cmd = malloc(ft_strlen(input_str) + 1);
-		if (set_params_to_el(&input_str, el))
+		if (set_params_to_el(&input_str, el, shell) == -1)
 		{
 			printf("Okay, Houston...we've had a problem here. Moon is "
 				   "fucked\n");
 			// get out
 		}
-		struct s_mshell shell;
-		check_quotes(el->str_to_cmd, &shell);
 		ft_lstadd_back(list, ft_lstnew(el));
 	}
 	return (0);
 }
 
-/*TODO extra > or < pr | ?? throw error. for pipe one more handler in valid*/
+/*TODO for pipe one more handler in valid for extra pipe*/
 /*TODO 'cats  "\"c\'at\"  >lol\'"  -->>str_to_cmd: |"c'at"  | output_file: |lol'| */
 /*TODO validator has intput-output-||| */
+/*some sega in parse env MAKEFLAGS=?????!!!!?*/
 int	main(int argc, char **argv, char **envp)
 {
 	t_list			*list;
+	t_mshell		shell;
 ////////
 	(void)argc;
 	(void)argv;
 ////////
-	char *s = "\"c\'at\"  >lol\'";
+	char *s = "cat input> output ";
 	list = NULL;
-	parser(s, &list);
+	init_shell(&shell, envp);
+
+	parser(s, &list, &shell);
 	validation(list, envp);
 	show_params(list);
 	return (0);
