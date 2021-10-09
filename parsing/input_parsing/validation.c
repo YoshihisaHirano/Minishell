@@ -28,11 +28,20 @@
 #define HERE_DOC 5
 #define CHECK_EXE_ACCESS(x) (((x << 9) >> 15) & 0001) == 0001
 
+int	is_path(char *cmd_name)
+{
+	while (*cmd_name == '.')
+		cmd_name++;
+	if (*cmd_name == '/')
+		return (1);
+	return (0);
+}
+
 
 char	**get_path_arr(char **envp, char *app_name);
 
 /* TODO
- * check program (stat?)
+ * check program (stat?) DONE, the executable rights will be checked in execve
  * check redirects
  *
  * */
@@ -51,40 +60,61 @@ void	free_array(char **arr)
 	free(p);
 }
 
-void	check_status_path(t_list *params, char **path)
+void	check_status_path(t_list *params)
 {
-	free_array(path);
-	if (((t_list_params *)(params->content))->path_app)
+	t_list_params	*param;
+
+	param = (t_list_params *)(params->content);
+	if (param->path_app)
 	{
-		printf("app is ok\n%s\n", ((t_list_params *)(params->content))->path_app);
+		printf("app is ok\n%s\n", param->path_app); //TODO remove
+		/*execve logic?*/
 	}
-	else
-	{
-		printf("app isnt work\n");
-//		error_handle_program(((t_list_params *)params)->cmd_arr[0]);
-//		free_array(((t_list_params *)params)->cmd_arr);
-//		((t_list_params *)params)->cmd_arr = NULL;
+	else {
+		if (!(is_path(param->cmd_arr[0])))
+			print_err_msg(NULL, param->cmd_arr[0], "command not found");
+		free_arr(param->cmd_arr);
+		param->cmd_arr = NULL;
 	}
 }
 
-void check_access(char **path, t_list_params *el)
+void	assign_path(t_list_params *el, struct stat *buf)
+{
+	int	err;
+
+	err = stat(el->cmd_arr[0], buf);
+	if (err == -1)
+	{
+		print_error(NULL, el->cmd_arr[0]);
+		return ;
+	}
+	el->path_app = el->cmd_arr[0];
+}
+
+void	check_access(char **path, t_list_params *el)
 {
 	char			**path_pointer;
 	struct stat		*buf;
+	int				err;
 
 	path_pointer = path;
 	buf = malloc(sizeof(struct stat));
+	if (is_path(el->cmd_arr[0]))
+	{
+		assign_path(el, buf);
+		return ;
+	}
 	while (path && *path_pointer)
 	{
-		stat(*path_pointer, buf);
-		if (CHECK_EXE_ACCESS(buf->st_mode))
+		err = stat(*path_pointer, buf);
+		if (err != -1)
 		{
 			el->path_app = ft_strdup(*path_pointer);
-			free(buf);
-			return ;
+			break ;
 		}
 		path_pointer++;
 	}
+	free_arr(path);
 	free(buf);
 }
 
@@ -116,3 +146,18 @@ int	validation(t_list *param_list, char ** envp)
 	check_apps(param_list, envp);
 	return (0);
 }
+
+/*int	main(int argc, char **argv, char **envp)
+{
+	struct stat		*buf;
+
+	char *argvs[] = {"./valid", NULL};
+	buf = malloc(sizeof(struct stat));
+	int i = stat("./valid", buf);
+	printf("%d - status code, %d - errno\n", i, errno);
+	perror("");
+	int j = execve("../valid", argvs, envp);
+	printf("%d - status code, %d - errno\n", j, errno);
+	perror("");
+	return (0);
+}*/

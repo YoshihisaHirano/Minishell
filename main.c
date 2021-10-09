@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+int	validation(t_list *param_list, char ** envp);
 
 int	last_exit_code = 0;
 
@@ -69,9 +70,15 @@ void	run_command(t_mshell *shell, char **cmd_arr)
 		print_err_msg(NULL, cmd_arr[0], "command not found");
 		return ;
 	}
+	printf("%s\n", temp2);
 	pid = fork();
 	if (pid == 0)
-		execve(temp2, cmd_arr, lst_to_arr(shell));
+	{
+		int j = execve(temp2, cmd_arr, lst_to_arr(shell));
+		printf("%d - status code, %d - errno\n", j, errno);
+		perror("");
+		exit(256);
+	}
 	else
 		waitpid(pid, &last_exit_code, 0);
 }

@@ -86,7 +86,6 @@ char	**lst_to_arr(t_mshell *shell)
 {
 	int			i;
 	char		**envp;
-	t_envvar	*var;
 	t_list		*temp;
 	char		*str_tmp;
 
@@ -97,17 +96,17 @@ char	**lst_to_arr(t_mshell *shell)
 	i = 0;
 	while (temp)
 	{
-		var = (t_envvar *)(temp->content);
-		str_tmp = ft_strjoin(var->key, "=");
+		str_tmp = ft_strjoin(((t_envvar *)(temp->content))->key, "=");
 		if (!str_tmp)
 			error_exit(NULL);
-		envp[i] = ft_strjoin(str_tmp, var->value);
+		envp[i] = ft_strjoin(str_tmp, ((t_envvar *)(temp->content))->value);
 		if (!envp[i])
 			error_exit(NULL);
 		free(str_tmp);
 		temp = temp->next;
 		i++;
 	}
+	envp[i] = NULL;
 	return (envp);
 }
 

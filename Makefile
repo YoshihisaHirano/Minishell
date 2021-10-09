@@ -1,6 +1,7 @@
 SRC		=	main.c signals.c env_var.c builtins/builtins.c builtins/my_cd.c builtins/my_export.c builtins/my_unset.c\
 			utils/free.c parsing/parse_args.c parsing/expansion/expansion.c parsing/expansion/quotes.c parsing/expansion/preprocessor.c\
-			utils/ft_atoi_ll.c utils/miscellaneous.c utils/print.c builtins/my_exit.c initialization.c
+			utils/ft_atoi_ll.c utils/miscellaneous.c utils/print.c builtins/my_exit.c initialization.c\
+			parsing/input_parsing/get_app_path.c parsing/input_parsing/validation.c
 OBJ		=	$(SRC:.c=.o)
 PROG	=	minishell
 LIBDIR	=	./libft
