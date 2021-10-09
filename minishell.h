@@ -9,9 +9,9 @@
 # include <sys/types.h>
 # include <sys/stat.h>
 # include "libft/libft.h"
-//# include "readline.h"
-//# include "history.h"
-//# include "rltypedefs.h"
+# include "readline.h"
+# include "history.h"
+# include "rltypedefs.h"
 # define ARG_OK 1
 # define NOT_NUMERIC 2
 # define PROMPT "Minishell$ "

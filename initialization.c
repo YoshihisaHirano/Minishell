@@ -56,10 +56,28 @@ void	init_builtins(t_mshell *shell)
 
 void	init_shell(t_mshell *shell, char **env)
 {
+	t_list		*elt;
+	t_envvar	*var;
+	int			val;
+
 	*shell = (t_mshell){.last_exit_code = 0, .env_copy = NULL,
 						.builtins = NULL};
 	parse_env(shell, env);
-	//TODO SHLVL+=1
+	elt = get_by_key(shell, "SHLVL");
+	if (!elt)
+		add_var(shell, "SHLVL", "1");
+	else
+	{
+		var = (t_envvar *)(elt->content);
+		if (var->value && *var->value)
+		{
+			val = ft_atoi(var->value);
+			free(var->value);
+			var->value = ft_itoa(val + 1);
+		}
+		else
+			set_by_key(shell, "SHLVL", "1");
+	}
 	init_builtins(shell);
 	handle_sigs();
 }

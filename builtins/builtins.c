@@ -17,7 +17,6 @@ void	my_env(t_mshell *shell, char **cmd_arr)
 	(void)cmd_arr;
 	ft_lstiter(shell->env_copy, print_node);
 	shell->last_exit_code = 0;
-	//TODO error on extra arguments present ???
 }
 
 void	my_pwd(t_mshell *shell, char **cmd_arr)

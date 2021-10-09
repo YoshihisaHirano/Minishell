@@ -13,7 +13,7 @@
 #include "minishell.h"
 
 void	parse_env(t_mshell *shell, char *env[])
-{ //TODO is it necessary to do something with "_" env variable?
+{
 	t_envvar	*var;
 	t_list		*node;
 	int			i;

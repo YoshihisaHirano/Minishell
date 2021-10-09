@@ -21,9 +21,9 @@ int	check_quotes(char *str, t_mshell *shell)
 	dquotes_num = 0;
 	while (*str)
 	{
-		if (*str == '\"')
+		if (*str == '\"' && !(squotes_num % 2))
 			dquotes_num++;
-		if (*str == '\'')
+		if (*str == '\'' && !(dquotes_num % 2))
 			squotes_num++;
 		str++;
 	}

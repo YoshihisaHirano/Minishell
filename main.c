@@ -86,7 +86,6 @@ void	execute(char *cmd_str, t_mshell *shell)
 	run_command(shell, cmd_arr);
 }
 
-// TODO 'echo "$TEST$TEST$TEST"' Segfault
 int main(int argc, char **argv, char **env)
 {
 	char		*str;
