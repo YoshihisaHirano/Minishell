@@ -39,7 +39,10 @@ int get_io_name(char **param_to_set, char **s)
 	size = 0;
 	double_quotes = 0;
 	single_quotes = 0;
-	while ((*s)[size]) {
+	while (ft_isspace(**s))
+		(*s)++;
+	while ((*s)[size])
+	{
 		if ((*s)[size] == '\"' && !(single_quotes % 2))
 			double_quotes++;
 		if ((*s)[size] == '\'' && !(double_quotes % 2))
@@ -50,6 +53,8 @@ int get_io_name(char **param_to_set, char **s)
 		size++;
 	}
 	*param_to_set = ft_substr((*s), 0, size);
+	if (check_quotes(*param_to_set) == -1)
+		return (-1);
 	(*s) += size;
 	return (0);
 }
@@ -85,4 +90,23 @@ int	handle_token_error(char **input_str, char token)
 	}
 	ft_putstr_fd("\'\n", 1);
 	return (-1);
+}
+
+void process_io_tokens(char **param_to_set, t_mshell *shell, int mode)
+{
+	char	*preprocessed;
+
+	if (mode == HERE_DOC)
+	{
+		preprocessed = remove_quotes(*param_to_set);
+		free(*param_to_set);
+		*param_to_set = preprocessed;
+	}
+	else
+	{
+		preprocessed = preprocessor(*param_to_set,  shell);
+		free(*param_to_set);
+		*param_to_set = remove_quotes(preprocessed);
+		free(preprocessed);
+	}
 }
