@@ -12,7 +12,7 @@
 
 #include "../../minishell.h"
 
-int	check_quotes(char *str, t_mshell *shell)
+int	check_quotes(char *str)
 {
 	int	squotes_num;
 	int dquotes_num;
@@ -29,8 +29,8 @@ int	check_quotes(char *str, t_mshell *shell)
 	}
 	if (squotes_num % 2 || dquotes_num % 2)
 	{
-		shell->last_exit_code = 1;
-		printf("Minishell: parse error: unclosed quote\n");
+//		shell->last_exit_code = 1;
+		print_err_msg(NULL, NULL, "parse error: unclosed quote");
 		return (1);
 	}
 	return (0);

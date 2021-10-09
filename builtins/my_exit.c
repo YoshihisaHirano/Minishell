@@ -68,7 +68,7 @@ void	my_exit(t_mshell *shell, char **cmd_arr)
 	int exit_code;
 	int res;
 
-	exit_code = shell->last_exit_code;
+	exit_code = last_exit_code;
 	res = check_arg(cmd_arr[1], &exit_code);
 	if (res == NOT_NUMERIC)
 	{
@@ -82,5 +82,5 @@ void	my_exit(t_mshell *shell, char **cmd_arr)
 		exit(exit_code);
 	}
 	print_err_msg("exit", NULL, "too many arguments");
-	shell->last_exit_code = 1;
+	last_exit_code = 1;
 }

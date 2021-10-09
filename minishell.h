@@ -16,6 +16,8 @@
 # define NOT_NUMERIC 2
 # define PROMPT "Minishell$ "
 
+extern int	last_exit_code;
+
 typedef struct s_envvar
 {
 	char	*key;
@@ -45,7 +47,6 @@ typedef struct s_list_params
 typedef struct s_mshell
 {
 	t_list			*env_copy;
-	int				last_exit_code;
 	t_list			*cmds;
 	t_list			*builtins;
 }	t_mshell;
@@ -62,7 +63,7 @@ void		free_node(void *node);
 void		free_params_lst(void *param_node);
 void		free_builtins(void *content);
 void		print_node(void *node);
-void		print_error(char *prog, t_mshell *shell, char *arg);
+void		print_error(char *prog, char *arg);
 int			invalid_key(char *key);
 void		free_arr(char **arr);
 void		move_spaces(char **str, char **start);
@@ -86,7 +87,7 @@ void		my_unset(t_mshell *shell, char **cmd_arr);
 void		my_exit(t_mshell *shell, char **cmd_arr);
 void		my_echo(t_mshell *shell, char **cmd_arr);
 /* parsing */
-int			check_quotes(char *str, t_mshell *shell);
+int			check_quotes(char *str);
 char		*remove_quotes(char *pre_res);
 char		*add_expanded(char **start, char **str, char *res, t_mshell *shell);
 char		*preprocessor(char *str, t_mshell *shell);

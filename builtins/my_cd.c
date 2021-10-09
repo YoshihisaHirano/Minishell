@@ -22,7 +22,7 @@ int	check_pwds(t_mshell *shell) /* sets pwds if they are unset */
 	curr_path = getcwd(curr_path, 1);
 	if (!curr_path)
 	{
-		print_error("cd", shell, NULL);
+		print_error("cd", NULL);
 		return (1);
 	}
 	pwd = get_by_key(shell, "PWD");
@@ -50,7 +50,7 @@ int	use_chdir(t_mshell *shell, char **cmd_arr)
 	else
 		res = chdir(((t_envvar *)(elt->content))->value);
 	if (res == -1)
-		print_error("cd", shell, cmd_arr[1]);
+		print_error("cd", cmd_arr[1]);
 	return (res);
 }
 
@@ -72,11 +72,11 @@ void	my_cd(t_mshell *shell, char **cmd_arr)
 	curr_path = getcwd(curr_path, 1);
 	if (!curr_path)
 	{
-		print_error("cd", shell, NULL);
+		print_error("cd", NULL);
 		return ;
 	}
 	pwd = get_by_key(shell, "PWD");
 	set_by_key(shell, "OLDPWD", ((t_envvar *)(pwd->content))->value);
 	set_by_key(shell, "PWD", curr_path);
-	shell->last_exit_code = 0;
+	last_exit_code = 0;
 }

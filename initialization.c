@@ -60,8 +60,7 @@ void	init_shell(t_mshell *shell, char **env)
 	t_envvar	*var;
 	int			val;
 
-	*shell = (t_mshell){.last_exit_code = 0, .env_copy = NULL,
-						.builtins = NULL};
+	*shell = (t_mshell){.env_copy = NULL, .builtins = NULL};
 	parse_env(shell, env);
 	elt = get_by_key(shell, "SHLVL");
 	if (!elt)

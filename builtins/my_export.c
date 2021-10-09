@@ -108,7 +108,7 @@ void	my_export(t_mshell *shell, char **cmd_arr)
 			print_err_msg("export", arg, "not a valid identifier");
 			continue ;
 		}
-		shell->last_exit_code = 0;
+		last_exit_code = 0;
 		if (!splt_arg[1])
 			continue ;
 		set_val(splt_arg, shell);

@@ -56,7 +56,7 @@ char	*change_to_expanded(char **var, t_mshell *shell)
 	update_var_len(copy, &var_len);
 	*var += var_len;
 	if (*copy == '?')
-		return (ft_itoa(shell->last_exit_code));
+		return (ft_itoa(last_exit_code));
 	if (var_len == 1 && *copy != '\'' && *copy != '\"')
 		return (ft_strdup("$"));
 	temp = ft_substr(copy, 0, var_len - 1);

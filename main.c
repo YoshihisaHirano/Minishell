@@ -12,6 +12,8 @@
 
 #include "minishell.h"
 
+int	last_exit_code = 0;
+
 int	check_builtins(t_mshell *shell, char **cmd_arr)
 {
 	t_list		*temp;
@@ -46,7 +48,7 @@ void	run_command(t_mshell *shell, char **cmd_arr)
 	if (!path_var)
 	{
 		print_err_msg(NULL, cmd_arr[0], "No such file or directory");
-		shell->last_exit_code = 127;
+		last_exit_code = 127;
 		return ;
 	}
 	path_arr = ft_split(((t_envvar *)(path_var->content))->value, ':');
@@ -71,7 +73,7 @@ void	run_command(t_mshell *shell, char **cmd_arr)
 	if (pid == 0)
 		execve(temp2, cmd_arr, lst_to_arr(shell));
 	else
-		waitpid(pid, &shell->last_exit_code, 0);
+		waitpid(pid, &last_exit_code, 0);
 }
 
 void	execute(char *cmd_str, t_mshell *shell)
@@ -108,7 +110,7 @@ int main(int argc, char **argv, char **env)
 		}
 		if (!str) //Ctrl-d handling lol
 		{ //TODO need to put "exit" message on the same line with the prompt ???
-			exit_code = shell.last_exit_code;
+			exit_code = last_exit_code;
 			exit_routine(&shell);
 			exit(exit_code);
 		}

@@ -36,15 +36,12 @@ void	my_unset(t_mshell *shell, char **cmd_arr)
 	{
 		arg = cmd_arr[i];
 		if (invalid_key(arg))
-		{
 			print_err_msg("unset", arg, "invalid parameter name");
-			shell->last_exit_code = 1;
-		}
 		var = get_by_key(shell, arg);
 		if (var)
 		{
 			del_var(shell, var);
-			shell->last_exit_code = 0;
+			last_exit_code = 0;
 		}
 		i++;
 	}

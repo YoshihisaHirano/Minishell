@@ -16,7 +16,7 @@ void	my_env(t_mshell *shell, char **cmd_arr)
 {
 	(void)cmd_arr;
 	ft_lstiter(shell->env_copy, print_node);
-	shell->last_exit_code = 0;
+	last_exit_code = 0;
 }
 
 void	my_pwd(t_mshell *shell, char **cmd_arr)
@@ -33,14 +33,14 @@ void	my_pwd(t_mshell *shell, char **cmd_arr)
 		curr_dir = getcwd(curr_dir, 1);
 		if (!curr_dir)
 		{
-			print_error("pwd", shell, NULL);
+			print_error("pwd", NULL);
 			return ;
 		}
 		printf("%s\n", curr_dir);
 	}
 	else
 		printf("%s\n", ((t_envvar *)(node->content))->value);
-	shell->last_exit_code = 0;
+	last_exit_code = 0;
 }
 
 void	my_echo(t_mshell *shell, char **cmd_arr)
@@ -49,6 +49,7 @@ void	my_echo(t_mshell *shell, char **cmd_arr)
 	size_t	i;
 	int		new_line;
 
+	(void)shell;
 	i = 1;
 	param = cmd_arr[i];
 	if (!param)
@@ -67,5 +68,5 @@ void	my_echo(t_mshell *shell, char **cmd_arr)
 	printf("%s", cmd_arr[i]);
 	if (new_line)
 		printf("\n");
-	shell->last_exit_code = 0;
+	last_exit_code = 0;
 }
