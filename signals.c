@@ -23,7 +23,7 @@ void	ctl_c_handle(int x)
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
-	last_exit_code = 1;
+	g_last_exit_code = 1;
 }
 
 void	handle_sigs(void)

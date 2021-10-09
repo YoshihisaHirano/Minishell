@@ -41,7 +41,7 @@ void	my_unset(t_mshell *shell, char **cmd_arr)
 		if (var)
 		{
 			del_var(shell, var);
-			last_exit_code = 0;
+			g_last_exit_code = 0;
 		}
 		i++;
 	}

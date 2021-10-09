@@ -29,7 +29,7 @@ int	check_quotes(char *str)
 	}
 	if (squotes_num % 2 || dquotes_num % 2)
 	{
-//		shell->last_exit_code = 1;
+//		shell->g_last_exit_code = 1;
 		print_err_msg(NULL, NULL, "parse error: unclosed quote");
 		return (1);
 	}

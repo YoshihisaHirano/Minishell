@@ -78,5 +78,5 @@ void	my_cd(t_mshell *shell, char **cmd_arr)
 	pwd = get_by_key(shell, "PWD");
 	set_by_key(shell, "OLDPWD", ((t_envvar *)(pwd->content))->value);
 	set_by_key(shell, "PWD", curr_path);
-	last_exit_code = 0;
+	g_last_exit_code = 0;
 }

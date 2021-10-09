@@ -28,7 +28,7 @@ void	print_error(char *prog, char *arg)
 		if (!arg)
 			perror(prog);
 	}
-	last_exit_code = 1;
+	g_last_exit_code = 1;
 }
 
 void	print_node(void *node)
@@ -56,5 +56,5 @@ void	print_err_msg(char *prog, char *arg, char *msg)
 		ft_putstr_fd(": ", 2);
 	}
 	ft_putendl_fd(msg, 2);
-	last_exit_code = 1;
+	g_last_exit_code = 1;
 }

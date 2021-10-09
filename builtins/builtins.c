@@ -16,7 +16,7 @@ void	my_env(t_mshell *shell, char **cmd_arr)
 {
 	(void)cmd_arr;
 	ft_lstiter(shell->env_copy, print_node);
-	last_exit_code = 0;
+	g_last_exit_code = 0;
 }
 
 void	my_pwd(t_mshell *shell, char **cmd_arr)
@@ -40,7 +40,7 @@ void	my_pwd(t_mshell *shell, char **cmd_arr)
 	}
 	else
 		printf("%s\n", ((t_envvar *)(node->content))->value);
-	last_exit_code = 0;
+	g_last_exit_code = 0;
 }
 
 void	my_echo(t_mshell *shell, char **cmd_arr)
@@ -68,5 +68,5 @@ void	my_echo(t_mshell *shell, char **cmd_arr)
 	printf("%s", cmd_arr[i]);
 	if (new_line)
 		printf("\n");
-	last_exit_code = 0;
+	g_last_exit_code = 0;
 }

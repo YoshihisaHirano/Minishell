@@ -21,7 +21,7 @@
 # define REDRCT_INPUT 4
 # define HERE_DOC 5
 
-extern int	last_exit_code;
+extern int	g_last_exit_code;
 
 typedef struct s_envvar
 {
