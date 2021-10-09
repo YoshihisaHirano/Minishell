@@ -76,6 +76,9 @@ char	**parse_args(char *args, t_mshell *shell)
 	if (check_quotes(args, shell))
 		return (NULL);
 	preprocessed = preprocessor(args, shell);
+	// add here parcer to elements and left only cmds str for split?
+	printf("pre: %s\n", preprocessed);
+	printf("quotes: %s\n", remove_quotes(preprocessed));
 //	printf("%s -- processed\n", preprocessed);
 	res = split_args(preprocessed);
 	free(preprocessed);
