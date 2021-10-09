@@ -15,6 +15,11 @@
 # define ARG_OK 1
 # define NOT_NUMERIC 2
 # define PROMPT "Minishell$ "
+# define PIPE 1
+# define REDRCT_OUTPUT 2
+# define REDRCT_APPEND 3
+# define REDRCT_INPUT 4
+# define HERE_DOC 5
 
 extern int	last_exit_code;
 
@@ -30,19 +35,27 @@ typedef struct s_quotes
 	int	doubl;
 }	t_quotes;
 
+typedef	struct s_list_io_params
+{
+	int		mode;
+	char	*file_name;
+}			t_list_io_params;
+
 typedef struct s_list_params
 {
-	char	**cmd_arr;
-	char	*str_to_cmd;
-	char	*path_app;
-	int		fd[2];
-	char	*here_doc_limiter;
-	int		input_mod;
-	int 	output_mode;
-	char 	*input_file;
-	int		fd_output;
-	char 	*output_file;
-}			t_list_params;
+	char				**cmd_arr;
+	char				*str_to_cmd;
+	char				*path_app;
+	int					fd[2];
+	char				*here_doc_limiter;
+	int					input_mod;
+//	int 				output_mode;
+	char 				*input_file;
+	int					fd_output;
+//	char 				*output_file;
+	t_list				*input;
+	t_list				*output;
+}						t_list_params;
 
 typedef struct s_mshell
 {
@@ -92,5 +105,9 @@ char		*remove_quotes(char *pre_res);
 char		*add_expanded(char **start, char **str, char *res, t_mshell *shell);
 char		*preprocessor(char *str, t_mshell *shell);
 char		**parse_args(char *args, t_mshell *shell);
-
+/* parsing to tokens*/
+void		handle_quotes(char **s, t_list_params *el, int *i);
+int			get_io_name(char **param_to_set, char **s);
+int			handle_token_error(char **input_str, char token);
+void		process_io_tokens(char **param_to_set, t_mshell *shell, int mode);
 #endif
