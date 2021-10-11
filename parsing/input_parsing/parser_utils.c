@@ -113,7 +113,6 @@ void process_io_tokens(char **param_to_set, t_mshell *shell, int mode)
 		preprocessed = preprocessor(*param_to_set,  shell);
 		free(*param_to_set);
 		*param_to_set = remove_quotes(preprocessed);
-		free(preprocessed);
 	}
 }
 

@@ -105,6 +105,7 @@ void	execute(char *cmd_str, t_mshell *shell)
 	ft_lstclear(&shell->builtins, free_builtins);
 	ft_lstclear(&list, free_params_lst);
 	ft_lstclear(&shell->env_copy, free_node);
+	free(copy_str);
 	/*builtin = check_builtins(shell, cmd_arr);
 	if (builtin)
 		return ;

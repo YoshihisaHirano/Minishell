@@ -52,7 +52,7 @@ void	init_builtins(t_mshell *shell)
 		ft_lstadd_back(&shell->builtins, elt);
 		i++;
 	}
-	free_arr(splt_names);
+	free(splt_names);
 }
 
 void	init_shell(t_mshell *shell, char **env)
