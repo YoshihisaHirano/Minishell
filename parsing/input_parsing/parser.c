@@ -10,15 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-//# include <stdio.h>
-//# include <stdlib.h>
-//# include <signal.h>
-//# include <errno.h>
-//# include <dirent.h>
-//# include "readline/include/readline/readline.h"
-//# include "readline/include/readline/history.h"
-//# include "readline/include/readline/rltypedefs.h"
-# include "../../minishell.h"
+#include "../../minishell.h"
 
 //int	validation(t_list *param_list, char **envp);
 
@@ -77,7 +69,6 @@ void show_params(t_list *list)
 	}
 }
 
-
 int	set_input_mode(char **input_str, t_mshell *shell, t_list_io_params *io_el)
 {
 	while (ft_isspace(**input_str))
@@ -130,7 +121,7 @@ int	set_output_mode(char **input_str, t_mshell *shell, t_list_io_params *io_el)
 	return (0);
 }
 
-int token_process(char **input_str, t_mshell *shell, int(*set_io)(char **,
+int	token_process(char **input_str, t_mshell *shell, int(*set_io)(char **,
 		t_mshell*, t_list_io_params*), t_list_params *el)
 {
 	t_list_io_params	*io_el;
@@ -145,7 +136,7 @@ int token_process(char **input_str, t_mshell *shell, int(*set_io)(char **,
 		ft_lstadd_back(&(el->output), ft_lstnew(io_el));
 	else
 		ft_lstadd_back(&(el->input), ft_lstnew(io_el));
-	return(set_mode_status);
+	return (set_mode_status);
 }
 
 int	set_params_to_el(char **input_str, t_list_params *el, t_mshell *shell)
@@ -160,8 +151,8 @@ int	set_params_to_el(char **input_str, t_list_params *el, t_mshell *shell)
 			handle_quotes(input_str, el);
 		while (!set_mode_res && **input_str && **input_str == '<')
 			set_mode_res = token_process(input_str, shell, set_input_mode, el);
-		while (!set_mode_res && **input_str &&
-			   (**input_str == '|' || **input_str == '>'))
+		while (!set_mode_res && **input_str
+			&& (**input_str == '|' || **input_str == '>'))
 			set_mode_res = token_process(input_str, shell, set_output_mode, el);
 		if (set_mode_res == -1 || set_mode_res == PIPE)
 			break ;
@@ -192,9 +183,10 @@ int	parser(char *input_str, t_list **list, t_mshell *shell)
 			return (-1);
 		if (set_params_to_el(&input_str, el, shell) == -1)
 		{
-			printf("Okay, Houston...we've had a problem here. Moon is "
+			printf("Houston...we've had a problem here. Moon is "
 				   "fucked\n");
-			// get out
+			ft_lstadd_back(list, ft_lstnew(el));
+			return (-1);
 		}
 		ft_lstadd_back(list, ft_lstnew(el));
 	}
@@ -203,23 +195,6 @@ int	parser(char *input_str, t_list **list, t_mshell *shell)
 
 /*TODO for pipe one more handler in valid for extra pipe*/
 
-/*TODO WTF "\'cat>>fil\"e args\' args"*/
-//          ^^ no parse error wtf?
-/*TODO WTF "cat file>out | rev"*/
-/*int	main(int argc, char **argv, char **envp)
-{
-	t_list			*list;
-	t_mshell		shell;
-////////
-	(void)argc;
-	(void)argv;
-////////
-	char *s = "echo test > ls >> ls >> ls";
-	list = NULL;
-	init_shell(&shell, envp);
-	parser(s, &list, &shell);
-	validation(list, envp);
-	show_params(list);
-	ft_lstclear(&list, free_params_lst);
-	return (0);
-}*/
+/*???TODO WTF "\'cat>>fil\"e args\' args" not to args. only one string??????*/
+/*TODO WTF "cat file>out | rev  -> create file with content and exec cmd"*/
+/*TODO if pipe without any cmd, prev cmd execute and then throw error*/

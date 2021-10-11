@@ -92,14 +92,14 @@ void	execute(char *cmd_str, t_mshell *shell)
 
 	envp = lst_to_arr(shell);
 	copy_str = cmd_str;//ft_strdup(cmd_str);
-	ft_putstr_fd("start\n", 1);
-	ft_putstr_fd(copy_str, 1);
-	ft_putstr_fd("\n", 1);
+//	ft_putstr_fd("start\n", 1);
+//	ft_putstr_fd(copy_str, 1);
+//	ft_putstr_fd("\n", 1);
 	list = NULL;
 	parser(copy_str, &list, shell);
-	ft_putstr_fd("parser\n", 1);
+//	ft_putstr_fd("parser\n", 1);
 	validation(list, envp);
-	ft_putstr_fd("validation\n", 1);
+//	ft_putstr_fd("validation\n", 1);
 	show_params(list);
 	free_arr(envp);
 	ft_lstclear(&shell->builtins, free_builtins);

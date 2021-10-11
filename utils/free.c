@@ -53,8 +53,10 @@ void	free_params_lst(void *param_node)
 
 	content = (t_list_params *)param_node;
 	free_arr(content->cmd_arr);
-	free(content->str_to_cmd);
-	free(content->path_app);
+	if (content->str_to_cmd)
+		free(content->str_to_cmd);
+	if (content->path_app)
+		free(content->path_app);
 	if (content->input)
 		ft_lstclear(&content->input, free_io_params);
 	if (content->output)

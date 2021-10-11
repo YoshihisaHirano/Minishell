@@ -30,11 +30,11 @@ char	*ft_chr_check(const char *s, int c)
 	return (NULL);
 }
 
-int get_io_name(char **param_to_set, char **s)
+int	get_io_name(char **param_to_set, char **s)
 {
-	int size;
-	int double_quotes;
-	int single_quotes;
+	int	size;
+	int	double_quotes;
+	int	single_quotes;
 
 	size = 0;
 	double_quotes = 0;
@@ -48,8 +48,8 @@ int get_io_name(char **param_to_set, char **s)
 		if ((*s)[size] == '\'' && !(double_quotes % 2))
 			single_quotes++;
 		if (ft_chr_check(" \r\f\t\v\n><|", (*s)[size]) &&
-			!(double_quotes % 2) && !(single_quotes % 2))
-			break;
+				!(double_quotes % 2) && !(single_quotes % 2))
+			break ;
 		size++;
 	}
 	*param_to_set = ft_substr((*s), 0, size);
@@ -59,7 +59,7 @@ int get_io_name(char **param_to_set, char **s)
 	return (0);
 }
 
-void handle_quotes(char **s, t_list_params *el)
+void	handle_quotes(char **s, t_list_params *el)
 {
 	int double_quotes;
 	int	single_quotes;
@@ -89,7 +89,7 @@ int	handle_token_error(char **input_str, char token)
 		ft_putstr_fd("\'\n", 1);
 		return (-1);
 	}
-	while(**input_str == token)
+	while (**input_str == token)
 	{
 		ft_putchar_fd(token, 1);
 		(*input_str)++;
@@ -98,22 +98,25 @@ int	handle_token_error(char **input_str, char token)
 	return (-1);
 }
 
-void process_io_tokens(char **param_to_set, t_mshell *shell, int mode)
+void	process_io_tokens(char **param_to_set, t_mshell *shell, int mode)
 {
 	char	*preprocessed;
 
 	if (mode == HERE_DOC)
 	{
+		// some problem here!
+		// : pointer being freed was not allocated
 		preprocessed = remove_quotes(*param_to_set);
 		free(*param_to_set);
 		*param_to_set = preprocessed;
 	}
 	else
 	{
-		preprocessed = preprocessor(*param_to_set,  shell);
+		preprocessed = preprocessor(*param_to_set, shell);
 		free(*param_to_set);
 		*param_to_set = remove_quotes(preprocessed);
 	}
+	printf("CHECK\n");
 }
 
 int check_for_cmd(char *cmd_str)
