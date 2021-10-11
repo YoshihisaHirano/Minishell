@@ -1,0 +1,13 @@
+minishell
+notes
+todo
+.idea
+*.o
+*.a
+cmake-build-debug
+CMakeLists.txt
+draft
+*.dSYM
+test*
+main.c
+Makefile_namina
