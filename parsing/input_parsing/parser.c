@@ -49,63 +49,61 @@ void show_params(t_list *list)
 		}
 		if (param_el->str_to_cmd)
 			printf("str_to_cmd: |%s|\n", param_el->str_to_cmd);
-		if (param_el->here_doc_limiter)
-			printf("here_doc_limiter: |%s|\n", param_el->here_doc_limiter);
-//		printf("input_mod: %s\noutput_mode: %s\n", modes[param_el->input_mod],
-//			   modes[param_el->output_mode]);
-		if (param_el->input_file)
-			printf("input_file: |%s|\n", param_el->input_file);
-//		if (param_el->output_file)
-//			printf("output_file: |%s|\n", param_el->output_file);
+		if (param_el->input)
+		{
+			t_list *tmp_input = param_el->input;
+			t_list_io_params *tmp_io_el;
+			while (tmp_input)
+			{
+				tmp_io_el = (t_list_io_params *) tmp_input->content;
+				printf("input: %s---%s\n", tmp_io_el->file_name,
+					   modes[tmp_io_el->mode]);
+				tmp_input = tmp_input->next;
+			}
+		}
+		if (param_el->output)
+		{
+			t_list *tmp_output = param_el->output;
+			t_list_io_params *tmp_io_el;
+			while (tmp_output)
+			{
+				tmp_io_el = (t_list_io_params *) tmp_output->content;
+				printf("output: %s---%s\n", tmp_io_el->file_name,
+					   modes[tmp_io_el->mode]);
+				tmp_output = tmp_output->next;
+			}
+		}
 		tmp = tmp->next;
 	}
 }
 
-t_list_params	*create_empty_el(void)
+
+int	set_input_mode(char **input_str, t_mshell *shell, t_list_io_params *io_el)
 {
-	t_list_params	*el;
-
-	el = malloc(sizeof(t_list_params));
-	el->input_mod = 0;
-//	el->output_mode = 0;
-	el->here_doc_limiter = NULL;
-	el->path_app = NULL;
-	el->cmd_arr = NULL;
-	el->input_file = NULL;
-//	el->output_file = NULL;
-	el->fd_output = -1;
-	return (el);
-}
-
-int	set_input_mode(char **input_str, t_list_params *params_el, t_mshell *shell)
-{
-	char	**param_to_set;
-
-	if (params_el->input_mod)
-		return (handle_token_error(input_str, **input_str));
+	while (ft_isspace(**input_str))
+		(*input_str)++;
 	if (!ft_strncmp(*input_str, "<<", 2))
 	{
-		param_to_set = &(params_el->here_doc_limiter);
+		io_el->mode = HERE_DOC;
 		(*input_str) += 2;
-		params_el->input_mod = HERE_DOC;
 	}
 	else
 	{
-		param_to_set = &(params_el->input_file);
+		io_el->mode = REDRCT_INPUT;
 		(*input_str)++;
-		params_el->input_mod = REDRCT_INPUT;
 	}
-	if (get_io_name(param_to_set, input_str) == -1)
+	if (get_io_name(&(io_el->file_name), input_str) == -1)
 		return (-1);
-	process_io_tokens(param_to_set, shell, params_el->input_mod);
+	if (!io_el->file_name || !*(io_el->file_name))
+		return (handle_token_error(input_str, **input_str));
+	process_io_tokens(&(io_el->file_name), shell, io_el->mode);
+	while (ft_isspace(**input_str))
+		(*input_str)++;
 	return (0);
 }
 
-int	set_output_mode(char **input_str, t_list_params *params_el,
-				t_mshell *shell, t_list_io_params *io_el)
+int	set_output_mode(char **input_str, t_mshell *shell, t_list_io_params *io_el)
 {
-//	if (params_el->output_mode)
-//		return (handle_token_error(input_str, **input_str));
 	while (ft_isspace(**input_str))
 		(*input_str)++;
 	if (**input_str == '|')
@@ -124,45 +122,58 @@ int	set_output_mode(char **input_str, t_list_params *params_el,
 		(*input_str)++;
 	if (get_io_name(&(io_el->file_name), input_str) == -1)
 		return (-1);
+	if (!io_el->file_name || !*(io_el->file_name))
+		return (handle_token_error(input_str, **input_str));
 	process_io_tokens(&(io_el->file_name), shell, io_el->mode);
+	while (ft_isspace(**input_str))
+		(*input_str)++;
 	return (0);
+}
+
+int token_process(char **input_str, t_mshell *shell, int(*set_io)(char **,
+		t_mshell*, t_list_io_params*), t_list_params *el)
+{
+	t_list_io_params	*io_el;
+	int					set_mode_status;
+
+	el->str_to_cmd[el->cmd_str_i] = ' ';
+	el->cmd_str_i++;
+	io_el = malloc(sizeof(t_list_io_params));
+	io_el->file_name = NULL;
+	set_mode_status = set_io(input_str, shell, io_el);
+	if (set_io == set_output_mode)
+		ft_lstadd_back(&(el->output), ft_lstnew(io_el));
+	else
+		ft_lstadd_back(&(el->input), ft_lstnew(io_el));
+	return(set_mode_status);
 }
 
 int	set_params_to_el(char **input_str, t_list_params *el, t_mshell *shell)
 {
-	int					i;
-	int					set_mode_status;
-	t_list_io_params	*io_el;
+	int		set_mode_res;
 
-	i = 0;
-	set_mode_status = 0;
+	el->cmd_str_i = 0;
+	set_mode_res = 0;
 	while (**input_str)
 	{
 		if (**input_str == '\"' || **input_str == '\'')
-			handle_quotes(input_str, el, &i);
-		else if (**input_str == '<')
-			set_mode_status = set_input_mode(input_str, el, shell);
-		else if (**input_str == '|' || **input_str == '>')
-		{
-			while (!set_mode_status)
-			{
-				io_el = malloc(sizeof(t_list_io_params));
-				set_mode_status = set_output_mode(input_str, el, shell, io_el);
-				ft_lstadd_back(&(el->output), ft_lstnew(io_el));
-			}
-		}
-		else
-		{
-			el->str_to_cmd[i++] = **input_str;
-			if (**input_str)
-				(*input_str)++;
-		}
-		if (set_mode_status == -1 || set_mode_status == PIPE)
+			handle_quotes(input_str, el);
+		while (!set_mode_res && **input_str && **input_str == '<')
+			set_mode_res = token_process(input_str, shell, set_input_mode, el);
+		while (!set_mode_res && **input_str &&
+			   (**input_str == '|' || **input_str == '>'))
+			set_mode_res = token_process(input_str, shell, set_output_mode, el);
+		if (set_mode_res == -1 || set_mode_res == PIPE)
 			break ;
+		el->str_to_cmd[el->cmd_str_i++] = **input_str;
+		if (**input_str && **input_str != '|')
+			(*input_str)++;
 	}
-	el->str_to_cmd[i] = '\0';
+	el->str_to_cmd[el->cmd_str_i] = '\0';
+	if (check_for_cmd(el->str_to_cmd))
+		return (-1);
 	el->cmd_arr = parse_args(el->str_to_cmd, shell);
-	return (set_mode_status);
+	return (set_mode_res);
 }
 
 int	parser(char *input_str, t_list **list, t_mshell *shell)
@@ -171,8 +182,10 @@ int	parser(char *input_str, t_list **list, t_mshell *shell)
 
 	while (*input_str)
 	{
-		el = create_empty_el();
-		el->str_to_cmd = malloc(ft_strlen(input_str) + 1);
+		el = malloc(sizeof(t_list_params));
+		el->path_app = NULL;
+		el->cmd_arr = NULL;
+		el->str_to_cmd = malloc(ft_strlen(input_str) * 2 + 1);
 		if (!el->str_to_cmd)
 			return (-1);
 		if (set_params_to_el(&input_str, el, shell) == -1)
@@ -187,9 +200,10 @@ int	parser(char *input_str, t_list **list, t_mshell *shell)
 }
 
 /*TODO for pipe one more handler in valid for extra pipe*/
-/*TODO 'cats  "\"c\'at\"  >lol\'"  -->>str_to_cmd: |"c'at"  | output_file: |lol'| */
-/*TODO validator has intput-output-||| */
-/*TODO !!!!!!!!!!!!!!!!!!!!!!"cat some > out > out2 */
+
+/*TODO WTF "\'cat>>fil\"e args\' args"*/
+//          ^^ no parse error wtf?
+/*TODO WTF "cat file>out | rev"*/
 int	main(int argc, char **argv, char **envp)
 {
 	t_list			*list;
@@ -198,11 +212,12 @@ int	main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 ////////
-	char *s = "cat lol > lol2 > lol3 > lol4";
+	char *s = "cat fil > out | rev";
 	list = NULL;
 	init_shell(&shell, envp);
 	parser(s, &list, &shell);
 	validation(list, envp);
 	show_params(list);
+	ft_lstclear(&list, free_params_lst);
 	return (0);
 }

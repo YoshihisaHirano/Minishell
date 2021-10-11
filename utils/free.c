@@ -37,6 +37,15 @@ void	free_arr(char **arr)
 	free(arr);
 }
 
+void	free_io_params(void *param_node)
+{
+	t_list_io_params	*content;
+
+	content = (t_list_io_params *)param_node;
+	if (content->file_name)
+		free(content->file_name);
+}
+
 void	free_params_lst(void *param_node)
 {
 	t_list_params	*content;
@@ -45,9 +54,10 @@ void	free_params_lst(void *param_node)
 	free_arr(content->cmd_arr);
 	free(content->str_to_cmd);
 	free(content->path_app);
-	free(content->here_doc_limiter);
-	free(content->input_file);
-	free(content->output_file);
+	if (content->input)
+		free_io_params(content->input);
+	if (content->output)
+		free_io_params(content->output);
 	free(content);
 }
 

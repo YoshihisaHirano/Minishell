@@ -133,7 +133,7 @@ int	check_apps(t_list *param_list, char **envp)
 		}
 		path = get_path_arr(envp, el->cmd_arr[0]);
 		check_access(path, el);
-		check_status_path(param_list, path);
+//		check_status_path(param_list, path);
 		param_list = param_list->next;
 	}
 	return (0);

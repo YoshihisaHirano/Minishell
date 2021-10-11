@@ -9,9 +9,9 @@
 # include <sys/types.h>
 # include <sys/stat.h>
 # include "libft/libft.h"
-# include "readline.h"
-# include "history.h"
-# include "rltypedefs.h"
+//# include "readline.h"
+//# include "history.h"
+//# include "rltypedefs.h"
 # define ARG_OK 1
 # define NOT_NUMERIC 2
 # define PROMPT "Minishell$ "
@@ -47,12 +47,7 @@ typedef struct s_list_params
 	char				*str_to_cmd;
 	char				*path_app;
 	int					fd[2];
-	char				*here_doc_limiter;
-	int					input_mod;
-//	int 				output_mode;
-	char 				*input_file;
-	int					fd_output;
-//	char 				*output_file;
+	int 				cmd_str_i;
 	t_list				*input;
 	t_list				*output;
 }						t_list_params;
@@ -106,8 +101,9 @@ char		*add_expanded(char **start, char **str, char *res, t_mshell *shell);
 char		*preprocessor(char *str, t_mshell *shell);
 char		**parse_args(char *args, t_mshell *shell);
 /* parsing to tokens*/
-void		handle_quotes(char **s, t_list_params *el, int *i);
+void		handle_quotes(char **s, t_list_params *el);
 int			get_io_name(char **param_to_set, char **s);
 int			handle_token_error(char **input_str, char token);
 void		process_io_tokens(char **param_to_set, t_mshell *shell, int mode);
+int			check_for_cmd(char *cmd_str);
 #endif

@@ -30,7 +30,8 @@ void	parse_env(t_mshell *shell, char *env[])
 		if (!str_var)
 			error_exit(NULL);
 		var->key = ft_strdup(str_var[0]);
-		var->value = ft_strdup(str_var[1]);
+		if (str_var[1])
+			var->value = ft_strdup(str_var[1]);
 		node = ft_lstnew(var);
 		if (!node)
 			error_exit(NULL);

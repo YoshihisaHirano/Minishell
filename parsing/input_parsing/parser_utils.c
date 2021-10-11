@@ -59,7 +59,7 @@ int get_io_name(char **param_to_set, char **s)
 	return (0);
 }
 
-void handle_quotes(char **s, t_list_params *el, int *i)
+void handle_quotes(char **s, t_list_params *el)
 {
 	int double_quotes;
 	int	single_quotes;
@@ -72,8 +72,8 @@ void handle_quotes(char **s, t_list_params *el, int *i)
 			double_quotes++;
 		if (**s == '\'' && !(double_quotes % 2))
 			single_quotes++;
-		el->str_to_cmd[*i] = **s;
-		(*i)++;
+		el->str_to_cmd[el->cmd_str_i] = **s;
+		el->cmd_str_i++;
 		(*s)++;
 		if (!(double_quotes % 2) && !(single_quotes % 2))
 			break;
@@ -83,6 +83,12 @@ void handle_quotes(char **s, t_list_params *el, int *i)
 int	handle_token_error(char **input_str, char token)
 {
 	ft_putstr_fd("minishell: syntax error near unexpected token \'", 1);
+	if (!token)
+	{
+		ft_putstr_fd("newline", 1);
+		ft_putstr_fd("\'\n", 1);
+		return (-1);
+	}
 	while(**input_str == token)
 	{
 		ft_putchar_fd(token, 1);
@@ -109,4 +115,13 @@ void process_io_tokens(char **param_to_set, t_mshell *shell, int mode)
 		*param_to_set = remove_quotes(preprocessed);
 		free(preprocessed);
 	}
+}
+
+int check_for_cmd(char *cmd_str)
+{
+	while (ft_isspace(*cmd_str))
+		cmd_str++;
+	if (!(*cmd_str))
+		return (-1);
+	return (0);
 }
