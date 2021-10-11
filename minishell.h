@@ -9,9 +9,9 @@
 # include <sys/types.h>
 # include <sys/stat.h>
 # include "libft/libft.h"
-//# include "readline.h"
-//# include "history.h"
-//# include "rltypedefs.h"
+# include "readline.h"
+# include "history.h"
+# include "rltypedefs.h"
 # define ARG_OK 1
 # define NOT_NUMERIC 2
 # define PROMPT "Minishell$ "
@@ -106,4 +106,8 @@ int			get_io_name(char **param_to_set, char **s);
 int			handle_token_error(char **input_str, char token);
 void		process_io_tokens(char **param_to_set, t_mshell *shell, int mode);
 int			check_for_cmd(char *cmd_str);
+int			validation(t_list *param_list, char ** envp);
+int			parser(char *input_str, t_list **list, t_mshell *shell);
+//to delete
+void		show_params(t_list *list);
 #endif

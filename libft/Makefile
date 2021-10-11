@@ -5,7 +5,7 @@ B_SRC	=	ft_lstadd_back.c ft_lstadd_front.c ft_lstclear.c ft_lstdelone.c ft_lstit
 B_OBJ	=	${B_SRC:.c=.o}
 HEADER	=	libft.h
 CC		=	gcc
-CFLAGS	=	-Wall -Wextra -Werror
+CFLAGS	=	-Wall -Wextra -Werror -g
 
 all:		$(NAME)
 

@@ -30,8 +30,7 @@ void	parse_env(t_mshell *shell, char *env[])
 		if (!str_var)
 			error_exit(NULL);
 		var->key = ft_strdup(str_var[0]);
-		if (str_var[1])
-			var->value = ft_strdup(str_var[1]);
+		var->value = ft_strdup(str_var[1]);
 		node = ft_lstnew(var);
 		if (!node)
 			error_exit(NULL);
@@ -90,7 +89,7 @@ char	**lst_to_arr(t_mshell *shell)
 	t_list		*temp;
 	char		*str_tmp;
 
-	envp = malloc(sizeof(char *) * ft_lstsize(shell->env_copy));
+	envp = malloc(sizeof(char *) * (ft_lstsize(shell->env_copy) + 1));
 	if (!envp)
 		error_exit(NULL);
 	temp = shell->env_copy;

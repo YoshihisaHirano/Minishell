@@ -4,12 +4,14 @@ static unsigned long long	str_to_num(const char *start)
 {
 	unsigned long long	res;
 	unsigned long long	rank;
+	size_t				i;
 
 	res = 0;
 	rank = 1;
-	while (ft_isdigit(*start))
-		start++;
-	start--;
+	i = 0;
+	while (ft_isdigit(start[i]))
+		i++;
+	start += i;
 	while (ft_isdigit(*start))
 	{
 		res += (*start - '0') * rank;

@@ -29,7 +29,7 @@ void	exit_routine(t_mshell *shell)
 	ft_lstclear(&shell->cmds, free_params_lst);
 	ft_lstclear(&shell->builtins, free_builtins);
 	rl_clear_history();
-	write(1, "exit\n", 5);
+//	write(1, "exit\n", 5);
 }
 
 int	check_arg(char *arg, int *exit_code)

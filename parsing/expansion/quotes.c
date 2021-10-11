@@ -61,5 +61,6 @@ char	*remove_quotes(char *res)
 		}
 		i++;
 	}
+	free(res);
 	return (rm_quotes);
 }

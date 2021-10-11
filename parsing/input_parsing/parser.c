@@ -10,17 +10,17 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include <stdio.h>
-# include <stdlib.h>
-# include <signal.h>
-# include <errno.h>
-# include <dirent.h>
+//# include <stdio.h>
+//# include <stdlib.h>
+//# include <signal.h>
+//# include <errno.h>
+//# include <dirent.h>
 //# include "readline/include/readline/readline.h"
 //# include "readline/include/readline/history.h"
 //# include "readline/include/readline/rltypedefs.h"
 # include "../../minishell.h"
 
-int	validation(t_list *param_list, char **envp);
+//int	validation(t_list *param_list, char **envp);
 
 void show_params(t_list *list)
 {
@@ -204,7 +204,7 @@ int	parser(char *input_str, t_list **list, t_mshell *shell)
 /*TODO WTF "\'cat>>fil\"e args\' args"*/
 //          ^^ no parse error wtf?
 /*TODO WTF "cat file>out | rev"*/
-int	main(int argc, char **argv, char **envp)
+/*int	main(int argc, char **argv, char **envp)
 {
 	t_list			*list;
 	t_mshell		shell;
@@ -212,7 +212,7 @@ int	main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 ////////
-	char *s = "cat fil > out | rev";
+	char *s = "echo test > ls >> ls >> ls";
 	list = NULL;
 	init_shell(&shell, envp);
 	parser(s, &list, &shell);
@@ -220,4 +220,4 @@ int	main(int argc, char **argv, char **envp)
 	show_params(list);
 	ft_lstclear(&list, free_params_lst);
 	return (0);
-}
+}*/
