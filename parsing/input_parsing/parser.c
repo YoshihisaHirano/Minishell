@@ -185,6 +185,8 @@ int	parser(char *input_str, t_list **list, t_mshell *shell)
 		el = malloc(sizeof(t_list_params));
 		el->path_app = NULL;
 		el->cmd_arr = NULL;
+		el->input = NULL;
+		el->output = NULL;
 		el->str_to_cmd = malloc(ft_strlen(input_str) * 2 + 1);
 		if (!el->str_to_cmd)
 			return (-1);

@@ -44,6 +44,7 @@ void	free_io_params(void *param_node)
 	content = (t_list_io_params *)param_node;
 	if (content->file_name)
 		free(content->file_name);
+	free(param_node);
 }
 
 void	free_params_lst(void *param_node)
@@ -55,9 +56,9 @@ void	free_params_lst(void *param_node)
 	free(content->str_to_cmd);
 	free(content->path_app);
 	if (content->input)
-		free_io_params(content->input);
+		ft_lstclear(&content->input, free_io_params);
 	if (content->output)
-		free_io_params(content->output);
+		ft_lstclear(&content->output, free_io_params);
 	free(content);
 }
 

@@ -130,8 +130,8 @@ int main(int argc, char **argv, char **env)
 		str = readline(PROMPT);
 		if (str && *str)
 		{
-			execute(str, &shell);
 			add_history(str);
+			execute(str, &shell);
 		}
 		if (!str) //Ctrl-d handling lol
 		{ //TODO need to put "exit" message on the same line with the prompt ???
