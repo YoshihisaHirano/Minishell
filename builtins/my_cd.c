@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-int	check_pwds(t_mshell *shell) /* sets pwds if they are unset */
+int	check_pwds(t_mshell *shell)
 {
 	t_list	*pwd;
 	t_list	*old_pwd;
@@ -57,7 +57,7 @@ int	use_chdir(t_mshell *shell, char **cmd_arr)
 /* 'mkdir test_dir ; cd test_dir ; rm -rf ../test_dir ; cd . ; cd .. ; pwd'
  * edge case but need to properly do rm -rf first
  TODO*/
-void	my_cd(t_mshell *shell, char **cmd_arr)
+void	my_cd(t_mshell *shell, struct s_list_params *params)
 {
 	int		res;
 	char	*curr_path;
@@ -65,7 +65,7 @@ void	my_cd(t_mshell *shell, char **cmd_arr)
 
 	if (check_pwds(shell))
 		return ;
-	res = use_chdir(shell, cmd_arr);
+	res = use_chdir(shell, params->cmd_arr);
 	if (res == -1)
 		return ;
 	curr_path = NULL;

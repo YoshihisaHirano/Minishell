@@ -15,7 +15,7 @@
 int	check_quotes(char *str)
 {
 	int	squotes_num;
-	int dquotes_num;
+	int	dquotes_num;
 
 	squotes_num = 0;
 	dquotes_num = 0;
@@ -29,7 +29,6 @@ int	check_quotes(char *str)
 	}
 	if (squotes_num % 2 || dquotes_num % 2)
 	{
-//		shell->g_last_exit_code = 1;
 		print_err_msg(NULL, NULL, "parse error: unclosed quote");
 		return (1);
 	}

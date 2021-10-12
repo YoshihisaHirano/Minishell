@@ -69,7 +69,7 @@ char	*change_to_expanded(char **var, t_mshell *shell)
 
 char	*add_expanded(char **start, char **str, char *res, t_mshell *shell)
 {
-	size_t 	dst;
+	size_t	dst;
 	char	*tmp;
 	char	*tmp2;
 	char	*expanded;

@@ -14,7 +14,7 @@
 
 void	print_error(char *prog, char *arg)
 {
-	if (!prog)
+	if (!prog && !arg)
 		perror("Minishell");
 	else
 	{
@@ -27,6 +27,8 @@ void	print_error(char *prog, char *arg)
 		}
 		if (!arg)
 			perror(prog);
+		if (!prog)
+			perror(arg);
 	}
 	g_last_exit_code = 1;
 }

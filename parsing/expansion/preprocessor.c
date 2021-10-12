@@ -104,4 +104,3 @@ char	*preprocessor(char *str, t_mshell *shell)
 	res = add_rest(start, str, res);
 	return (res);
 }
-

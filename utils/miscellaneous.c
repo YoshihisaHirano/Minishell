@@ -12,14 +12,12 @@
 
 #include "../minishell.h"
 
-void	error_exit(char *prog) //on malloc errors the whole program exits: should it be changed?
+void	error_exit(char *prog)
 {
 	print_error(prog, NULL);
 	exit(errno);
 }
 
-/* Only ASCII letters (of either case), _ and digits are supported, and the
- * first character must not be a digit. */
 int	invalid_key(char *key)
 {
 	if (ft_isdigit(*key))

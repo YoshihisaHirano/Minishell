@@ -58,7 +58,6 @@ char	**split_args(char *prep)
 			q.singl++;
 		if (*prep == '\"')
 			q.doubl++;
-		// isspace or any special character like "><|" ?????
 		if (ft_isspace(*prep) && !(q.doubl % 2) && !(q.singl % 2))
 			add_str(&res, &start, prep);
 		prep++;

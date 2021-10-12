@@ -12,47 +12,27 @@
 
 #include "minishell.h"
 
-void	assign_func(t_builtins *builtin)
+void	assign_func(t_list_params *param)
 {
-	if (!ft_strncmp(builtin->name, "echo", ft_strlen(builtin->name)))
-		builtin->func = my_echo;
-	if (!ft_strncmp(builtin->name, "env", ft_strlen(builtin->name)))
-		builtin->func = my_env;
-	if (!ft_strncmp(builtin->name, "pwd", ft_strlen(builtin->name)))
-		builtin->func = my_pwd;
-	if (!ft_strncmp(builtin->name, "cd", ft_strlen(builtin->name)))
-		builtin->func = my_cd;
-	if (!ft_strncmp(builtin->name, "export", ft_strlen(builtin->name)))
-		builtin->func = my_export;
-	if (!ft_strncmp(builtin->name, "unset", ft_strlen(builtin->name)))
-		builtin->func = my_unset;
-	if (!ft_strncmp(builtin->name, "exit", ft_strlen(builtin->name)))
-		builtin->func = my_exit;
-}
+	size_t	len;
 
-void	init_builtins(t_mshell *shell)
-{
-	char		*names;
-	char		**splt_names;
-	int			i;
-	t_builtins	*bn;
-	t_list		*elt;
-
-	names = "echo env pwd cd export unset exit";
-	splt_names = ft_split(names, ' ');
-	if (!splt_names)
-		error_exit(NULL);
-	i = 0;
-	while (i < 7)
-	{
-		bn = malloc(sizeof(t_builtins));
-		bn->name = splt_names[i];
-		assign_func(bn);
-		elt = ft_lstnew(bn);
-		ft_lstadd_back(&shell->builtins, elt);
-		i++;
-	}
-	free(splt_names);
+	len = ft_strlen(param->cmd_arr[0]);
+	if (!ft_strncmp(param->cmd_arr[0], "echo", len))
+		param->builtin = my_echo;
+	else if (!ft_strncmp(param->cmd_arr[0], "env", len))
+		param->builtin = my_env;
+	else if (!ft_strncmp(param->cmd_arr[0], "pwd", len))
+		param->builtin = my_pwd;
+	else if (!ft_strncmp(param->cmd_arr[0], "cd", len))
+		param->builtin = my_cd;
+	else if (!ft_strncmp(param->cmd_arr[0], "export", len))
+		param->builtin = my_export;
+	else if (!ft_strncmp(param->cmd_arr[0], "unset", len))
+		param->builtin = my_unset;
+	else if (!ft_strncmp(param->cmd_arr[0], "exit", len))
+		param->builtin = my_exit;
+	else
+		param->builtin = NULL;
 }
 
 void	init_shell(t_mshell *shell, char **env)
@@ -61,7 +41,7 @@ void	init_shell(t_mshell *shell, char **env)
 	t_envvar	*var;
 	int			val;
 
-	*shell = (t_mshell){.env_copy = NULL, .builtins = NULL};
+	*shell = (t_mshell){.env_copy = NULL};
 	parse_env(shell, env);
 	elt = get_by_key(shell, "SHLVL");
 	if (!elt)
@@ -78,6 +58,5 @@ void	init_shell(t_mshell *shell, char **env)
 		else
 			set_by_key(shell, "SHLVL", "1");
 	}
-	init_builtins(shell);
 	handle_sigs();
 }

@@ -25,16 +25,27 @@ void	del_var(t_mshell *shell, t_list *node)
 	before_del->next = after_del;
 }
 
-void	my_unset(t_mshell *shell, char **cmd_arr)
+void	set_val(char **splt_arg, t_mshell *shell)
+{
+	t_list	*elt;
+
+	elt = get_by_key(shell, splt_arg[0]);
+	if (elt)
+		set_by_key(shell, splt_arg[0], splt_arg[1]);
+	else
+		add_var(shell, splt_arg[0], splt_arg[1]);
+}
+
+void	my_unset(t_mshell *shell, struct s_list_params *params)
 {
 	t_list	*var;
 	char	*arg;
 	int		i;
 
 	i = 1;
-	while (cmd_arr[i])
+	while (params->cmd_arr[i])
 	{
-		arg = cmd_arr[i];
+		arg = params->cmd_arr[i];
 		if (invalid_key(arg))
 			print_err_msg("unset", arg, "invalid parameter name");
 		var = get_by_key(shell, arg);

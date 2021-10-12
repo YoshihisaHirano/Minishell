@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aalannys <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/10/12 16:46:41 by aalannys          #+#    #+#             */
+/*   Updated: 2021/10/12 16:46:44 by aalannys         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 # include <stdio.h>
@@ -12,8 +24,8 @@
 # include "readline.h"
 # include "history.h"
 # include "rltypedefs.h"
-# define ARG_OK 1
-# define NOT_NUMERIC 2
+# define ARG_OK 0
+# define NOT_NUMERIC -1
 # define PROMPT "Minishell$ "
 # define PIPE 1
 # define REDRCT_OUTPUT 2
@@ -35,11 +47,17 @@ typedef struct s_quotes
 	int	doubl;
 }	t_quotes;
 
-typedef	struct s_list_io_params
+typedef struct s_list_io_params
 {
 	int		mode;
 	char	*file_name;
 }			t_list_io_params;
+
+typedef struct s_mshell
+{
+	t_list			*env_copy;
+	t_list			*cmds;
+}	t_mshell;
 
 typedef struct s_list_params
 {
@@ -47,33 +65,21 @@ typedef struct s_list_params
 	char				*str_to_cmd;
 	char				*path_app;
 	int					fd[2];
-	int 				cmd_str_i;
+	int					cmd_str_i;
 	t_list				*input;
 	t_list				*output;
+	void				(*builtin)(t_mshell *, struct s_list_params *);
 }						t_list_params;
-
-typedef struct s_mshell
-{
-	t_list			*env_copy;
-	t_list			*cmds;
-	t_list			*builtins;
-}	t_mshell;
-
-typedef struct s_builtins
-{
-	char	*name;
-	void	(*func)(t_mshell *, char **);
-}	t_builtins;
 
 void		handle_sigs(void);
 void		error_exit(char *prog);
 void		free_node(void *node);
 void		free_params_lst(void *param_node);
-void		free_builtins(void *content);
 void		print_node(void *node);
 void		print_error(char *prog, char *arg);
 int			invalid_key(char *key);
 void		free_arr(char **arr);
+char		**split_args(char *prep);
 void		move_spaces(char **str, char **start);
 void		print_err_msg(char *prog, char *arg, char *msg);
 size_t		chr_arr_len(char **arr);
@@ -86,14 +92,16 @@ t_list		*get_by_key(t_mshell *shell, char *key);
 int			set_by_key(t_mshell *shell, char *key, char *val);
 char		**lst_to_arr(t_mshell *shell);
 void		add_var(t_mshell *shell, char *key, char *val);
+void		set_val(char **splt_arg, t_mshell *shell);
 /* builtins */
-void		my_env(t_mshell *shell, char **cmd_arr);
-void		my_pwd(t_mshell *shell, char **cmd_arr);
-void		my_cd(t_mshell *shell, char **cmd_arr);
-void		my_export(t_mshell *shell, char **cmd_arr);
-void		my_unset(t_mshell *shell, char **cmd_arr);
-void		my_exit(t_mshell *shell, char **cmd_arr);
-void		my_echo(t_mshell *shell, char **cmd_arr);
+void		assign_func(t_list_params *param);
+void		my_env(t_mshell *shell, struct s_list_params *params);
+void		my_pwd(t_mshell *shell, struct s_list_params *params);
+void		my_cd(t_mshell *shell, struct s_list_params *params);
+void		my_export(t_mshell *shell, struct s_list_params *params);
+void		my_unset(t_mshell *shell, struct s_list_params *params);
+void		my_exit(t_mshell *shell, struct s_list_params *params);
+void		my_echo(t_mshell *shell, struct s_list_params *params);
 /* parsing */
 int			check_quotes(char *str);
 char		*remove_quotes(char *pre_res);
@@ -106,8 +114,9 @@ int			get_io_name(char **param_to_set, char **s);
 int			handle_token_error(char **input_str, char token);
 void		process_io_tokens(char **param_to_set, t_mshell *shell, int mode);
 int			check_for_cmd(char *cmd_str);
-int			validation(t_list *param_list, char ** envp);
+int			validation(t_list *param_list, char **envp);
 int			parser(char *input_str, t_list **list, t_mshell *shell);
+char		**get_path_arr(char **envp, char *app_name);
 //to delete
 void		show_params(t_list *list);
 #endif

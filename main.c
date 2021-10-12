@@ -14,25 +14,6 @@
 
 int	g_last_exit_code = 0;
 
-int	check_builtins(t_mshell *shell, char **cmd_arr)
-{
-	t_list		*temp;
-	t_builtins	*bn;
-
-	temp = shell->builtins;
-	while (temp)
-	{
-		bn = (t_builtins *)temp->content;
-		if (!ft_strncmp(bn->name, cmd_arr[0], ft_strlen(cmd_arr[0])))
-		{
-			bn->func(shell, cmd_arr);
-			return (1);
-		}
-		temp = temp->next;
-	}
-	return (0);
-}
-
 void	run_command(t_mshell *shell, char **cmd_arr)
 {
 	t_list		*path_var;
@@ -84,28 +65,24 @@ void	run_command(t_mshell *shell, char **cmd_arr)
 
 void	execute(char *cmd_str, t_mshell *shell)
 {
-//	char	**cmd_arr;
-//	int		builtin;
-	t_list	*list;
-	char	*copy_str;
-	char	**envp;
+	t_list			*list;
+	char			**envp;
 
 	envp = lst_to_arr(shell);
-	copy_str = cmd_str;//ft_strdup(cmd_str);
-//	ft_putstr_fd("start\n", 1);
 //	ft_putstr_fd(copy_str, 1);
 //	ft_putstr_fd("\n", 1);
 	list = NULL;
-	parser(copy_str, &list, shell);
+	parser(cmd_str, &list, shell);
 //	ft_putstr_fd("parser\n", 1);
 	validation(list, envp);
 //	ft_putstr_fd("validation\n", 1);
 	show_params(list);
+	if (((t_list_params *)(list->content))->builtin != NULL)
+		((t_list_params *)(list->content))->builtin(shell, (t_list_params *)(list->content));
+//	ft_putstr_fd("free\n", 1);
 	free_arr(envp);
-	ft_lstclear(&shell->builtins, free_builtins);
 	ft_lstclear(&list, free_params_lst);
-	ft_lstclear(&shell->env_copy, free_node);
-	free(copy_str);
+//	ft_lstclear(&shell->env_copy, free_node);
 	/*builtin = check_builtins(shell, cmd_arr);
 	if (builtin)
 		return ;
@@ -116,6 +93,7 @@ int main(int argc, char **argv, char **env)
 {
 	char		*str;
 	t_mshell	shell;
+	char		*untrimmed;
 
 	(void)argc;
 	(void)argv;
@@ -123,11 +101,12 @@ int main(int argc, char **argv, char **env)
 //	char *cmd_str = "echo -n \"cat -e\" hello $World $HOME";
 //	execute(cmd_str, &shell);
 //	return (0);
-//	str = "echo hello >lol echo > test>lol>test>>lol>test mdr >lol test >test";
-//	execute(ft_strdup(str), &shell);
+////	str = "echo hello >lol echo > test>lol>test>>lol>test mdr >lol test >test";
+////	execute(ft_strdup(str), &shell);
 	while(1)
 	{
-		str = readline(PROMPT);
+		untrimmed = readline(PROMPT);
+		str = ft_strtrim(untrimmed, " \t");
 		if (str && *str)
 		{
 			add_history(str);
@@ -138,6 +117,8 @@ int main(int argc, char **argv, char **env)
 			exit_routine(&shell);
 			exit(g_last_exit_code);
 		}
+		free(untrimmed);
+		free(str);
 	}
 	return (0);
 }

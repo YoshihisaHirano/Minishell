@@ -10,23 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include <stdio.h>
-# include <stdlib.h>
-# include <signal.h>
-# include <errno.h>
-# include <dirent.h>
-# include <sys/stat.h>
-//# include "readline/include/readline/readline.h"
-//# include "readline/include/readline/history.h"
-//# include "readline/include/readline/rltypedefs.h"
-# include "../../minishell.h"
-
-#define PIPE 1
-#define REDRCT_OUTPUT 2
-#define REDRCT_APPEND 3
-#define REDRCT_INPUT 4
-#define HERE_DOC 5
-#define CHECK_EXE_ACCESS(x) (((x << 9) >> 15) & 0001) == 0001
+#include "../../minishell.h"
 
 int	is_path(char *cmd_name)
 {
@@ -37,43 +21,24 @@ int	is_path(char *cmd_name)
 	return (0);
 }
 
-
-char	**get_path_arr(char **envp, char *app_name);
-
 /* TODO
  * check program (stat?) DONE, the executable rights will be checked in execve
  * check redirects
  *
  * */
-void	free_array(char **arr)
-{
-	char	**p;
-
-	p = arr;
-	if (!arr)
-		return ;
-	while (*arr)
-	{
-		free(*arr);
-		arr++;
-	}
-	free(p);
-}
-
 void	check_status_path(t_list *params)
 {
 	t_list_params	*param;
 
 	param = (t_list_params *)(params->content);
 	if (param->path_app)
-	{
 		printf("app is ok\n%s\n", param->path_app); //TODO remove
-		/*execve logic?*/
-	}
-	else {
+	else
+	{
 		if (!(is_path(param->cmd_arr[0])))
 			print_err_msg(NULL, param->cmd_arr[0], "command not found");
-		free_arr(param->cmd_arr);
+		free_arr(param->cmd_arr); //maybe not because it will be cleared
+		// altogether
 		param->cmd_arr = NULL;
 	}
 }
@@ -89,6 +54,7 @@ void	assign_path(t_list_params *el, struct stat *buf)
 		return ;
 	}
 	el->path_app = el->cmd_arr[0];
+	free(buf);
 }
 
 void	check_access(char **path, t_list_params *el)
@@ -118,7 +84,7 @@ void	check_access(char **path, t_list_params *el)
 	free(buf);
 }
 
-int	check_apps(t_list *param_list, char **envp)
+int	validation(t_list *param_list, char **envp)
 {
 	char			**path;
 	t_list_params	*el;
@@ -131,21 +97,27 @@ int	check_apps(t_list *param_list, char **envp)
 			param_list = param_list->next;
 			continue ;
 		}
+		assign_func(el);
+		if (el->builtin)
+		{
+			param_list = param_list->next;
+			continue ;
+		}
 		path = get_path_arr(envp, el->cmd_arr[0]);
 		check_access(path, el);
-//		check_status_path(param_list, path);
+		check_status_path(param_list);
 		param_list = param_list->next;
 	}
 	return (0);
 }
 
-int	validation(t_list *param_list, char ** envp)
-{
-	if (!param_list)
-	{printf("param list is empty\n"); return (-1);}
-	check_apps(param_list, envp);
-	return (0);
-}
+//int	validation(t_list *param_list, char **envp)
+//{
+//	if (!param_list)
+//	{printf("param list is empty\n"); return (-1);}
+//	check_apps(param_list, envp);
+//	return (0);
+//}
 
 /*int	main(int argc, char **argv, char **envp)
 {

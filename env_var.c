@@ -57,7 +57,7 @@ t_list	*get_by_key(t_mshell *shell, char *key)
 	return (NULL);
 }
 
-int	set_by_key(t_mshell *shell, char *key, char *val) /* returns 0 on success */
+int	set_by_key(t_mshell *shell, char *key, char *val)
 {
 	t_list		*temp;
 	char		*curr_key;
@@ -111,7 +111,7 @@ char	**lst_to_arr(t_mshell *shell)
 }
 
 void	add_var(t_mshell *shell, char *key, char *val)
-{ /* var with name '_' always goes last */
+{
 	t_list		*last_node;
 	t_list		*node_before_last;
 	t_list		*new_node;

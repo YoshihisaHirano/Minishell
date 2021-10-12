@@ -35,17 +35,6 @@ char	**split_by_eq(char *arg)
 	return (var);
 }
 
-void	set_val(char **splt_arg, t_mshell *shell)
-{
-	t_list	*elt;
-
-	elt = get_by_key(shell, splt_arg[0]);
-	if (elt)
-		set_by_key(shell, splt_arg[0], splt_arg[1]);
-	else
-		add_var(shell, splt_arg[0], splt_arg[1]);
-}
-
 void	appending(void *content, char *add_value)
 {
 	char		*temp;
@@ -65,7 +54,7 @@ void	appending(void *content, char *add_value)
 int	append_val(char **splt_arg, t_mshell *shell, char *arg)
 {
 	char	*temp;
-	size_t 	last_elt;
+	size_t	last_elt;
 	t_list	*elt;
 
 	if (ft_strlen(splt_arg[0]) <= 1)
@@ -88,15 +77,34 @@ int	append_val(char **splt_arg, t_mshell *shell, char *arg)
 	return (1);
 }
 
-// export can add multiple vars to environment if they are properly
-//  formatted i.e. 'VAR_NAME=', vars with wrong format it just ignores
-void	my_export(t_mshell *shell, char **cmd_arr)
+char	**export_split(char *cmd_str, t_mshell *shell)
+{
+	char	**res;
+	int		i;
+	char	*temp;
+
+	i = 0;
+	res = split_args(cmd_str);
+	while (res[i])
+	{
+		temp = preprocessor(res[i], shell);
+		temp = remove_quotes(temp);
+		free(res[i]);
+		res[i] = temp;
+		i++;
+	}
+	return (res);
+}
+
+void	my_export(t_mshell *shell, struct s_list_params *params)
 {
 	char	**splt_arg;
+	char	**cmd_arr;
 	char	*arg;
 	int		i;
 
 	i = 0;
+	cmd_arr = export_split(params->str_to_cmd, shell);
 	while (cmd_arr[++i])
 	{
 		arg = cmd_arr[i];
@@ -114,4 +122,5 @@ void	my_export(t_mshell *shell, char **cmd_arr)
 		set_val(splt_arg, shell);
 		free_arr(splt_arg);
 	}
+	free_arr(cmd_arr);
 }

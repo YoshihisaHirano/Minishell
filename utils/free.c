@@ -63,12 +63,3 @@ void	free_params_lst(void *param_node)
 		ft_lstclear(&content->output, free_io_params);
 	free(content);
 }
-
-void	free_builtins(void *content)
-{
-	t_builtins	*bn;
-
-	bn = (t_builtins *)content;
-	free(bn->name);
-	free(bn);
-}
