@@ -12,42 +12,34 @@
 
 #include "../minishell.h"
 
-//void	child_process(t_list *params, int input_fd, int last_output_fd,
-//					   char **envp)
-//{
-//	t_list	*tmp;
-//
-//	tmp = params;
-//	set_child_fd(params, input_fd, last_output_fd);
-//	execve(params->path_app, params->cmd_arr, envp);
-//	while (tmp->prev)
-//		tmp = tmp->prev;
-//	ft_lstclear(&tmp);
-//	exit(-1);
-//}
-//
-//int	my_exec(t_list *params, int io_fd[], char **envp)
-//{
-//	int		pid;
-//	int		fds[2];
-//
-//	pipe(params->fd);
-//	pid = fork();
-//	if (pid == 0)
-//		child_process(params, input_fd, last_output_fd, envp);
-//	else
-//	{
-//		waitpid(pid, NULL, WNOHANG);
-//		close(params->fd[1]);
-//		if (input_fd > 0)
-//			close(input_fd);
-//		if (!params->next)
-//			close(params->fd[0]);
-//	}
-//	return (params->fd[0]);
-//}
-/*TODO HERE_DOC input --> double free?? */
+int	my_exec(t_list *params, int file_fd[], char **envp)
+{
+	int				pid;
+	int				pipe_fd[2];
+	t_list_params	*element;
+
+	element = (t_list_params *) params->content;
+	pipe(pipe_fd);
+	pid = fork();
+	if (pid == 0)
+	{
+		set_child_fd(params, file_fd, pipe_fd);
+		execve(element->path_app, element->cmd_arr, envp);
+	}
+	else
+	{
+		waitpid(pid, NULL, WNOHANG);
+		close(pipe_fd[1]);
+		if (file_fd[0] > 0)
+			close(file_fd[0]);
+		if (!params->next)
+			close(pipe_fd[0]);
+	}
+	return (pipe_fd[0]);
+}
+
 /*TODO double close fds -> set to -1?*/
+/*TODO rights created files?? -rw-r--r--*/
 int	open_files(t_list_io_params *io_el)
 {
 	int	fds[2];
@@ -72,7 +64,7 @@ int	open_files(t_list_io_params *io_el)
 	return (io_el->fd);
 }
 
-int set_input_output(t_list_params *params, int *io_fd)
+int	set_input_output(t_list_params *params, int *io_fd)
 {
 	t_list	*tmp;
 
@@ -80,24 +72,29 @@ int set_input_output(t_list_params *params, int *io_fd)
 	while (tmp)
 	{
 		io_fd[0] = open_files((t_list_io_params *) tmp->content);
+		if (io_fd[0] == -1)
+			return (app_to_null(params));
 		tmp = tmp->next;
 	}
 	tmp = params->output;
 	while (tmp)
 	{
 		io_fd[1] = open_files((t_list_io_params *) tmp->content);
+		if (io_fd[1] == -1)
+			return (app_to_null(params));
 		tmp = tmp->next;
 	}
 	return (0);
 }
 
-void	exec_manager(t_list *params, t_mshell *shell, char **envp)
+// fd[0] - read
+// fd[1] = write
+
+void	exec_manager(t_list *params, char **envp)
 {
 	t_list_params	*element;
-	int 			io_fd[2];
+	int				io_fd[2];
 
-	(void) envp;
-	(void) shell;
 	io_fd[0] = -1;
 	io_fd[1] = -1;
 	while (params)
@@ -105,16 +102,16 @@ void	exec_manager(t_list *params, t_mshell *shell, char **envp)
 		element = (t_list_params *) params->content;
 		set_input_output(element, io_fd);
 		printf("in fd: %d out: %d\n", io_fd[0], io_fd[1]);
-//		if (element->path_app)
-//			input_fd = my_exec(element, io_fd, envp);
-//		else
-//		{
-//			if (input_fd != -1)
-//			{
-//				close(input_fd);
-//				input_fd = -1;
-//			}
-//		}
+		if (element->path_app)
+			io_fd[0] = my_exec(params, io_fd, envp);
+		else
+		{
+			if (io_fd[0] != -1)
+			{
+				close(io_fd[0]);
+				io_fd[0] = -1;
+			}
+		}
 		params = params->next;
 	}
 	if (io_fd[1] != -1)
@@ -128,16 +125,18 @@ int	execution(char *cmd_str, t_mshell *shell)
 {
 	t_list			*list;
 	char			**envp;
+	t_list_params	*cmd;
 
 	envp = lst_to_arr(shell);
 	list = NULL;
 	if (parser(cmd_str, &list, shell) != -1)
 	{
 		validation(list, envp);
-		exec_manager(list, shell, envp);
+		exec_manager(list, envp);
 		show_params(list);
-		if (((t_list_params *)(list->content))->builtin != NULL)
-			((t_list_params *)(list->content))->builtin(shell, (t_list_params *)(list->content));
+		cmd = (t_list_params *)(list->content);
+		if (cmd->builtin != NULL)
+			cmd->builtin(shell, cmd);
 	}
 	free_arr(envp);
 	ft_lstclear(&list, free_params_lst);

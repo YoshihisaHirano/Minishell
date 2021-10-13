@@ -125,6 +125,8 @@ char		**get_path_arr(char **envp, char *app_name);
 int			execution(char *cmd_str, t_mshell *shell);
 void		get_input_from_std(char *limiter, int fd);
 int			get_next_line(int fd, char **line);
+int			app_to_null(t_list_params *params);
+void		set_child_fd(t_list *params, int file_fds[], int fds[]);
 //to delete
 void		show_params(t_list *list);
 #endif
