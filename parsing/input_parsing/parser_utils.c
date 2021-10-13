@@ -104,10 +104,7 @@ void	process_io_tokens(char **param_to_set, t_mshell *shell, int mode)
 
 	if (mode == HERE_DOC)
 	{
-		// some problem here!
-		// : pointer being freed was not allocated
 		preprocessed = remove_quotes(*param_to_set);
-		free(*param_to_set);
 		*param_to_set = preprocessed;
 	}
 	else
@@ -116,7 +113,6 @@ void	process_io_tokens(char **param_to_set, t_mshell *shell, int mode)
 		free(*param_to_set);
 		*param_to_set = remove_quotes(preprocessed);
 	}
-	printf("CHECK\n");
 }
 
 int check_for_cmd(char *cmd_str)

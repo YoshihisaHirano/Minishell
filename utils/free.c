@@ -44,6 +44,7 @@ void	free_io_params(void *param_node)
 	content = (t_list_io_params *)param_node;
 	if (content->file_name)
 		free(content->file_name);
+	close(content->fd);
 	free(param_node);
 }
 

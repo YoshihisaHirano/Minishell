@@ -131,6 +131,7 @@ int	token_process(char **input_str, t_mshell *shell, int(*set_io)(char **,
 	el->cmd_str_i++;
 	io_el = malloc(sizeof(t_list_io_params));
 	io_el->file_name = NULL;
+	io_el->fd = -1;
 	set_mode_status = set_io(input_str, shell, io_el);
 	if (set_io == set_output_mode)
 		ft_lstadd_back(&(el->output), ft_lstnew(io_el));

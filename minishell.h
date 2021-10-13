@@ -21,9 +21,10 @@
 # include <sys/types.h>
 # include <sys/stat.h>
 # include "libft/libft.h"
-# include "readline.h"
-# include "history.h"
-# include "rltypedefs.h"
+# include <readline.h>
+# include <history.h>
+# include <rltypedefs.h>
+# include <fcntl.h>
 # define ARG_OK 0
 # define NOT_NUMERIC -1
 # define PROMPT "Minishell$ "
@@ -51,6 +52,7 @@ typedef struct s_list_io_params
 {
 	int		mode;
 	char	*file_name;
+	int		fd;
 }			t_list_io_params;
 
 typedef struct s_mshell
@@ -61,15 +63,17 @@ typedef struct s_mshell
 
 typedef struct s_list_params
 {
-	char				**cmd_arr;
-	char				*str_to_cmd;
-	char				*path_app;
-	int					fd[2];
-	int					cmd_str_i;
-	t_list				*input;
-	t_list				*output;
-	void				(*builtin)(t_mshell *, struct s_list_params *);
-}						t_list_params;
+	char	**cmd_arr;
+	char	*str_to_cmd;
+	char	*path_app;
+	int		fd[2];
+	int		cmd_str_i;
+	t_list	*input;
+	t_list	*output;
+	int		input_fd;
+	int 	output_fd;
+	void	(*builtin)(t_mshell *, struct s_list_params *);
+}			t_list_params;
 
 void		handle_sigs(void);
 void		error_exit(char *prog);
@@ -117,6 +121,10 @@ int			check_for_cmd(char *cmd_str);
 int			validation(t_list *param_list, char **envp);
 int			parser(char *input_str, t_list **list, t_mshell *shell);
 char		**get_path_arr(char **envp, char *app_name);
+/* exec part*/
+int			execution(char *cmd_str, t_mshell *shell);
+void		get_input_from_std(char *limiter, int fd);
+int			get_next_line(int fd, char **line);
 //to delete
 void		show_params(t_list *list);
 #endif
