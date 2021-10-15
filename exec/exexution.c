@@ -102,7 +102,7 @@ void	exec_manager(t_list *params, char **envp)
 		element = (t_list_params *) params->content;
 		set_input_output(element, io_fd);
 		printf("in fd: %d out: %d\n", io_fd[0], io_fd[1]);
-		if (element->path_app)
+		if (element->path_app && element->path_app[0])
 			io_fd[0] = my_exec(params, io_fd, envp);
 		else
 		{
@@ -113,11 +113,6 @@ void	exec_manager(t_list *params, char **envp)
 			}
 		}
 		params = params->next;
-	}
-	if (io_fd[1] != -1)
-	{
-		close(io_fd[1]);
-		io_fd[1] = -1;
 	}
 }
 
@@ -133,7 +128,8 @@ int	execution(char *cmd_str, t_mshell *shell)
 	{
 		validation(list, envp);
 		exec_manager(list, envp);
-		show_params(list);
+		ft_putstr_fd("exec complite\n", 1);
+//		show_params(list);
 		cmd = (t_list_params *)(list->content);
 		if (cmd->builtin != NULL)
 			cmd->builtin(shell, cmd);

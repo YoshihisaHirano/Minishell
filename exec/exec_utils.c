@@ -16,6 +16,7 @@
 /*TODO add error cases (file output error app ok - work) */
 /*TODO add error cases (if one file falls other dont creates) */
 /*TODO add pipe case */
+/*TODO cat | rev ??  */
 
 void	set_child_fd(t_list *params, int file_fd[], int pipe_fd[])
 {
@@ -25,21 +26,21 @@ void	set_child_fd(t_list *params, int file_fd[], int pipe_fd[])
 	{
 		dup2(file_fd[0], STDIN_FILENO);
 		close(pipe_fd[0]);
+		pipe_fd[0] = -1;
 	}
-	else
-		dup2(pipe_fd[0], STDIN_FILENO);
-	if (!params->next)
+//	else
+//		dup2(pipe_fd[0], STDIN_FILENO);
+	if (file_fd[1] != -1)
 	{
-		if (file_fd[1] != -1)
-		{
-			dup2(file_fd[1], STDOUT_FILENO);
-			close(pipe_fd[1]);
-		}
-//		else
-//			dup2(pipe_fd[1], STDOUT_FILENO);
+		dup2(file_fd[1], STDOUT_FILENO);
+		close(pipe_fd[1]);
+		pipe_fd[1] = -1;
 	}
 	else
-		dup2(pipe_fd[1], STDOUT_FILENO);
+	{
+		if (params->next)
+			dup2(pipe_fd[1], STDOUT_FILENO);
+	}
 }
 
 void	get_input_from_std(char *limiter, int fd)

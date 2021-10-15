@@ -31,9 +31,7 @@ void	check_status_path(t_list *params)
 	t_list_params	*param;
 
 	param = (t_list_params *)(params->content);
-	if (param->path_app)
-		printf("app is ok\n%s\n", param->path_app); //TODO remove
-	else
+	if (!param->path_app)
 	{
 		if (!(is_path(param->cmd_arr[0])))
 			print_err_msg(NULL, param->cmd_arr[0], "command not found");
