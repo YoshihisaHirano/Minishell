@@ -13,7 +13,7 @@
 #include "minishell.h"
 
 int	g_last_exit_code = 0;
-
+/* TODO inception.. call leo!!! invoke ./minishell into minishell ???*/
 void	run_command(t_mshell *shell, char **cmd_arr)
 {
 	t_list		*path_var;

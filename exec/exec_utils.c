@@ -17,20 +17,53 @@
 /*TODO add error cases (if one file falls other dont creates) */
 /*TODO add pipe case */
 /*TODO cat | rev ??  */
+/* same file for in and out*/
+
 
 void	set_child_fd(t_list *params, int file_fd[], int pipe_fd[])
 {
-//	printf("file_fd : %d_%d\n pipe_fd: %d_%d\n", file_fd[0],
-//		   file_fd[1], pipe_fd[0], pipe_fd[1]);
-	if (file_fd[0] != -1)
+	printf("file_fd : %d_%d\n pipe_fd: %d_%d\n", file_fd[0],
+		   file_fd[1], pipe_fd[0], pipe_fd[1]);
+	// input part
+	if (file_fd[0] > 0)
 	{
 		dup2(file_fd[0], STDIN_FILENO);
 		close(pipe_fd[0]);
 		pipe_fd[0] = -1;
 	}
-//	else
+	else if (file_fd[0] == -2)
+	{
+		dup2(pipe_fd[0], STDIN_FILENO);
+		close(pipe_fd[0]);
+	}
+
+
+
+//	if (file_fd[0] != -1)					// valid input_fd
+//	{
+//		dup2(file_fd[0], STDIN_FILENO);
+//		close(pipe_fd[0]);
+//		pipe_fd[0] = -1;
+//	}
+//	else									// valid input_fd NOT
 //		dup2(pipe_fd[0], STDIN_FILENO);
-	if (file_fd[1] != -1)
+//	if (!params->next)
+//	{
+//		if (file_fd[1] != -1)
+//		{
+//			dup2(file_fd[1], STDOUT_FILENO);
+//			close(pipe_fd[1]);
+//			pipe_fd[1] = -1;
+//		}
+//	}
+//	else
+//	{
+//		dup2(pipe_fd[1], STDOUT_FILENO);
+//	}
+
+
+
+	if (file_fd[1] != -1)					// pipe_fd Valid
 	{
 		dup2(file_fd[1], STDOUT_FILENO);
 		close(pipe_fd[1]);

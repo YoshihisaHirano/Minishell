@@ -28,10 +28,13 @@ int	my_exec(t_list *params, int file_fd[], char **envp)
 	}
 	else
 	{
-		waitpid(pid, NULL, WNOHANG);
+		waitpid(pid, NULL, WNOHANG); // WNOHANG ?? WUNTRACED
 		close(pipe_fd[1]);
 		if (file_fd[0] > 0)
+		{
 			close(file_fd[0]);
+			file_fd[0] = -1;
+		}
 		if (!params->next)
 			close(pipe_fd[0]);
 	}
@@ -60,7 +63,10 @@ int	open_files(t_list_io_params *io_el)
 	if (io_el->mode == REDRCT_APPEND)
 		io_el->fd = open(io_el->file_name, O_WRONLY | O_CREAT | O_APPEND, 0777);
 	if (io_el->fd == -1)
+	{
+		io_el->fd = -2;
 		perror(io_el->file_name);
+	}
 	return (io_el->fd);
 }
 
@@ -101,7 +107,6 @@ void	exec_manager(t_list *params, char **envp)
 	{
 		element = (t_list_params *) params->content;
 		set_input_output(element, io_fd);
-		printf("in fd: %d out: %d\n", io_fd[0], io_fd[1]);
 		if (element->path_app && element->path_app[0])
 			io_fd[0] = my_exec(params, io_fd, envp);
 		else
@@ -128,7 +133,6 @@ int	execution(char *cmd_str, t_mshell *shell)
 	{
 		validation(list, envp);
 		exec_manager(list, envp);
-		ft_putstr_fd("exec complite\n", 1);
 //		show_params(list);
 		cmd = (t_list_params *)(list->content);
 		if (cmd->builtin != NULL)
