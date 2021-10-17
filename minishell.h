@@ -33,6 +33,7 @@
 # define REDRCT_APPEND 3
 # define REDRCT_INPUT 4
 # define HERE_DOC 5
+# define PIPE_FD -3
 
 extern int	g_last_exit_code;
 

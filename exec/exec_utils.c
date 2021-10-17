@@ -18,13 +18,13 @@
 /*TODO add pipe case */
 /*TODO cat | rev ??  */
 /* same file for in and out*/
+/* cat | rev*/
 
 
 void	set_child_fd(t_list *params, int file_fd[], int pipe_fd[])
 {
-	printf("file_fd : %d_%d\n pipe_fd: %d_%d\n", file_fd[0],
-		   file_fd[1], pipe_fd[0], pipe_fd[1]);
-	// input part
+	(void) params;
+	// input
 	if (file_fd[0] > 0)
 	{
 		dup2(file_fd[0], STDIN_FILENO);
@@ -32,48 +32,16 @@ void	set_child_fd(t_list *params, int file_fd[], int pipe_fd[])
 		pipe_fd[0] = -1;
 	}
 	else if (file_fd[0] == -2)
-	{
 		dup2(pipe_fd[0], STDIN_FILENO);
-		close(pipe_fd[0]);
-	}
-
-
-
-//	if (file_fd[0] != -1)					// valid input_fd
-//	{
-//		dup2(file_fd[0], STDIN_FILENO);
-//		close(pipe_fd[0]);
-//		pipe_fd[0] = -1;
-//	}
-//	else									// valid input_fd NOT
-//		dup2(pipe_fd[0], STDIN_FILENO);
-//	if (!params->next)
-//	{
-//		if (file_fd[1] != -1)
-//		{
-//			dup2(file_fd[1], STDOUT_FILENO);
-//			close(pipe_fd[1]);
-//			pipe_fd[1] = -1;
-//		}
-//	}
-//	else
-//	{
-//		dup2(pipe_fd[1], STDOUT_FILENO);
-//	}
-
-
-
-	if (file_fd[1] != -1)					// pipe_fd Valid
+	// output
+	if (file_fd[1] > 0)
 	{
 		dup2(file_fd[1], STDOUT_FILENO);
 		close(pipe_fd[1]);
 		pipe_fd[1] = -1;
 	}
-	else
-	{
-		if (params->next)
-			dup2(pipe_fd[1], STDOUT_FILENO);
-	}
+	else if (file_fd[1] == -2 || file_fd[1] == PIPE_FD)
+		dup2(pipe_fd[1], STDOUT_FILENO);
 }
 
 void	get_input_from_std(char *limiter, int fd)

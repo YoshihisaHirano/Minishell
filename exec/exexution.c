@@ -28,7 +28,7 @@ int	my_exec(t_list *params, int file_fd[], char **envp)
 	}
 	else
 	{
-		waitpid(pid, NULL, WNOHANG); // WNOHANG ?? WUNTRACED
+		waitpid(pid, NULL, 0);
 		close(pipe_fd[1]);
 		if (file_fd[0] > 0)
 		{
@@ -41,14 +41,12 @@ int	my_exec(t_list *params, int file_fd[], char **envp)
 	return (pipe_fd[0]);
 }
 
-/*TODO double close fds -> set to -1?*/
-/*TODO rights created files?? -rw-r--r--*/
 int	open_files(t_list_io_params *io_el)
 {
 	int	fds[2];
 
 	if (io_el->mode == PIPE)
-		return (-1);
+		return (PIPE_FD);
 	if (io_el->mode == HERE_DOC)
 	{
 		pipe(fds);
@@ -59,9 +57,9 @@ int	open_files(t_list_io_params *io_el)
 	if (io_el->mode == REDRCT_INPUT)
 		io_el->fd = open(io_el->file_name, O_RDONLY);
 	if (io_el->mode == REDRCT_OUTPUT)
-		io_el->fd = open(io_el->file_name, O_WRONLY | O_TRUNC | O_CREAT, 0777);
+		io_el->fd = open(io_el->file_name, O_WRONLY | O_TRUNC | O_CREAT, 0644);
 	if (io_el->mode == REDRCT_APPEND)
-		io_el->fd = open(io_el->file_name, O_WRONLY | O_CREAT | O_APPEND, 0777);
+		io_el->fd = open(io_el->file_name, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (io_el->fd == -1)
 	{
 		io_el->fd = -2;
@@ -78,7 +76,7 @@ int	set_input_output(t_list_params *params, int *io_fd)
 	while (tmp)
 	{
 		io_fd[0] = open_files((t_list_io_params *) tmp->content);
-		if (io_fd[0] == -1)
+		if (io_fd[0] == -1 || io_fd[0] == -2)
 			return (app_to_null(params));
 		tmp = tmp->next;
 	}
@@ -86,29 +84,30 @@ int	set_input_output(t_list_params *params, int *io_fd)
 	while (tmp)
 	{
 		io_fd[1] = open_files((t_list_io_params *) tmp->content);
-		if (io_fd[1] == -1)
+		if (io_fd[1] == -1 || io_fd[1] == -2)
 			return (app_to_null(params));
 		tmp = tmp->next;
 	}
 	return (0);
 }
 
-// fd[0] - read
-// fd[1] = write
-
 void	exec_manager(t_list *params, char **envp)
 {
 	t_list_params	*element;
 	int				io_fd[2];
+	int				last_pipe_read;
 
-	io_fd[0] = -1;
-	io_fd[1] = -1;
+	last_pipe_read = -1;
 	while (params)
 	{
+		io_fd[0] = -1;
+		io_fd[1] = -1;
 		element = (t_list_params *) params->content;
 		set_input_output(element, io_fd);
+		if (io_fd[0] == -1)
+			io_fd[0] = last_pipe_read;
 		if (element->path_app && element->path_app[0])
-			io_fd[0] = my_exec(params, io_fd, envp);
+			last_pipe_read = my_exec(params, io_fd, envp);
 		else
 		{
 			if (io_fd[0] != -1)

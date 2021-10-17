@@ -20,7 +20,7 @@ all		:	$(PROG)
 $(LIB)	:
 			make -s -C $(LIBDIR)
 
-$(PROG)	:	$(HEADER) $(OBJ) $(LIB)
+$(PROG)	:	$(HEADER) $(OBJ) $(LIB) Makefile
 			$(CC) $(CFLAGS) $(LFLAGS) $(OBJ) -o $(PROG)
 
 %.o		:	%.c $(HEADER)
