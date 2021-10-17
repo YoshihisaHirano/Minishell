@@ -17,32 +17,65 @@
 /*TODO add error cases (if one file falls other dont creates) */
 /*TODO add pipe case */
 /*TODO cat | rev ??  */
-/* same file for in and out*/
-/* cat | rev*/
 
+/*TODO SOMETHING WRONG WITH SET FDS. CAT | REV */
 
 void	set_child_fd(t_list *params, int file_fd[], int pipe_fd[])
 {
-	(void) params;
-	// input
-	if (file_fd[0] > 0)
+	if (!((t_list_params *) params->content)->builtin)
 	{
-		dup2(file_fd[0], STDIN_FILENO);
 		close(pipe_fd[0]);
 		pipe_fd[0] = -1;
 	}
-	else if (file_fd[0] == -2)
+	if (file_fd[0] > 0)
+		dup2(file_fd[0], STDIN_FILENO);
+//	else if (file_fd[0] == -2 || file_fd[0] == -1)
+	else
 		dup2(pipe_fd[0], STDIN_FILENO);
-	// output
 	if (file_fd[1] > 0)
 	{
 		dup2(file_fd[1], STDOUT_FILENO);
-		close(pipe_fd[1]);
-		pipe_fd[1] = -1;
+		if (!((t_list_params *) params->content)->builtin)
+		{
+			close(pipe_fd[1]);
+			pipe_fd[1] = -1;
+		}
 	}
 	else if (file_fd[1] == -2 || file_fd[1] == PIPE_FD)
 		dup2(pipe_fd[1], STDOUT_FILENO);
 }
+
+void	set_parrent_fd(t_list *params, int file_fd[], int pipe_fd[])
+{
+	if (pipe_fd[1] != -1)
+		close(pipe_fd[1]);
+	pipe_fd[1] = -1;
+	if (file_fd[0] > 0)
+	{
+		close(file_fd[0]);
+		file_fd[0] = -1;
+	}
+	if (!params->next)
+		close(pipe_fd[0]);
+}
+
+int	builtin_exec(t_list *params, int file_fd[], int pipe_fd[], t_mshell *shell)
+{
+	int				stdout_copy;
+	int				stdin_copy;
+	t_list_params	*element;
+
+	element = (t_list_params *) params->content;
+	stdout_copy = dup(STDOUT_FILENO);
+	stdin_copy = dup(STDIN_FILENO);
+	set_child_fd(params, file_fd, pipe_fd);
+	element->builtin(shell, element);
+	set_parrent_fd(params, file_fd, pipe_fd);
+	dup2(stdout_copy, STDOUT_FILENO);
+	dup2(stdin_copy, STDIN_FILENO);
+	return (pipe_fd[0]);
+}
+
 
 void	get_input_from_std(char *limiter, int fd)
 {

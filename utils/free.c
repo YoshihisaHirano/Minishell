@@ -54,7 +54,8 @@ void	free_params_lst(void *param_node)
 	t_list_params	*content;
 
 	content = (t_list_params *)param_node;
-	free_arr(content->cmd_arr);
+	if (content->cmd_arr)
+		free_arr(content->cmd_arr);
 	if (content->str_to_cmd)
 		free(content->str_to_cmd);
 	if (content->path_app)

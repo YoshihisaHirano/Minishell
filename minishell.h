@@ -128,6 +128,9 @@ void		get_input_from_std(char *limiter, int fd);
 int			get_next_line(int fd, char **line);
 int			app_to_null(t_list_params *params);
 void		set_child_fd(t_list *params, int file_fds[], int fds[]);
+void		set_parrent_fd(t_list *params, int file_fd[], int pipe_fd[]);
+int			builtin_exec(t_list *params, int file_fd[], int pipe_fd[],
+							t_mshell *shell);
 //to delete
 void		show_params(t_list *list);
 #endif

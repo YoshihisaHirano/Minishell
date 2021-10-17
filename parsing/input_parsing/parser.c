@@ -29,6 +29,8 @@ void show_params(t_list *list)
 		param_el = ((t_list_params *) tmp->content);
 		if (param_el->path_app)
 			printf("path_app: %s\n", param_el->path_app);
+		if (param_el->builtin)
+			printf("Has builtin\n");
 		if (param_el->cmd_arr)
 		{
 			char **arr = param_el->cmd_arr;
@@ -67,6 +69,7 @@ void show_params(t_list *list)
 		}
 		tmp = tmp->next;
 	}
+	printf("--------------------------\n");
 }
 
 int	set_input_mode(char **input_str, t_mshell *shell, t_list_io_params *io_el)

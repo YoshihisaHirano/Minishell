@@ -51,7 +51,7 @@ void	assign_path(t_list_params *el, struct stat *buf)
 		print_error(NULL, el->cmd_arr[0]);
 		return ;
 	}
-	el->path_app = el->cmd_arr[0];
+	el->path_app = ft_strdup(el->cmd_arr[0]);
 	free(buf);
 }
 

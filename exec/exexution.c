@@ -12,7 +12,10 @@
 
 #include "../minishell.h"
 
-int	my_exec(t_list *params, int file_fd[], char **envp)
+/*TODO last exit code to global from child process?*/
+/*TODO  cd isnt work ??? */
+
+int	my_exec(t_list *params, int file_fd[], char **envp, t_mshell *shell)
 {
 	int				pid;
 	int				pipe_fd[2];
@@ -20,6 +23,8 @@ int	my_exec(t_list *params, int file_fd[], char **envp)
 
 	element = (t_list_params *) params->content;
 	pipe(pipe_fd);
+	if (element->builtin)
+		return (builtin_exec(params, file_fd, pipe_fd, shell));
 	pid = fork();
 	if (pid == 0)
 	{
@@ -29,14 +34,7 @@ int	my_exec(t_list *params, int file_fd[], char **envp)
 	else
 	{
 		waitpid(pid, NULL, 0);
-		close(pipe_fd[1]);
-		if (file_fd[0] > 0)
-		{
-			close(file_fd[0]);
-			file_fd[0] = -1;
-		}
-		if (!params->next)
-			close(pipe_fd[0]);
+		set_parrent_fd(params, file_fd, pipe_fd);
 	}
 	return (pipe_fd[0]);
 }
@@ -71,6 +69,7 @@ int	open_files(t_list_io_params *io_el)
 int	set_input_output(t_list_params *params, int *io_fd)
 {
 	t_list	*tmp;
+	int		tmp_fd;
 
 	tmp = params->input;
 	while (tmp)
@@ -83,7 +82,11 @@ int	set_input_output(t_list_params *params, int *io_fd)
 	tmp = params->output;
 	while (tmp)
 	{
-		io_fd[1] = open_files((t_list_io_params *) tmp->content);
+		tmp_fd = open_files((t_list_io_params *) tmp->content);
+		if (io_fd[1] == -1 && tmp_fd == PIPE_FD)
+			io_fd[1] = PIPE_FD;
+		else if (tmp_fd != PIPE_FD)
+			io_fd[1] = tmp_fd;
 		if (io_fd[1] == -1 || io_fd[1] == -2)
 			return (app_to_null(params));
 		tmp = tmp->next;
@@ -91,7 +94,7 @@ int	set_input_output(t_list_params *params, int *io_fd)
 	return (0);
 }
 
-void	exec_manager(t_list *params, char **envp)
+void	exec_manager(t_list *params, char **envp, t_mshell *shell)
 {
 	t_list_params	*element;
 	int				io_fd[2];
@@ -106,8 +109,8 @@ void	exec_manager(t_list *params, char **envp)
 		set_input_output(element, io_fd);
 		if (io_fd[0] == -1)
 			io_fd[0] = last_pipe_read;
-		if (element->path_app && element->path_app[0])
-			last_pipe_read = my_exec(params, io_fd, envp);
+		if ((element->path_app && element->path_app[0]) || element->builtin)
+			last_pipe_read = my_exec(params, io_fd, envp, shell);
 		else
 		{
 			if (io_fd[0] != -1)
@@ -124,18 +127,14 @@ int	execution(char *cmd_str, t_mshell *shell)
 {
 	t_list			*list;
 	char			**envp;
-	t_list_params	*cmd;
 
 	envp = lst_to_arr(shell);
 	list = NULL;
 	if (parser(cmd_str, &list, shell) != -1)
 	{
 		validation(list, envp);
-		exec_manager(list, envp);
 //		show_params(list);
-		cmd = (t_list_params *)(list->content);
-		if (cmd->builtin != NULL)
-			cmd->builtin(shell, cmd);
+		exec_manager(list, envp, shell);
 	}
 	free_arr(envp);
 	ft_lstclear(&list, free_params_lst);
