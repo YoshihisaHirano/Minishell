@@ -14,31 +14,21 @@
 
 /*TODO to discuss syntax error: multiline pipe */
 
-int	my_exec(t_list *params, int file_fd[], char **envp, t_mshell *shell)
+int	my_exec(t_list *params, char **envp, t_mshell *shell)
 {
-	int				pid;
-	int				pipe_fd[2];
 	t_list_params	*element;
-	int				status;
 
 	element = (t_list_params *) params->content;
-	pipe(pipe_fd);
+	pipe(element->pipe_fd);
 	if (element->builtin)
-		return (builtin_exec(params, file_fd, pipe_fd, shell));
-	pid = fork();
-	if (pid == 0)
+		return (builtin_exec(params, shell));
+	element->pid = fork();
+	if (element->pid == 0)
 	{
-		set_child_fd(params, file_fd, pipe_fd);
+		set_child_fd(params, element->file_fd, element->pipe_fd);
 		execve(element->path_app, element->cmd_arr, envp);
 	}
-	else
-	{
-		waitpid(pid, &status, 0);
-		if (WIFEXITED(status))
-			g_last_exit_code = WEXITSTATUS(status);
-		set_parrent_fd(params, file_fd, pipe_fd);
-	}
-	return (pipe_fd[0]);
+	return (element->pipe_fd[0]);
 }
 
 int	open_files(t_list_io_params *io_el)
@@ -100,29 +90,35 @@ int	set_input_output(t_list_params *params, int *io_fd, t_list *list)
 void	exec_manager(t_list *params, char **envp, t_mshell *shell)
 {
 	t_list_params	*element;
-	int				io_fd[2];
 	int				last_pipe_read;
+	t_list 			*tmp;
+	int				status;
 
+	tmp = params;
 	last_pipe_read = -1;
-	while (params)
+	while (tmp)
 	{
-		io_fd[0] = -1;
-		io_fd[1] = -1;
-		element = (t_list_params *) params->content;
-		set_input_output(element, io_fd, params);
-		if (io_fd[0] == -1)
-			io_fd[0] = last_pipe_read;
+		element = (t_list_params *) tmp->content;
+		set_input_output(element, element->file_fd, tmp);
+		if (element->file_fd[0] == -1)
+			element->file_fd[0] = last_pipe_read;
 		if ((element->path_app && element->path_app[0]) || element->builtin)
-			last_pipe_read = my_exec(params, io_fd, envp, shell);
-		else
+			last_pipe_read = my_exec(tmp, envp, shell);
+		tmp = tmp->next;
+	}
+	tmp = params;
+	while (tmp)
+	{
+		element = (t_list_params *) tmp->content;
+		if ((element->path_app && element->path_app[0]) || element->builtin)
 		{
-			if (io_fd[0] != -1)
-			{
-				close(io_fd[0]);
-				io_fd[0] = -1;
-			}
+			close(element->pipe_fd[1]);
+			close(element->pipe_fd[0]);
+			waitpid(element->pid, &status, 0);
+			if (WIFEXITED(status))
+				g_last_exit_code = WEXITSTATUS(status);
 		}
-		params = params->next;
+		tmp = tmp->next;
 	}
 }
 

@@ -183,6 +183,8 @@ int	parser(char *input_str, t_list **list, t_mshell *shell)
 		el->input = NULL;
 		el->output = NULL;
 		el->builtin = NULL;
+		el->file_fd[0] = -1;
+		el->file_fd[1] = -1;
 		el->str_to_cmd = malloc(ft_strlen(input_str) * 2 + 1);
 		if (!el->str_to_cmd)
 			return (-1);

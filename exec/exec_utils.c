@@ -16,62 +16,44 @@
 /*TODO add error cases (file output error app ok - work) */
 /*TODO add error cases (if one file falls other dont creates) */
 /*TODO cat | rev ??  */
+/*TODO > newfile */
+/*TODO SHLVL=1   ++ if ./minishell*/
+
+
 
 /*TODO SOMETHING WRONG WITH SET FDS. CAT | REV */
 
 void	set_child_fd(t_list *params, int file_fd[], int pipe_fd[])
 {
-	if (!((t_list_params *) params->content)->builtin)
-	{
-		close(pipe_fd[0]);
-		pipe_fd[0] = -1;
-	}
 	if (file_fd[0] > 0)
 		dup2(file_fd[0], STDIN_FILENO);
-//	else if (file_fd[0] == -2)
-//		dup2(pipe_fd[0], STDIN_FILENO);
 	if (file_fd[1] > 0)
-	{
 		dup2(file_fd[1], STDOUT_FILENO);
-		if (!((t_list_params *) params->content)->builtin)
-		{
-			close(pipe_fd[1]);
-			pipe_fd[1] = -1;
-		}
-	}
-	else if (file_fd[1] == -2 || file_fd[1] == PIPE_FD)
+//	else if (file_fd[1] == -2 || file_fd[1] == PIPE_FD)
+	else if (file_fd[1] == PIPE_FD)
 		dup2(pipe_fd[1], STDOUT_FILENO);
-}
-
-void	set_parrent_fd(t_list *params, int file_fd[], int pipe_fd[])
-{
-	if (pipe_fd[1] != -1)
-		close(pipe_fd[1]);
-	pipe_fd[1] = -1;
-	if (file_fd[0] > 0)
+	if (!((t_list_params *)params->content)->builtin)
 	{
-		close(file_fd[0]);
-		file_fd[0] = -1;
-	}
-	if (!params->next)
+//		ft_putstr_fd("not builtin\n", 2);
 		close(pipe_fd[0]);
+		close(pipe_fd[1]);
+	}
 }
 
-int	builtin_exec(t_list *params, int file_fd[], int pipe_fd[], t_mshell *shell)
+int	builtin_exec(t_list *params, t_mshell *shell)
 {
-	int				stdout_copy;
-	int				stdin_copy;
+//	int				stdout_copy;
+//	int				stdin_copy;
 	t_list_params	*element;
 
 	element = (t_list_params *) params->content;
-	stdout_copy = dup(STDOUT_FILENO);
-	stdin_copy = dup(STDIN_FILENO);
-	set_child_fd(params, file_fd, pipe_fd);
+//	stdout_copy = dup(STDOUT_FILENO);
+//	stdin_copy = dup(STDIN_FILENO);
+	set_child_fd(params, element->file_fd, element->pipe_fd);
 	element->builtin(shell, element);
-	set_parrent_fd(params, file_fd, pipe_fd);
-	dup2(stdout_copy, STDOUT_FILENO);
-	dup2(stdin_copy, STDIN_FILENO);
-	return (pipe_fd[0]);
+//	dup2(stdout_copy, STDOUT_FILENO);
+//	dup2(stdin_copy, STDIN_FILENO);
+	return (element->pipe_fd[0]);
 }
 
 
