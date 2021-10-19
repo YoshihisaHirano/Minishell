@@ -12,14 +12,14 @@
 
 #include "../minishell.h"
 
-/*TODO last exit code to global from child process?*/
-/*TODO  cd isnt work ??? */
+/*TODO to discuss syntax error: multiline pipe */
 
 int	my_exec(t_list *params, int file_fd[], char **envp, t_mshell *shell)
 {
 	int				pid;
 	int				pipe_fd[2];
 	t_list_params	*element;
+	int				status;
 
 	element = (t_list_params *) params->content;
 	pipe(pipe_fd);
@@ -33,7 +33,9 @@ int	my_exec(t_list *params, int file_fd[], char **envp, t_mshell *shell)
 	}
 	else
 	{
-		waitpid(pid, NULL, 0);
+		waitpid(pid, &status, 0);
+		if (WIFEXITED(status))
+			g_last_exit_code = WEXITSTATUS(status);
 		set_parrent_fd(params, file_fd, pipe_fd);
 	}
 	return (pipe_fd[0]);
@@ -66,7 +68,7 @@ int	open_files(t_list_io_params *io_el)
 	return (io_el->fd);
 }
 
-int	set_input_output(t_list_params *params, int *io_fd)
+int	set_input_output(t_list_params *params, int *io_fd, t_list *list)
 {
 	t_list	*tmp;
 	int		tmp_fd;
@@ -75,8 +77,8 @@ int	set_input_output(t_list_params *params, int *io_fd)
 	while (tmp)
 	{
 		io_fd[0] = open_files((t_list_io_params *) tmp->content);
-		if (io_fd[0] == -1 || io_fd[0] == -2)
-			return (app_to_null(params));
+		if (io_fd[0] == -1 || io_fd[0] == -2) // change to -2 only
+			return (app_to_null(params, io_fd[0]));
 		tmp = tmp->next;
 	}
 	tmp = params->output;
@@ -87,8 +89,9 @@ int	set_input_output(t_list_params *params, int *io_fd)
 			io_fd[1] = PIPE_FD;
 		else if (tmp_fd != PIPE_FD)
 			io_fd[1] = tmp_fd;
-		if (io_fd[1] == -1 || io_fd[1] == -2)
-			return (app_to_null(params));
+		if (io_fd[1] == -1 || io_fd[1] == -2
+			|| (tmp_fd == PIPE_FD && !list->next))
+			return (app_to_null(params, io_fd[1]));
 		tmp = tmp->next;
 	}
 	return (0);
@@ -106,7 +109,7 @@ void	exec_manager(t_list *params, char **envp, t_mshell *shell)
 		io_fd[0] = -1;
 		io_fd[1] = -1;
 		element = (t_list_params *) params->content;
-		set_input_output(element, io_fd);
+		set_input_output(element, io_fd, params);
 		if (io_fd[0] == -1)
 			io_fd[0] = last_pipe_read;
 		if ((element->path_app && element->path_app[0]) || element->builtin)

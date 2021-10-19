@@ -106,7 +106,7 @@ int main(int argc, char **argv, char **env)
 	while(1)
 	{
 		untrimmed = readline(PROMPT);
-		str = ft_strtrim(untrimmed, " \t");
+		str = ft_strtrim(untrimmed, " \t"); // all spaces from isspace?
 		if (str && *str)
 		{
 			add_history(str);

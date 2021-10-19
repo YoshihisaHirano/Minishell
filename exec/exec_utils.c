@@ -15,7 +15,6 @@
 /*TODO add error cases (PIPE file output error app ok - work) */
 /*TODO add error cases (file output error app ok - work) */
 /*TODO add error cases (if one file falls other dont creates) */
-/*TODO add pipe case */
 /*TODO cat | rev ??  */
 
 /*TODO SOMETHING WRONG WITH SET FDS. CAT | REV */
@@ -29,9 +28,8 @@ void	set_child_fd(t_list *params, int file_fd[], int pipe_fd[])
 	}
 	if (file_fd[0] > 0)
 		dup2(file_fd[0], STDIN_FILENO);
-//	else if (file_fd[0] == -2 || file_fd[0] == -1)
-	else
-		dup2(pipe_fd[0], STDIN_FILENO);
+//	else if (file_fd[0] == -2)
+//		dup2(pipe_fd[0], STDIN_FILENO);
 	if (file_fd[1] > 0)
 	{
 		dup2(file_fd[1], STDOUT_FILENO);
@@ -97,8 +95,10 @@ void	get_input_from_std(char *limiter, int fd)
 	free(line);
 }
 
-int	app_to_null(t_list_params *params)
+int	app_to_null(t_list_params *params, int check_pipe)
 {
+	if (check_pipe == PIPE_FD)
+		ft_putstr_fd("syntax error: multiline pipe\n", 2);
 	if (params->path_app)
 		free(params->path_app);
 	params->path_app = NULL;

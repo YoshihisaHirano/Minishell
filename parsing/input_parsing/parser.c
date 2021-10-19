@@ -188,8 +188,6 @@ int	parser(char *input_str, t_list **list, t_mshell *shell)
 			return (-1);
 		if (set_params_to_el(&input_str, el, shell) == -1)
 		{
-			printf("Houston...we've had a problem here. Moon is "
-				   "fucked\n");
 			ft_lstadd_back(list, ft_lstnew(el));
 			return (-1);
 		}
