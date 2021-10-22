@@ -20,24 +20,26 @@
 /*TODO SHLVL=1   ++ if ./minishell*/
 
 
-
-/*TODO SOMETHING WRONG WITH SET FDS. CAT | REV */
-
-void	set_child_fd(t_list *params, int file_fd[], int pipe_fd[])
+void	set_child_fd(t_list *params)
 {
-	if (file_fd[0] > 0)
-		dup2(file_fd[0], STDIN_FILENO);
-	if (file_fd[1] > 0)
-		dup2(file_fd[1], STDOUT_FILENO);
+	t_list_params	*element;
+
+	element = (t_list_params *) params->content;
+	printf("Pipes: %d %d\n", element->pipe_fd[0], element->pipe_fd[1]);
+	printf("files: %d %d\n", element->file_fd[0], element->file_fd[1]);
+	if (element->file_fd[0] > 0)
+		dup2(element->file_fd[0], STDIN_FILENO);
+	if (element->file_fd[1] > 0)
+		dup2(element->file_fd[1], STDOUT_FILENO);
 //	else if (file_fd[1] == -2 || file_fd[1] == PIPE_FD)
-	else if (file_fd[1] == PIPE_FD)
-		dup2(pipe_fd[1], STDOUT_FILENO);
-	if (!((t_list_params *)params->content)->builtin)
-	{
-//		ft_putstr_fd("not builtin\n", 2);
-		close(pipe_fd[0]);
-		close(pipe_fd[1]);
-	}
+	if (element->file_fd[1] == PIPE_FD)
+		dup2(element->pipe_fd[1], STDOUT_FILENO);
+	close(element->pipe_fd[1]);
+	close(element->pipe_fd[0]);
+//	else if (!((t_list_params *)params->content)->builtin)
+//	{
+
+//	}
 }
 
 int	builtin_exec(t_list *params, t_mshell *shell)
@@ -49,7 +51,7 @@ int	builtin_exec(t_list *params, t_mshell *shell)
 	element = (t_list_params *) params->content;
 //	stdout_copy = dup(STDOUT_FILENO);
 //	stdin_copy = dup(STDIN_FILENO);
-	set_child_fd(params, element->file_fd, element->pipe_fd);
+	set_child_fd(params);
 	element->builtin(shell, element);
 //	dup2(stdout_copy, STDOUT_FILENO);
 //	dup2(stdin_copy, STDIN_FILENO);

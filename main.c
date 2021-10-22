@@ -121,5 +121,6 @@ int main(int argc, char **argv, char **env)
 		free(untrimmed);
 		free(str);
 	}
+
 	return (0);
 }

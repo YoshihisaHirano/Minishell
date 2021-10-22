@@ -25,7 +25,7 @@ int	my_exec(t_list *params, char **envp, t_mshell *shell)
 	element->pid = fork();
 	if (element->pid == 0)
 	{
-		set_child_fd(params, element->file_fd, element->pipe_fd);
+		set_child_fd(params);
 		execve(element->path_app, element->cmd_arr, envp);
 	}
 	return (element->pipe_fd[0]);
@@ -109,12 +109,19 @@ void	exec_manager(t_list *params, char **envp, t_mshell *shell)
 	tmp = params;
 	while (tmp)
 	{
+//		ft_putstr_fd( ((t_list_params *) params->content)->path_app, 2);
+//		ft_putstr_fd(" parrent\n", 2);
 		element = (t_list_params *) tmp->content;
 		if ((element->path_app && element->path_app[0]) || element->builtin)
 		{
 			close(element->pipe_fd[1]);
-			close(element->pipe_fd[0]);
+			if (element->file_fd[0] > 0)
+				close(element->file_fd[0]);
+			if (!params->next)
+				close(element->pipe_fd[0]);
 			waitpid(element->pid, &status, 0);
+			ft_putstr_fd(element->path_app, 2);
+			ft_putstr_fd(" ended\n", 2);
 			if (WIFEXITED(status))
 				g_last_exit_code = WEXITSTATUS(status);
 		}
