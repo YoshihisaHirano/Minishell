@@ -15,18 +15,16 @@
 /*TODO add error cases (PIPE file output error app ok - work) */
 /*TODO add error cases (file output error app ok - work) */
 /*TODO add error cases (if one file falls other dont creates) */
-/*TODO cat | rev ??  */
-/*TODO > newfile */
 /*TODO SHLVL=1   ++ if ./minishell*/
+/*TODO lss | rev*/
 
 
 void	set_child_fd(t_list *params)
 {
+
 	t_list_params	*element;
 
 	element = (t_list_params *) params->content;
-	printf("Pipes: %d %d\n", element->pipe_fd[0], element->pipe_fd[1]);
-	printf("files: %d %d\n", element->file_fd[0], element->file_fd[1]);
 	if (element->file_fd[0] > 0)
 		dup2(element->file_fd[0], STDIN_FILENO);
 	if (element->file_fd[1] > 0)
@@ -38,7 +36,7 @@ void	set_child_fd(t_list *params)
 	close(element->pipe_fd[0]);
 //	else if (!((t_list_params *)params->content)->builtin)
 //	{
-
+//
 //	}
 }
 
