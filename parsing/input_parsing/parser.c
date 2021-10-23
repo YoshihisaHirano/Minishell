@@ -12,8 +12,6 @@
 
 #include "../../minishell.h"
 
-//int	validation(t_list *param_list, char **envp);
-
 void show_params(t_list *list)
 {
 	t_list_params *param_el;
@@ -103,8 +101,7 @@ int	set_output_mode(char **input_str, t_mshell *shell, t_list_io_params *io_el)
 	if (**input_str == '|')
 	{
 		io_el->mode = PIPE;
-		(*input_str)++;
-		return (PIPE);
+		return (check_for_pipe_error(input_str));
 	}
 	if (!ft_strncmp(*input_str, ">>", 2))
 		io_el->mode = REDRCT_APPEND;
@@ -170,6 +167,8 @@ int	set_params_to_el(char **input_str, t_list_params *el, t_mshell *shell)
 	return (set_mode_res);
 }
 
+/*TODO cat |||| - return multiline pipe error. need syntax error*/
+
 int	parser(char *input_str, t_list **list, t_mshell *shell)
 {
 	t_list_params	*el;
@@ -197,9 +196,3 @@ int	parser(char *input_str, t_list **list, t_mshell *shell)
 	}
 	return (0);
 }
-
-/*TODO for pipe one more handler in valid for extra pipe*/
-
-/*???TODO WTF "\'cat>>fil\"e args\' args" not to args. only one string??????*/
-/*TODO WTF "cat file>out | rev  -> create file with content and exec cmd"*/
-/*TODO if pipe without any cmd, prev cmd execute and then throw error*/

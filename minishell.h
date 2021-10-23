@@ -121,6 +121,7 @@ char		**parse_args(char *args, t_mshell *shell);
 void		handle_quotes(char **s, t_list_params *el);
 int			get_io_name(char **param_to_set, char **s);
 int			handle_token_error(char **input_str, char token);
+int			check_for_pipe_error(char **input_str);
 void		process_io_tokens(char **param_to_set, t_mshell *shell, int mode);
 int			check_for_cmd(char *cmd_str);
 int			validation(t_list *param_list, char **envp);
