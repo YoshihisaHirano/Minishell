@@ -132,6 +132,7 @@ int			get_next_line(int fd, char **line);
 int			app_to_null(t_list_params *params, int check_pipe);
 void		set_child_fd(t_list *params);
 int			builtin_exec(t_list *params, t_mshell *shell);
+void		parrent_process_handler(t_list *params);
 //to delete
 void		show_params(t_list *list);
 #endif

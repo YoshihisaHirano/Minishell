@@ -165,9 +165,8 @@ int	set_params_to_el(char **input_str, t_list_params *el, t_mshell *shell)
 			(*input_str)++;
 	}
 	el->str_to_cmd[el->cmd_str_i] = '\0';
-	if (check_for_cmd(el->str_to_cmd))
-		return (-1);
-	el->cmd_arr = parse_args(el->str_to_cmd, shell);
+	if (!check_for_cmd(el->str_to_cmd))
+		el->cmd_arr = parse_args(el->str_to_cmd, shell);
 	return (set_mode_res);
 }
 
@@ -185,6 +184,7 @@ int	parser(char *input_str, t_list **list, t_mshell *shell)
 		el->builtin = NULL;
 		el->file_fd[0] = -1;
 		el->file_fd[1] = -1;
+		el->pid = -1;
 		el->str_to_cmd = malloc(ft_strlen(input_str) * 2 + 1);
 		if (!el->str_to_cmd)
 			return (-1);

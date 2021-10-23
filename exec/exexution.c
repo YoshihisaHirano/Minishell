@@ -20,12 +20,18 @@ int	my_exec(t_list *params, char **envp, t_mshell *shell)
 	pipe(element->pipe_fd);
 	if (element->builtin)
 		return (builtin_exec(params, shell));
-	element->pid = fork();
+	if (element->path_app && element->path_app[0])
+		element->pid = fork();
+	else
+		g_last_exit_code = 127;
 	if (element->pid == 0)
 	{
+//		signal(SIGINT, SIG_DFL);
+//		handle_sigs();
 		set_child_fd(params);
 		execve(element->path_app, element->cmd_arr, envp);
 	}
+	signal(SIGINT, NULL);
 	close(element->pipe_fd[1]);
 	return (element->pipe_fd[0]);
 }
@@ -66,7 +72,7 @@ int	set_input_output(t_list_params *params, int *io_fd, t_list *list)
 	while (tmp)
 	{
 		io_fd[0] = open_files((t_list_io_params *) tmp->content);
-		if (io_fd[0] == -1 || io_fd[0] == -2) // change to -2 only
+		if (io_fd[0] == -1 || io_fd[0] == -2)
 			return (app_to_null(params, io_fd[0]));
 		tmp = tmp->next;
 	}
@@ -90,8 +96,7 @@ void	exec_manager(t_list *params, char **envp, t_mshell *shell)
 {
 	t_list_params	*element;
 	int				last_pipe_read;
-	t_list 			*tmp;
-	int				status;
+	t_list			*tmp;
 
 	tmp = params;
 	last_pipe_read = -1;
@@ -101,25 +106,10 @@ void	exec_manager(t_list *params, char **envp, t_mshell *shell)
 		set_input_output(element, element->file_fd, tmp);
 		if (element->file_fd[0] == -1)
 			element->file_fd[0] = last_pipe_read;
-		if ((element->path_app && element->path_app[0]) || element->builtin)
-			last_pipe_read = my_exec(tmp, envp, shell);
+		last_pipe_read = my_exec(tmp, envp, shell);
 		tmp = tmp->next;
 	}
-	tmp = params;
-	while (tmp)
-	{
-		element = (t_list_params *) tmp->content;
-		if ((element->path_app && element->path_app[0]) || element->builtin)
-		{
-			close(element->pipe_fd[0]);
-			if (element->file_fd[0] > 0)
-				close(element->file_fd[0]);
-			waitpid(element->pid, &status, 0);
-			if (WIFEXITED(status))
-				g_last_exit_code = WEXITSTATUS(status);
-		}
-		tmp = tmp->next;
-	}
+	parrent_process_handler(params);
 }
 
 int	execution(char *cmd_str, t_mshell *shell)
@@ -132,7 +122,6 @@ int	execution(char *cmd_str, t_mshell *shell)
 	if (parser(cmd_str, &list, shell) != -1)
 	{
 		validation(list, envp);
-//		show_params(list);
 		exec_manager(list, envp, shell);
 	}
 	free_arr(envp);
