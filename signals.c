@@ -12,13 +12,9 @@
 
 #include "minishell.h"
 
-// TODO add signal handling in fork?
-// TODO should change last exit code to 1?
 void	ctl_c_handle(int x)
 {
 	(void)x;
-	rl_on_new_line();
-	rl_redisplay();
 	write(1, "  \n", 3);
 	rl_on_new_line();
 	rl_replace_line("", 0);
@@ -28,7 +24,21 @@ void	ctl_c_handle(int x)
 
 void	handle_sigs(void)
 {
-//	rl_catch_signals = 0; TODO find out wtf is this
+	rl_catch_signals = 0;
 	signal(SIGINT, ctl_c_handle);
 	signal(SIGQUIT, SIG_IGN);
+}
+
+void	print_nl(int x)
+{
+	(void)x;
+	write(1, "\n", 1);
+}
+
+void	handle_for_child(char *path_app)
+{
+	if (!ft_strncmp("./minishell", path_app, ft_strlen(path_app)))
+		signal(SIGINT, SIG_IGN);
+	else
+		signal(SIGINT, print_nl);
 }

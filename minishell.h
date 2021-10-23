@@ -80,6 +80,7 @@ typedef struct s_list_params
 }			t_list_params;
 
 void		handle_sigs(void);
+void		handle_for_child(char *path_app);
 void		error_exit(char *prog);
 void		free_node(void *node);
 void		free_params_lst(void *param_node);

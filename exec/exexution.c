@@ -24,14 +24,13 @@ int	my_exec(t_list *params, char **envp, t_mshell *shell)
 		element->pid = fork();
 	else
 		g_last_exit_code = 127;
+	if (element->pid != 0)
+		handle_for_child(element->path_app);
 	if (element->pid == 0)
 	{
-//		signal(SIGINT, SIG_DFL);
-//		handle_sigs();
 		set_child_fd(params);
 		execve(element->path_app, element->cmd_arr, envp);
 	}
-	signal(SIGINT, NULL);
 	close(element->pipe_fd[1]);
 	return (element->pipe_fd[0]);
 }

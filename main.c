@@ -30,6 +30,7 @@ int main(int argc, char **argv, char **env)
 ////	execute(ft_strdup(str), &shell);
 	while(1)
 	{
+		handle_sigs();
 		untrimmed = readline(PROMPT);
 		str = ft_strtrim(untrimmed, " \t"); // all spaces from isspace?
 		if (str && *str)

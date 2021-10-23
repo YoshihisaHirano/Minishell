@@ -58,5 +58,4 @@ void	init_shell(t_mshell *shell, char **env)
 		else
 			set_by_key(shell, "SHLVL", "1");
 	}
-	handle_sigs();
 }
