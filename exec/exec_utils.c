@@ -35,6 +35,7 @@ int	builtin_exec(t_list *params, t_mshell *shell)
 	t_list_params	*element;
 
 	element = (t_list_params *) params->content;
+	pipe(element->pipe_fd);
 	stdout_copy = dup(STDOUT_FILENO);
 	stdin_copy = dup(STDIN_FILENO);
 	set_child_fd(params);
@@ -99,5 +100,20 @@ void	parrent_process_handler(t_list *params)
 				g_last_exit_code = WEXITSTATUS(status);
 		}
 		tmp = tmp->next;
+	}
+}
+
+int	check_exec_access(t_list_params *element)
+{
+	struct stat buf;
+
+	stat(element->path_app, &buf);
+	if ((((buf.st_mode << 9) >> 15) & 0001) == 0001)
+		return (0);
+	else
+	{
+		print_err_msg(NULL, element->path_app, "permission denied");
+		g_last_exit_code = 126;
+		return (1);
 	}
 }

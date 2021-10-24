@@ -14,10 +14,6 @@
 
 int	g_last_exit_code = 0;
 
-/*TODO
- * Minishell: ....cat: command not found
-	zsh: segmentation fault  ./minishell
-*/
 int main(int argc, char **argv, char **env)
 {
 	char		*str;

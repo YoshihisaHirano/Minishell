@@ -1,4 +1,4 @@
-minishell
+mini
 notes
 todo
 .idea
@@ -11,3 +11,5 @@ draft
 test*
 main.c
 Makefile_namina
+.gitignore
+

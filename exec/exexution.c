@@ -12,26 +12,36 @@
 
 #include "../minishell.h"
 
-/* TODO check execve for -1 (./Makefile) */
+/* TODO check execve for -1 undefilned error??  */
+/* TODO check fork for -1 */
+/* TODO // 130 for ctrl+C ???? bash do it */
+/* TODO // yes | cat | head  */
 
-int	my_exec(t_list *params, char **envp, t_mshell *shell)
+int	my_exec(t_list *params, char **envp)
 {
 	t_list_params	*element;
 
 	element = (t_list_params *) params->content;
 	pipe(element->pipe_fd);
-	if (element->builtin)
-		return (builtin_exec(params, shell));
 	if (element->path_app && element->path_app[0])
-		element->pid = fork();
+	{
+		if (!check_exec_access(element))
+			element->pid = fork();
+	}
 	else
 		g_last_exit_code = 127;
+	if (element->pid == -1)
+	{
+		perror("Minishell: fork");
+		return (-1);
+	}
 	if (element->pid != 0)
 		handle_for_child(element->path_app);
 	if (element->pid == 0)
 	{
 		set_child_fd(params);
 		execve(element->path_app, element->cmd_arr, envp);
+		exit(1);
 	}
 	close(element->pipe_fd[1]);
 	return (element->pipe_fd[0]);
@@ -107,7 +117,14 @@ void	exec_manager(t_list *params, char **envp, t_mshell *shell)
 		set_input_output(element, element->file_fd, tmp);
 		if (element->file_fd[0] == -1)
 			element->file_fd[0] = last_pipe_read;
-		last_pipe_read = my_exec(tmp, envp, shell);
+		if (element->builtin)
+			last_pipe_read = builtin_exec(params, shell);
+		else
+		{
+			last_pipe_read = my_exec(tmp, envp);
+			if (last_pipe_read == -1)
+				return ;
+		}
 		tmp = tmp->next;
 	}
 	parrent_process_handler(params);

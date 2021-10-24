@@ -101,8 +101,7 @@ int	set_output_mode(char **input_str, t_mshell *shell, t_list_io_params *io_el)
 	if (**input_str == '|')
 	{
 		io_el->mode = PIPE;
-		(*input_str)++;
-		return (PIPE);
+		return (check_for_pipe_error(input_str));
 	}
 	if (!ft_strncmp(*input_str, ">>", 2))
 		io_el->mode = REDRCT_APPEND;
@@ -169,6 +168,7 @@ int	set_params_to_el(char **input_str, t_list_params *el, t_mshell *shell)
 }
 
 /*TODO cat |||| - return multiline pipe error. need syntax error*/
+/*TODO cat test >| new*/
 
 int	parser(char *input_str, t_list **list, t_mshell *shell)
 {
@@ -184,7 +184,7 @@ int	parser(char *input_str, t_list **list, t_mshell *shell)
 		el->builtin = NULL;
 		el->file_fd[0] = -1;
 		el->file_fd[1] = -1;
-		el->pid = -1;
+		el->pid = -2;
 		el->str_to_cmd = malloc(ft_strlen(input_str) * 2 + 1);
 		if (!el->str_to_cmd)
 			return (-1);

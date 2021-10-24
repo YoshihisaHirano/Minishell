@@ -20,6 +20,7 @@
 # include <limits.h>
 # include <sys/types.h>
 # include <sys/stat.h>
+# include <string.h>
 # include "libft/libft.h"
 # include <readline.h>
 # include <history.h>
@@ -135,7 +136,7 @@ int			check_for_cmd(char *cmd_str);
 int			validation(t_list *param_list, char **envp);
 int			parser(char *input_str, t_list **list, t_mshell *shell);
 char		**get_path_arr(char **envp, char *app_name);
-/* for gnl*/
+/* gnl */
 char		*ft_strdup_gnl(char *src, int len, int offset);
 char		*ft_strjoin_gnl(char *s1, char *s2, int len);
 int			ft_strlen_gnl(const char *s);
@@ -149,6 +150,7 @@ int			app_to_null(t_list_params *params, int check_pipe);
 void		set_child_fd(t_list *params);
 int			builtin_exec(t_list *params, t_mshell *shell);
 void		parrent_process_handler(t_list *params);
+int			check_exec_access(t_list_params *element);
 //to delete
 void		show_params(t_list *list);
 #endif
