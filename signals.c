@@ -31,7 +31,7 @@ void	handle_sigs(void)
 
 void	print_nl(int x)
 {
-	(void)x;
+	g_last_exit_code = 128 + x;
 	write(1, "\n", 1);
 }
 

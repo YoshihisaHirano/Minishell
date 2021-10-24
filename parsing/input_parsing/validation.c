@@ -34,7 +34,10 @@ void	check_status_path(t_list *params)
 	if (!param->path_app)
 	{
 		if (!(is_path(param->cmd_arr[0])))
+		{
 			print_err_msg(NULL, param->cmd_arr[0], "command not found");
+			g_last_exit_code = 126;
+		}
 		free_arr(param->cmd_arr); //maybe not because it will be cleared
 		// altogether
 		param->cmd_arr = NULL;
