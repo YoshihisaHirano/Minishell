@@ -38,8 +38,6 @@ void	check_status_path(t_list *params)
 			print_err_msg(NULL, param->cmd_arr[0], "command not found");
 			g_last_exit_code = 126;
 		}
-		free_arr(param->cmd_arr); //maybe not because it will be cleared
-		// altogether
 		param->cmd_arr = NULL;
 	}
 }
@@ -111,26 +109,3 @@ int	validation(t_list *param_list, char **envp)
 	}
 	return (0);
 }
-
-//int	validation(t_list *param_list, char **envp)
-//{
-//	if (!param_list)
-//	{printf("param list is empty\n"); return (-1);}
-//	check_apps(param_list, envp);
-//	return (0);
-//}
-
-/*int	main(int argc, char **argv, char **envp)
-{
-	struct stat		*buf;
-
-	char *argvs[] = {"./valid", NULL};
-	buf = malloc(sizeof(struct stat));
-	int i = stat("./valid", buf);
-	printf("%d - status code, %d - errno\n", i, errno);
-	perror("");
-	int j = execve("../valid", argvs, envp);
-	printf("%d - status code, %d - errno\n", j, errno);
-	perror("");
-	return (0);
-}*/

@@ -37,8 +37,11 @@ void	print_nl(int x)
 
 void	handle_for_child(char *path_app)
 {
-	if (!ft_strncmp("./minishell", path_app, ft_strlen(path_app)))
-		signal(SIGINT, SIG_IGN);
-	else
-		signal(SIGINT, print_nl);
+	if (path_app)
+	{
+		if (!ft_strncmp("./minishell", path_app, ft_strlen(path_app)))
+			signal(SIGINT, SIG_IGN);
+		else
+			signal(SIGINT, print_nl);
+	}
 }
