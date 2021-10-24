@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
-#include <stdio.h>// del
+#include "../../minishell.h"
+
 #define BUFFER 68
 
 static int	checkfor_n(char *s)

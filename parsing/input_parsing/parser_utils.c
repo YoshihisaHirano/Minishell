@@ -80,24 +80,6 @@ void	handle_quotes(char **s, t_list_params *el)
 	}
 }
 
-int	handle_token_error(char **input_str, char token)
-{
-	ft_putstr_fd("minishell: syntax error near unexpected token \'", 1);
-	if (!token)
-	{
-		ft_putstr_fd("newline", 1);
-		ft_putstr_fd("\'\n", 1);
-		return (-1);
-	}
-	while (**input_str == token)
-	{
-		ft_putchar_fd(token, 1);
-		(*input_str)++;
-	}
-	ft_putstr_fd("\'\n", 1);
-	return (-1);
-}
-
 void	process_io_tokens(char **param_to_set, t_mshell *shell, int mode)
 {
 	char	*preprocessed;
@@ -115,7 +97,7 @@ void	process_io_tokens(char **param_to_set, t_mshell *shell, int mode)
 	}
 }
 
-int check_for_cmd(char *cmd_str)
+int	check_for_cmd(char *cmd_str)
 {
 	while (ft_isspace(*cmd_str))
 		cmd_str++;
