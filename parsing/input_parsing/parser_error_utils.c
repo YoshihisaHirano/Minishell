@@ -17,23 +17,41 @@ int	handle_token_error(char **input_str, char token)
 	ft_putstr_fd("minishell: syntax error near unexpected token \'", 1);
 	if (!token)
 	{
-		ft_putstr_fd("newline", 1);
-		ft_putstr_fd("\'\n", 1);
+		ft_putstr_fd("newline", 2);
+		ft_putstr_fd("\'\n", 2);
 		return (-1);
 	}
 	while (**input_str == token)
 	{
-		ft_putchar_fd(token, 1);
+		ft_putchar_fd(token, 2);
 		(*input_str)++;
 	}
-	ft_putstr_fd("\'\n", 1);
+	ft_putstr_fd("\'\n", 2);
 	return (-1);
 }
 
+// if cmd | and nothing -> multipipe error
+// if cmd || and nothing -> multipipe error
+// if cmd || | -> syntax error
+// if "cmd |_|" -> syntax error
+//
 
 int	check_for_pipe_error(char **input_str)
 {
-	if (**input_str == '|')
+	char	*ptr;
+
+	(*input_str)++;
+	ptr = *input_str;
+	if (*ptr == '|')
+		ptr++;
+	while (ft_isspace(*ptr) && *ptr)
+		ptr++;
+	if (*ptr == '\0')
+	{
+		ft_putstr_fd("minishell: syntax error: multiline pipe\n", 1);
+		return (-1);
+	}
+	else if (*ptr == '|')
 	{
 		handle_token_error(input_str, '|');
 		return (-1);

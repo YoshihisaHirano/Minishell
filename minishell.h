@@ -79,6 +79,14 @@ typedef struct s_list_params
 	void	(*builtin)(t_mshell *, struct s_list_params *);
 }			t_list_params;
 
+typedef struct s_set_fd
+{
+	char	*str;
+	int		fd;
+	void	*next;
+	int		read_res;
+}			t_set_fd;
+
 void		handle_sigs(void);
 void		handle_for_child(char *path_app);
 void		error_exit(char *prog);
@@ -127,6 +135,12 @@ int			check_for_cmd(char *cmd_str);
 int			validation(t_list *param_list, char **envp);
 int			parser(char *input_str, t_list **list, t_mshell *shell);
 char		**get_path_arr(char **envp, char *app_name);
+/* for gnl*/
+char		*ft_strdup_gnl(char *src, int len, int offset);
+char		*ft_strjoin_gnl(char *s1, char *s2, int len);
+int			ft_strlen_gnl(const char *s);
+t_set_fd	*get_current_el(t_set_fd **list, int fd);
+void		lst_free(t_set_fd **list);
 /* exec part*/
 int			execution(char *cmd_str, t_mshell *shell);
 void		get_input_from_std(char *limiter, int fd);

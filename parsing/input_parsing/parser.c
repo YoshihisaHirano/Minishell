@@ -101,7 +101,8 @@ int	set_output_mode(char **input_str, t_mshell *shell, t_list_io_params *io_el)
 	if (**input_str == '|')
 	{
 		io_el->mode = PIPE;
-		return (check_for_pipe_error(input_str));
+		(*input_str)++;
+		return (PIPE);
 	}
 	if (!ft_strncmp(*input_str, ">>", 2))
 		io_el->mode = REDRCT_APPEND;

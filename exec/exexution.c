@@ -12,6 +12,8 @@
 
 #include "../minishell.h"
 
+/* TODO check execve for -1 (./Makefile) */
+
 int	my_exec(t_list *params, char **envp, t_mshell *shell)
 {
 	t_list_params	*element;
