@@ -13,9 +13,8 @@
 #include "../minishell.h"
 
 /* TODO check execve for -1 undefilned error??  */
-/* TODO // 130 for ctrl+C ???? bash do it */
 /* TODO // yes | cat | head  */
-/* TODO last exit code for fork -1  */
+/* TODO >newfile >file. last exit status 127.  */
 
 
 int	my_exec(t_list *params, char **envp)
@@ -34,7 +33,6 @@ int	my_exec(t_list *params, char **envp)
 		execve(element->path_app, element->cmd_arr, envp);
 		exit(1);
 	}
-	close(element->pipe_fd[1]);
 	return (element->pipe_fd[0]);
 }
 
@@ -118,7 +116,8 @@ void	exec_manager(t_list *params, char **envp, t_mshell *shell)
 		}
 		tmp = tmp->next;
 	}
-	parrent_process_handler(params);
+	ft_lstiter(params, close_pipes_parent);
+	parent_process_handler(params);
 }
 
 int	execution(char *cmd_str, t_mshell *shell)

@@ -21,11 +21,6 @@ int	is_path(char *cmd_name)
 	return (0);
 }
 
-/* TODO
- * check program (stat?) DONE, the executable rights will be checked in execve
- * check redirects
- *
- * */
 void	check_status_path(t_list *params)
 {
 	t_list_params	*param;
@@ -36,7 +31,7 @@ void	check_status_path(t_list *params)
 		if (!(is_path(param->cmd_arr[0])))
 		{
 			print_err_msg(NULL, param->cmd_arr[0], "command not found");
-			g_last_exit_code = 126;
+			g_last_exit_code = 127;
 		}
 		param->cmd_arr = NULL;
 	}

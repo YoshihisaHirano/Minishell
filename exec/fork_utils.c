@@ -38,9 +38,17 @@ int	fork_manager(t_list_params *element)
 		g_last_exit_code = 127;
 	if (element->pid == -1)
 	{
-		g_last_exit_code = 1;
 		perror("Minishell: fork");
 		return (-1);
 	}
 	return (0);
+}
+
+void	close_pipes_parent(void *params)
+{
+	t_list_params	*element;
+
+	element = (t_list_params *) params;
+	close(element->pipe_fd[1]);
+	close(element->pipe_fd[0]);
 }

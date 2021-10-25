@@ -149,9 +149,10 @@ int			get_next_line(int fd, char **line);
 int			app_to_null(t_list_params *params, int check_pipe);
 void		set_child_fd(t_list *params);
 int			builtin_exec(t_list *params, t_mshell *shell);
-void		parrent_process_handler(t_list *params);
+void		parent_process_handler(t_list *params);
 int			check_exec_access(t_list_params *element);
 int			fork_manager(t_list_params *element);
+void	close_pipes_parent(void *params);
 //to delete
 void		show_params(t_list *list);
 #endif
