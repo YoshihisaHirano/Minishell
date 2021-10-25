@@ -151,6 +151,7 @@ void		set_child_fd(t_list *params);
 int			builtin_exec(t_list *params, t_mshell *shell);
 void		parrent_process_handler(t_list *params);
 int			check_exec_access(t_list_params *element);
+int			fork_manager(t_list_params *element);
 //to delete
 void		show_params(t_list *list);
 #endif

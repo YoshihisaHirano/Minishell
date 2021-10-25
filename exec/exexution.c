@@ -13,9 +13,10 @@
 #include "../minishell.h"
 
 /* TODO check execve for -1 undefilned error??  */
-/* TODO check fork for -1 */
 /* TODO // 130 for ctrl+C ???? bash do it */
 /* TODO // yes | cat | head  */
+/* TODO last exit code for fork -1  */
+
 
 int	my_exec(t_list *params, char **envp)
 {
@@ -23,18 +24,8 @@ int	my_exec(t_list *params, char **envp)
 
 	element = (t_list_params *) params->content;
 	pipe(element->pipe_fd);
-	if (element->path_app && element->path_app[0])
-	{
-		if (!check_exec_access(element))
-			element->pid = fork();
-	}
-	else
-		g_last_exit_code = 127;
-	if (element->pid == -1)
-	{
-		perror("Minishell: fork");
+	if (fork_manager(element) == -1)
 		return (-1);
-	}
 	if (element->pid != 0)
 		handle_for_child(element->path_app);
 	if (element->pid == 0)
@@ -123,7 +114,7 @@ void	exec_manager(t_list *params, char **envp, t_mshell *shell)
 		{
 			last_pipe_read = my_exec(tmp, envp);
 			if (last_pipe_read == -1)
-				return ;
+				break ;
 		}
 		tmp = tmp->next;
 	}

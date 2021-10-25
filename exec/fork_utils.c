@@ -26,3 +26,21 @@ int	check_exec_access(t_list_params *element)
 		return (1);
 	}
 }
+
+int	fork_manager(t_list_params *element)
+{
+	if (element->path_app && element->path_app[0])
+	{
+		if (!check_exec_access(element))
+			element->pid = fork();
+	}
+	else
+		g_last_exit_code = 127;
+	if (element->pid == -1)
+	{
+		g_last_exit_code = 1;
+		perror("Minishell: fork");
+		return (-1);
+	}
+	return (0);
+}

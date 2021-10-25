@@ -28,6 +28,32 @@ void	set_child_fd(t_list *params)
 		close(element->pipe_fd[0]);
 }
 
+void	parrent_process_handler(t_list *params)
+{
+	t_list_params	*element;
+	t_list			*tmp;
+	int				status;
+
+	tmp = params;
+	while (tmp)
+	{
+		element = (t_list_params *) tmp->content;
+		if (element->pid != -1 && element->pid != -2)
+		{
+			close(element->pipe_fd[0]);
+			if (element->file_fd[0] > 0)
+			{
+				close(element->file_fd[0]);
+				element->file_fd[0] = -1;
+			}
+			waitpid(element->pid, &status, 0);
+			if (WIFEXITED(status))
+				g_last_exit_code = WEXITSTATUS(status);
+		}
+		tmp = tmp->next;
+	}
+}
+
 int	builtin_exec(t_list *params, t_mshell *shell)
 {
 	int				stdout_copy;
@@ -75,45 +101,4 @@ int	app_to_null(t_list_params *params, int check_pipe)
 	params->path_app = NULL;
 	params->builtin = NULL;
 	return (-1);
-}
-
-void	parrent_process_handler(t_list *params)
-{
-	t_list_params	*element;
-	t_list			*tmp;
-	int				status;
-
-	tmp = params;
-	while (tmp)
-	{
-		element = (t_list_params *) tmp->content;
-		if (element->pid != -1)
-		{
-			close(element->pipe_fd[0]);
-			if (element->file_fd[0] > 0)
-			{
-				close(element->file_fd[0]);
-				element->file_fd[0] = -1;
-			}
-			waitpid(element->pid, &status, 0);
-			if (WIFEXITED(status))
-				g_last_exit_code = WEXITSTATUS(status);
-		}
-		tmp = tmp->next;
-	}
-}
-
-int	check_exec_access(t_list_params *element)
-{
-	struct stat buf;
-
-	stat(element->path_app, &buf);
-	if ((((buf.st_mode << 9) >> 15) & 0001) == 0001)
-		return (0);
-	else
-	{
-		print_err_msg(NULL, element->path_app, "permission denied");
-		g_last_exit_code = 126;
-		return (1);
-	}
 }
