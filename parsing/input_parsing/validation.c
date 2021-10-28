@@ -35,6 +35,17 @@ void	check_status_path(t_list *params)
 		}
 		param->cmd_arr = NULL;
 	}
+	else
+	{
+		if (access(param->path_app, X_OK))
+		{
+			perror(param->path_app);
+			print_err_msg(NULL, param->path_app, "permission denied");
+			free(param->path_app);
+			param->path_app = NULL;
+			g_last_exit_code = 126;
+		}
+	}
 }
 
 void	assign_path(t_list_params *el, struct stat *buf)

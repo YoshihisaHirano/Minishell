@@ -40,14 +40,7 @@ void	parent_process_handler(t_list *params)
 		element = (t_list_params *) tmp->content;
 		if (element->pid != -1 && element->pid != -2)
 		{
-			if (element->file_fd[0] > 0)
-			{
-				close(element->file_fd[0]);
-				element->file_fd[0] = -1;
-			}
 			waitpid(element->pid, &status, 0);
-			ft_putstr_fd(element->path_app, 2);
-			ft_putstr_fd("\n", 2);
 			if (WIFEXITED(status))
 				g_last_exit_code = WEXITSTATUS(status);
 		}

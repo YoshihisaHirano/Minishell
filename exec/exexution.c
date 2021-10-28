@@ -13,9 +13,7 @@
 #include "../minishell.h"
 
 /* TODO check execve for -1 undefilned error??  */
-/* TODO // yes | cat | head  */
-/* TODO >newfile >file. last exit status 127.  */
-
+/* TODO need to check exe rights in validation  */
 
 int	my_exec(t_list *params, char **envp)
 {
@@ -33,6 +31,7 @@ int	my_exec(t_list *params, char **envp)
 		execve(element->path_app, element->cmd_arr, envp);
 		exit(1);
 	}
+	close(element->pipe_fd[1]);
 	return (element->pipe_fd[0]);
 }
 
