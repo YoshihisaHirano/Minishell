@@ -70,8 +70,10 @@ void show_params(t_list *list)
 	printf("--------------------------\n");
 }
 
-int	set_input_mode(char **input_str, t_mshell *shell, t_list_io_params *io_el)
+int	set_input_mode(char **input_str, t_mshell *shell,
+					  t_list_params *el, t_list_io_params* io_el)
 {
+	(void) el;
 	while (ft_isspace(**input_str))
 		(*input_str)++;
 	if (!ft_strncmp(*input_str, "<<", 2))
@@ -94,15 +96,13 @@ int	set_input_mode(char **input_str, t_mshell *shell, t_list_io_params *io_el)
 	return (0);
 }
 
-int	set_output_mode(char **input_str, t_mshell *shell, t_list_io_params *io_el)
+int	set_output_mode(char **input_str, t_mshell *shell,
+					   t_list_params *el, t_list_io_params* io_el)
 {
 	while (ft_isspace(**input_str))
 		(*input_str)++;
 	if (**input_str == '|')
-	{
-		io_el->mode = PIPE;
-		return (check_for_pipe_error(input_str));
-	}
+		return (check_for_pipe_error(input_str, el, io_el));
 	if (!ft_strncmp(*input_str, ">>", 2))
 		io_el->mode = REDRCT_APPEND;
 	else
@@ -122,7 +122,7 @@ int	set_output_mode(char **input_str, t_mshell *shell, t_list_io_params *io_el)
 }
 
 int	token_process(char **input_str, t_mshell *shell, int(*set_io)(char **,
-		t_mshell*, t_list_io_params*), t_list_params *el)
+		t_mshell*,  t_list_params*, t_list_io_params*), t_list_params *el)
 {
 	t_list_io_params	*io_el;
 	int					set_mode_status;
@@ -132,7 +132,7 @@ int	token_process(char **input_str, t_mshell *shell, int(*set_io)(char **,
 	io_el = malloc(sizeof(t_list_io_params));
 	io_el->file_name = NULL;
 	io_el->fd = -1;
-	set_mode_status = set_io(input_str, shell, io_el);
+	set_mode_status = set_io(input_str, shell, el, io_el);
 	if (set_io == set_output_mode)
 		ft_lstadd_back(&(el->output), ft_lstnew(io_el));
 	else
@@ -166,9 +166,6 @@ int	set_params_to_el(char **input_str, t_list_params *el, t_mshell *shell)
 		el->cmd_arr = parse_args(el->str_to_cmd, shell);
 	return (set_mode_res);
 }
-
-/*TODO cat |||| - return multiline pipe error. need syntax error*/
-/*TODO cat test >| new*/
 
 int	parser(char *input_str, t_list **list, t_mshell *shell)
 {

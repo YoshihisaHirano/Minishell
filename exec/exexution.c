@@ -20,7 +20,8 @@ int	my_exec(t_list *params, char **envp)
 	t_list_params	*element;
 
 	element = (t_list_params *) params->content;
-	pipe(element->pipe_fd);
+	if (pipe(element->pipe_fd) == -1)
+		return (pipe_error_handler(element->cmd_arr[0]));
 	if (fork_manager(element) == -1)
 		return (-1);
 	if (element->pid != 0)
@@ -29,6 +30,7 @@ int	my_exec(t_list *params, char **envp)
 	{
 		set_child_fd(params);
 		execve(element->path_app, element->cmd_arr, envp);
+		perror(element->cmd_arr[0]);
 		exit(1);
 	}
 	close(element->pipe_fd[1]);
@@ -62,11 +64,13 @@ int	open_files(t_list_io_params *io_el)
 	return (io_el->fd);
 }
 
+
 int	set_input_output(t_list_params *params, int *io_fd, t_list *list)
 {
 	t_list	*tmp;
 	int		tmp_fd;
 
+	(void)list;
 	tmp = params->input;
 	while (tmp)
 	{
@@ -83,8 +87,7 @@ int	set_input_output(t_list_params *params, int *io_fd, t_list *list)
 			io_fd[1] = PIPE_FD;
 		else if (tmp_fd != PIPE_FD)
 			io_fd[1] = tmp_fd;
-		if (io_fd[1] == -1 || io_fd[1] == -2
-			|| (tmp_fd == PIPE_FD && !list->next))
+		if (io_fd[1] == -1 || io_fd[1] == -2)
 			return (app_to_null(params, io_fd[1]));
 		tmp = tmp->next;
 	}
@@ -106,13 +109,11 @@ void	exec_manager(t_list *params, char **envp, t_mshell *shell)
 		if (element->file_fd[0] == -1)
 			element->file_fd[0] = last_pipe_read;
 		if (element->builtin)
-			last_pipe_read = builtin_exec(params, shell);
+			last_pipe_read = builtin_exec(tmp, shell);
 		else
-		{
 			last_pipe_read = my_exec(tmp, envp);
-			if (last_pipe_read == -1)
-				break ;
-		}
+		if (last_pipe_read == -1)
+			break ;
 		tmp = tmp->next;
 	}
 	ft_lstiter(params, close_pipes_parent);

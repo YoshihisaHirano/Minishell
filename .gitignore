@@ -12,4 +12,7 @@ test*
 main.c
 Makefile_namina
 .gitignore
-
+debug
+minishell
+minishell_tester/
+.gitignore

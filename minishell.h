@@ -22,9 +22,9 @@
 # include <sys/stat.h>
 # include <string.h>
 # include "libft/libft.h"
-# include <readline.h>
-# include <history.h>
-# include <rltypedefs.h>
+//# include <readline.h>
+//# include <history.h>
+//# include <rltypedefs.h>
 # include <fcntl.h>
 # define ARG_OK 0
 # define NOT_NUMERIC -1
@@ -72,8 +72,6 @@ typedef struct s_list_params
 	int		cmd_str_i;
 	t_list	*input;
 	t_list	*output;
-	int		input_fd;
-	int 	output_fd;
 	int		pid;
 	int		file_fd[2];
 	int		pipe_fd[2];
@@ -130,12 +128,14 @@ char		**parse_args(char *args, t_mshell *shell);
 void		handle_quotes(char **s, t_list_params *el);
 int			get_io_name(char **param_to_set, char **s);
 int			handle_token_error(char **input_str, char token);
-int			check_for_pipe_error(char **input_str);
+int			check_for_pipe_error(char **input_str, t_list_params *el,
+								t_list_io_params* io_el);
 void		process_io_tokens(char **param_to_set, t_mshell *shell, int mode);
 int			check_for_cmd(char *cmd_str);
 int			validation(t_list *param_list, char **envp);
 int			parser(char *input_str, t_list **list, t_mshell *shell);
 char		**get_path_arr(char **envp, char *app_name);
+int			handle_no_cmd_io_error(t_list_params *el, int set_mode_res);
 /* gnl */
 char		*ft_strdup_gnl(char *src, int len, int offset);
 char		*ft_strjoin_gnl(char *s1, char *s2, int len);
@@ -152,7 +152,8 @@ int			builtin_exec(t_list *params, t_mshell *shell);
 void		parent_process_handler(t_list *params);
 int			check_exec_access(t_list_params *element);
 int			fork_manager(t_list_params *element);
-void	close_pipes_parent(void *params);
+void		close_pipes_parent(void *params);
+int			pipe_error_handler(char *app_name);
 //to delete
 void		show_params(t_list *list);
 #endif

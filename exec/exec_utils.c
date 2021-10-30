@@ -57,11 +57,19 @@ int	builtin_exec(t_list *params, t_mshell *shell)
 	t_list_params	*element;
 
 	element = (t_list_params *) params->content;
-	pipe(element->pipe_fd);
+	if (pipe(element->pipe_fd) == -1)
+		return (pipe_error_handler(element->cmd_arr[0]));
 	stdout_copy = dup(STDOUT_FILENO);
 	stdin_copy = dup(STDIN_FILENO);
+	if (stdin_copy == -1 || stdout_copy == -1)
+		return (pipe_error_handler(element->cmd_arr[0]));
 	set_child_fd(params);
 	element->builtin(shell, element);
+	if (element->file_fd[0] > 0)
+	{
+		close(element->file_fd[0]);
+		element->file_fd[0] = -1;
+	}
 	dup2(stdout_copy, STDOUT_FILENO);
 	dup2(stdin_copy, STDIN_FILENO);
 	return (element->pipe_fd[0]);

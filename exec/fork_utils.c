@@ -32,3 +32,9 @@ void	close_pipes_parent(void *params)
 	element = (t_list_params *) params;
 	close(element->pipe_fd[0]);
 }
+
+int	pipe_error_handler(char *app_name)
+{
+	perror(app_name);
+	return (-1);
+}
