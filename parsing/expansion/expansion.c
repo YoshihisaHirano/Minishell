@@ -33,7 +33,7 @@ void	update_var_len(char *var, size_t *var_len)
 		return ;
 	}
 	while (*var && !ft_isspace(*var) && *var != '\'' && *var != '\"'
-		   && *var != '$' && *var != '?' && *var != '=')
+		&& *var != '$' && *var != '?' && *var != '=')
 	{
 		(*var_len)++;
 		var++;

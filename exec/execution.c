@@ -64,7 +64,6 @@ int	open_files(t_list_io_params *io_el)
 	return (io_el->fd);
 }
 
-
 int	set_input_output(t_list_params *params, int *io_fd, t_list *list)
 {
 	t_list	*tmp;
@@ -116,7 +115,8 @@ void	exec_manager(t_list *params, char **envp, t_mshell *shell)
 			break ;
 		tmp = tmp->next;
 	}
-	ft_lstiter(params, close_pipes_parent);
+	if (last_pipe_read != -1)
+		ft_lstiter(params, close_pipes_parent);
 	parent_process_handler(params);
 }
 
@@ -136,3 +136,4 @@ int	execution(char *cmd_str, t_mshell *shell)
 	ft_lstclear(&list, free_params_lst);
 	return (0);
 }
+

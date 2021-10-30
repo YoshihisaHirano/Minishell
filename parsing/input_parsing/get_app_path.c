@@ -22,7 +22,7 @@ char	*get_path(char *absolute_path, char *app_name)
 	path = ft_calloc(ft_strlen(absolute_path) + ft_strlen(app_name) + 2, 1);
 	path_pointer = path;
 	if (!path)
-		return(0);
+		return (0);
 	while (*absolute_path)
 	{
 		*path_pointer = *absolute_path;

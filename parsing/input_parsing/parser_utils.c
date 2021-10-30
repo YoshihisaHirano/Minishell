@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../../minishell.h"
+#include "../../minishell.h"
 
 char	*ft_chr_check(const char *s, int c)
 {
@@ -61,7 +61,7 @@ int	get_io_name(char **param_to_set, char **s)
 
 void	handle_quotes(char **s, t_list_params *el)
 {
-	int double_quotes;
+	int	double_quotes;
 	int	single_quotes;
 
 	double_quotes = 0;
@@ -76,7 +76,7 @@ void	handle_quotes(char **s, t_list_params *el)
 		el->cmd_str_i++;
 		(*s)++;
 		if (!(double_quotes % 2) && !(single_quotes % 2))
-			break;
+			break ;
 	}
 }
 

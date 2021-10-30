@@ -22,9 +22,9 @@
 # include <sys/stat.h>
 # include <string.h>
 # include "libft/libft.h"
-//# include <readline.h>
-//# include <history.h>
-//# include <rltypedefs.h>
+# include <readline.h>
+# include <history.h>
+# include <rltypedefs.h>
 # include <fcntl.h>
 # define ARG_OK 0
 # define NOT_NUMERIC -1
@@ -129,7 +129,7 @@ void		handle_quotes(char **s, t_list_params *el);
 int			get_io_name(char **param_to_set, char **s);
 int			handle_token_error(char **input_str, char token);
 int			check_for_pipe_error(char **input_str, t_list_params *el,
-								t_list_io_params* io_el);
+				t_list_io_params *io_el);
 void		process_io_tokens(char **param_to_set, t_mshell *shell, int mode);
 int			check_for_cmd(char *cmd_str);
 int			validation(t_list *param_list, char **envp);

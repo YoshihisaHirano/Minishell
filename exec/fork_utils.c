@@ -12,7 +12,6 @@
 
 #include "../minishell.h"
 
-
 int	fork_manager(t_list_params *element)
 {
 	if (element->path_app && element->path_app[0])
@@ -31,6 +30,7 @@ void	close_pipes_parent(void *params)
 
 	element = (t_list_params *) params;
 	close(element->pipe_fd[0]);
+	element->pipe_fd[0] = -1;
 }
 
 int	pipe_error_handler(char *app_name)

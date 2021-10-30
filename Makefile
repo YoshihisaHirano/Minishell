@@ -3,7 +3,7 @@ SRC		=	main.c signals.c env_var.c builtins/builtins.c builtins/my_cd.c builtins/
 			utils/ft_atoi_ll.c utils/miscellaneous.c utils/print.c builtins/my_exit.c initialization.c\
 			parsing/input_parsing/parser_error_utils.c\
 			parsing/input_parsing/get_app_path.c parsing/input_parsing/validation.c parsing/input_parsing/parser.c parsing/input_parsing/parser_utils.c\
-			exec/exexution.c exec/fork_utils.c exec/exec_utils.c exec/gnl/get_next_line.c exec/gnl/get_next_line_utils.c
+			exec/execution.c exec/fork_utils.c exec/exec_utils.c exec/gnl/get_next_line.c exec/gnl/get_next_line_utils.c
 OBJ		=	$(SRC:.c=.o)
 PROG	=	minishell
 LIBDIR	=	./libft

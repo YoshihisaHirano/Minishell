@@ -12,66 +12,8 @@
 
 #include "../../minishell.h"
 
-void show_params(t_list *list)
-{
-	t_list_params *param_el;
-	t_list *tmp;
-	char *modes[] = {"none", "PIPE", "REDRCT_OUTPUT", "REDRCT_APPEND",
-					 "REDRCT_INPUT", "HERE_DOC"};
-	tmp = list;
-	printf("--------------------------\n");
-	printf("▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼\n");
-	while(tmp)
-	{
-		printf("--------------------------\n");
-		param_el = ((t_list_params *) tmp->content);
-		if (param_el->path_app)
-			printf("path_app: %s\n", param_el->path_app);
-		if (param_el->builtin)
-			printf("Has builtin\n");
-		if (param_el->cmd_arr)
-		{
-			char **arr = param_el->cmd_arr;
-			printf("cdm_arr:\n");
-			while(*arr)
-			{
-				printf("---> |%s|\n", *arr);
-				arr++;
-			}
-		}
-		if (param_el->str_to_cmd)
-			printf("str_to_cmd: |%s|\n", param_el->str_to_cmd);
-		if (param_el->input)
-		{
-			t_list *tmp_input = param_el->input;
-			t_list_io_params *tmp_io_el;
-			while (tmp_input)
-			{
-				tmp_io_el = (t_list_io_params *) tmp_input->content;
-				printf("input: %s---%s\n", tmp_io_el->file_name,
-					   modes[tmp_io_el->mode]);
-				tmp_input = tmp_input->next;
-			}
-		}
-		if (param_el->output)
-		{
-			t_list *tmp_output = param_el->output;
-			t_list_io_params *tmp_io_el;
-			while (tmp_output)
-			{
-				tmp_io_el = (t_list_io_params *) tmp_output->content;
-				printf("output: %s---%s\n", tmp_io_el->file_name,
-					   modes[tmp_io_el->mode]);
-				tmp_output = tmp_output->next;
-			}
-		}
-		tmp = tmp->next;
-	}
-	printf("--------------------------\n");
-}
-
 int	set_input_mode(char **input_str, t_mshell *shell,
-					  t_list_params *el, t_list_io_params* io_el)
+					t_list_params *el, t_list_io_params *io_el)
 {
 	(void) el;
 	while (ft_isspace(**input_str))
@@ -97,7 +39,7 @@ int	set_input_mode(char **input_str, t_mshell *shell,
 }
 
 int	set_output_mode(char **input_str, t_mshell *shell,
-					   t_list_params *el, t_list_io_params* io_el)
+					t_list_params *el, t_list_io_params *io_el)
 {
 	while (ft_isspace(**input_str))
 		(*input_str)++;
@@ -121,8 +63,8 @@ int	set_output_mode(char **input_str, t_mshell *shell,
 	return (0);
 }
 
-int	token_process(char **input_str, t_mshell *shell, int(*set_io)(char **,
-		t_mshell*,  t_list_params*, t_list_io_params*), t_list_params *el)
+int	token_process(char **input_str, t_mshell *shell, int (*set_io) (char **,
+		t_mshell*, t_list_params*, t_list_io_params*), t_list_params *el)
 {
 	t_list_io_params	*io_el;
 	int					set_mode_status;

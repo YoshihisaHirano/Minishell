@@ -30,14 +30,15 @@ int	handle_token_error(char **input_str, char token)
 	return (-1);
 }
 
-int	check_for_pipe_error(char **input_str, t_list_params *el, t_list_io_params* io_el)
+int	check_for_pipe_error(char **input_str, t_list_params *el,
+							t_list_io_params *io_el)
 {
 	char	*input_str_ptr;
 	int		len;
 
 	io_el->mode = PIPE;
 	len = el->cmd_str_i - 1;
-	while(len >= 0 && ft_isspace(el->str_to_cmd[len]))
+	while (len >= 0 && ft_isspace(el->str_to_cmd[len]))
 		len--;
 	if (len < 0 && !el->input && !el->output)
 		return (handle_token_error(input_str, '|'));
