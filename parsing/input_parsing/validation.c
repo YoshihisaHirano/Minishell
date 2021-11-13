@@ -73,6 +73,8 @@ void	check_access(char **path, t_list_params *el)
 	if (is_path(el->cmd_arr[0]))
 	{
 		assign_path(el, buf);
+		free_arr(path);
+		free(buf);
 		return ;
 	}
 	while (path && *path_pointer)
