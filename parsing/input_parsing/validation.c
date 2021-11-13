@@ -39,7 +39,6 @@ void	check_status_path(t_list *params)
 	{
 		if (access(param->path_app, X_OK))
 		{
-			perror(param->path_app);
 			print_err_msg(NULL, param->path_app, "permission denied");
 			free(param->path_app);
 			param->path_app = NULL;

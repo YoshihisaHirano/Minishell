@@ -14,6 +14,9 @@
 
 int	g_last_exit_code = 0;
 
+/*TODO a lot of "ls" in terminal show error on pipe not fork*/
+
+
 int main(int argc, char **argv, char **env)
 {
 	char		*str;

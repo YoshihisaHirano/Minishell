@@ -52,20 +52,17 @@ void	my_echo(t_mshell *shell, struct s_list_params *params)
 	(void)shell;
 	i = 1;
 	param = params->cmd_arr[i];
-	if (!param)
-	{
-		printf("\n");
-		return ;
-	}
 	new_line = 1;
-	while (!ft_strncmp("-n", param, ft_strlen(param)) && ft_strlen(param) > 0)
+	while (params->cmd_arr[i] && !ft_strncmp("-n", param,
+			ft_strlen(param)) && ft_strlen(param) > 0)
 	{
 		new_line = 0;
 		param = params->cmd_arr[++i];
 	}
 	while (i < chr_arr_len(params->cmd_arr) - 1)
 		printf("%s ", params->cmd_arr[i++]);
-	printf("%s", params->cmd_arr[i]);
+	if (params->cmd_arr[i])
+		printf("%s", params->cmd_arr[i]);
 	if (new_line)
 		printf("\n");
 	g_last_exit_code = 0;

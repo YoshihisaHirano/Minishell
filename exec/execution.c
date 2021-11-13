@@ -136,4 +136,3 @@ int	execution(char *cmd_str, t_mshell *shell)
 	ft_lstclear(&list, free_params_lst);
 	return (0);
 }
-
