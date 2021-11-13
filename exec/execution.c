@@ -59,7 +59,7 @@ int	open_files(t_list_io_params *io_el)
 	if (io_el->fd == -1)
 	{
 		io_el->fd = -2;
-		perror(io_el->file_name);
+		print_error(NULL, io_el->file_name);
 	}
 	return (io_el->fd);
 }

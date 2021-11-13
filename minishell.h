@@ -86,7 +86,7 @@ typedef struct s_set_fd
 	int		read_res;
 }			t_set_fd;
 
-void		handle_sigs(void);
+void		handle_sigs(int argc);
 void		handle_for_child(char *path_app);
 void		error_exit(char *prog);
 void		free_node(void *node);
@@ -155,6 +155,5 @@ int			check_exec_access(t_list_params *element);
 int			fork_manager(t_list_params *element);
 void		close_pipes_parent(void *params);
 int			pipe_error_handler(char *app_name);
-//to delete
-void		show_params(t_list *list);
+
 #endif

@@ -22,8 +22,9 @@ void	ctl_c_handle(int x)
 	g_last_exit_code = 1;
 }
 
-void	handle_sigs(void)
+void	handle_sigs(int argc)
 {
+	(void)argc;
 	rl_catch_signals = 0;
 	signal(SIGINT, ctl_c_handle);
 	signal(SIGQUIT, SIG_IGN);

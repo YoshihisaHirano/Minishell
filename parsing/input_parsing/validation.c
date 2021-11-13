@@ -33,6 +33,7 @@ void	check_status_path(t_list *params)
 			print_err_msg(NULL, param->cmd_arr[0], "command not found");
 			g_last_exit_code = 127;
 		}
+		free_arr(param->cmd_arr);
 		param->cmd_arr = NULL;
 	}
 	else
