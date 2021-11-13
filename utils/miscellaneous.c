@@ -43,3 +43,31 @@ size_t	chr_arr_len(char **arr)
 	}
 	return (res);
 }
+
+char	*crop(char *path)
+{
+	char	**path_elts;
+	char	*res;
+	char	*temp;
+	size_t	i;
+
+	path_elts = ft_split(path, '/');
+	res = path;
+	i = 1;
+	if (chr_arr_len(path_elts) > 2)
+	{
+		res = path_elts[0];
+		while (i < chr_arr_len(path_elts) - 1)
+		{
+			temp = ft_strjoin(res, "/");
+			res = ft_strdup(temp);
+			free(temp);
+			temp = ft_strjoin(res, path_elts[i]);
+			res = ft_strdup(temp);
+			free(temp);
+			i++;
+		}
+	}
+	free_arr(path_elts);
+	return (res);
+}

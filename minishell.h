@@ -95,6 +95,7 @@ void		print_node(void *node);
 void		print_error(char *prog, char *arg);
 int			invalid_key(char *key);
 void		free_arr(char **arr);
+char		*crop(char *path);
 char		**split_args(char *prep);
 void		move_spaces(char **str, char **start);
 void		print_err_msg(char *prog, char *arg, char *msg);
