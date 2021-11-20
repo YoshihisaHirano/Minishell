@@ -21,7 +21,7 @@ int	my_exec(t_list *params, char **envp)
 
 	element = (t_list_params *) params->content;
 	if (pipe(element->pipe_fd) == -1)
-		return (pipe_error_handler(element->cmd_arr[0]));
+		return (pipe_error_handler());
 	if (fork_manager(element) == -1)
 		return (-1);
 	if (element->pid != 0)
@@ -30,7 +30,7 @@ int	my_exec(t_list *params, char **envp)
 	{
 		set_child_fd(params);
 		execve(element->path_app, element->cmd_arr, envp);
-		perror(element->cmd_arr[0]);
+		print_error(element->cmd_arr[0], NULL);
 		exit(1);
 	}
 	close(element->pipe_fd[1]);

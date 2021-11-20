@@ -127,6 +127,7 @@ char		*remove_quotes(char *pre_res);
 char		*add_expanded(char **start, char **str, char *res, t_mshell *shell);
 char		*preprocessor(char *str, t_mshell *shell);
 char		**parse_args(char *args, t_mshell *shell);
+void		init_el(t_list_params *el);
 /* parsing to tokens*/
 void		handle_quotes(char **s, t_list_params *el);
 int			get_io_name(char **param_to_set, char **s);
@@ -156,6 +157,6 @@ void		parent_process_handler(t_list *params);
 int			check_exec_access(t_list_params *element);
 int			fork_manager(t_list_params *element);
 void		close_pipes_parent(void *params);
-int			pipe_error_handler(char *app_name);
+int			pipe_error_handler(void);
 
 #endif

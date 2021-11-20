@@ -71,3 +71,17 @@ char	*crop(char *path)
 	free_arr(path_elts);
 	return (res);
 }
+
+void	init_el(t_list_params *el)
+{
+	el->path_app = NULL;
+	el->cmd_arr = NULL;
+	el->input = NULL;
+	el->output = NULL;
+	el->builtin = NULL;
+	el->file_fd[0] = -1;
+	el->file_fd[1] = -1;
+	el->pid = -2;
+	el->pipe_fd[0] = -1;
+	el->pipe_fd[1] = -1;
+}

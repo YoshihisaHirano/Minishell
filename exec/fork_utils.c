@@ -29,12 +29,15 @@ void	close_pipes_parent(void *params)
 	t_list_params	*element;
 
 	element = (t_list_params *) params;
-	close(element->pipe_fd[0]);
-	element->pipe_fd[0] = -1;
+	if (element->pipe_fd[0] != -1)
+	{
+		close(element->pipe_fd[0]);
+		element->pipe_fd[0] = -1;
+	}
 }
 
-int	pipe_error_handler(char *app_name)
+int	pipe_error_handler(void)
 {
-	perror(app_name);
+	print_error(NULL, NULL);
 	return (-1);
 }

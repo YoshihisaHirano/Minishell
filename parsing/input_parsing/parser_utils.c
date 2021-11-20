@@ -105,23 +105,3 @@ int	check_for_cmd(char *cmd_str)
 		return (-1);
 	return (0);
 }
-
-//int handle_no_cmd_io_error(t_list_params *el, int set_mode_res)
-//{
-//	char	*str;
-//	t_list_io_params	*output;
-//
-//	str = el->str_to_cmd;
-//	output = (t_list_io_params *) el->output;
-//	if (set_mode_res == -1)
-//		return (set_mode_res);
-//	while (ft_isspace(*str))
-//		str++;
-//	if (!(*str) && !el->input && (output && !output->file_name))
-//	{
-//		ft_putstr_fd("minishell: syntax error near unexpected token \'|\'\n",
-//					 2);
-//		return (-1);
-//	}
-//	return (set_mode_res);
-//}

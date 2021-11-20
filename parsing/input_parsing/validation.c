@@ -56,11 +56,9 @@ void	assign_path(t_list_params *el, struct stat *buf)
 	if (err == -1)
 	{
 		print_error(NULL, el->cmd_arr[0]);
-//		free(buf);
 		return ;
 	}
 	el->path_app = ft_strdup(el->cmd_arr[0]);
-//	free(buf);
 }
 
 void	check_access(char **path, t_list_params *el)

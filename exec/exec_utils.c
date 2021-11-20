@@ -47,7 +47,10 @@ void	parent_process_handler(t_list *params)
 				g_last_exit_code = WEXITSTATUS(status);
 		}
 		if (element->builtin && element->pipe_fd[0] != -1)
+		{
 			close(element->pipe_fd[0]);
+			element->pipe_fd[0] = -1;
+		}
 		if (element->pid == -1)
 			g_last_exit_code = 1;
 		tmp = tmp->next;
@@ -62,11 +65,13 @@ int	builtin_exec(t_list *params, t_mshell *shell)
 
 	element = (t_list_params *) params->content;
 	if (pipe(element->pipe_fd) == -1)
-		return (pipe_error_handler(element->cmd_arr[0]));
+		return (pipe_error_handler());
 	stdout_copy = dup(STDOUT_FILENO);
+	if (stdout_copy == -1)
+		return (pipe_error_handler());
 	stdin_copy = dup(STDIN_FILENO);
-	if (stdin_copy == -1 || stdout_copy == -1)
-		return (pipe_error_handler(element->cmd_arr[0]));
+	if (stdin_copy == -1)
+		return (pipe_error_handler());
 	set_child_fd(params);
 	element->builtin(shell, element);
 	if (element->file_fd[0] > 0)
@@ -76,6 +81,8 @@ int	builtin_exec(t_list *params, t_mshell *shell)
 	}
 	dup2(stdout_copy, STDOUT_FILENO);
 	dup2(stdin_copy, STDIN_FILENO);
+	close(stdout_copy);
+	close(stdin_copy);
 	return (element->pipe_fd[0]);
 }
 
