@@ -46,7 +46,7 @@ void	parent_process_handler(t_list *params)
 			if (WIFEXITED(status))
 				g_last_exit_code = WEXITSTATUS(status);
 		}
-		if (element->builtin)
+		if (element->builtin && element->pipe_fd[0] != -1)
 			close(element->pipe_fd[0]);
 		if (element->pid == -1)
 			g_last_exit_code = 1;
