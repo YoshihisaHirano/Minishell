@@ -31,6 +31,7 @@ void	parse_env(t_mshell *shell, char *env[])
 			error_exit(NULL);
 		var->key = ft_strdup(str_var[0]);
 		var->value = ft_strdup(str_var[1]);
+		var->display_flag = 1;
 		node = ft_lstnew(var);
 		if (!node)
 			error_exit(NULL);
@@ -75,6 +76,7 @@ int	set_by_key(t_mshell *shell, char *key, char *val)
 				free(curr_var->value);
 			curr_var->value = NULL;
 			curr_var->value = ft_strdup(val);
+			curr_var->display_flag = 1;
 			return (0);
 		}
 		temp = temp->next;
@@ -96,21 +98,20 @@ char	**lst_to_arr(t_mshell *shell)
 	i = 0;
 	while (temp)
 	{
-		str_tmp = ft_strjoin(((t_envvar *)(temp->content))->key, "=");
-		if (!str_tmp)
-			error_exit(NULL);
-		envp[i] = ft_strjoin(str_tmp, ((t_envvar *)(temp->content))->value);
-		if (!envp[i])
-			error_exit(NULL);
-		free(str_tmp);
+		if (((t_envvar *)(temp->content))->display_flag)
+		{
+			str_tmp = ft_strjoin(((t_envvar *)(temp->content))->key, "=");
+			envp[i] = ft_strjoin(str_tmp, ((t_envvar *)(temp->content))->value);
+			free(str_tmp);
+			i++;
+		}
 		temp = temp->next;
-		i++;
 	}
 	envp[i] = NULL;
 	return (envp);
 }
 
-void	add_var(t_mshell *shell, char *key, char *val)
+void	add_var(t_mshell *shell, char *key, char *val, int display)
 {
 	t_list		*last_node;
 	t_list		*node_before_last;
@@ -125,9 +126,11 @@ void	add_var(t_mshell *shell, char *key, char *val)
 	if (!new_var)
 		error_exit(NULL);
 	if (val)
-		*new_var = (t_envvar){.key = ft_strdup(key), .value = ft_strdup(val)};
+		*new_var = (t_envvar){.key = ft_strdup(key), .value = ft_strdup(val),
+			.display_flag = display};
 	else
-		*new_var = (t_envvar){.key = ft_strdup(key), .value = NULL};
+		*new_var = (t_envvar){.key = ft_strdup(key), .value = NULL,
+			.display_flag = display};
 	new_node = ft_lstnew(new_var);
 	node_before_last->next = new_node;
 	new_node->next = last_node;

@@ -33,7 +33,12 @@ void	set_val(char **splt_arg, t_mshell *shell)
 	if (elt)
 		set_by_key(shell, splt_arg[0], splt_arg[1]);
 	else
-		add_var(shell, splt_arg[0], splt_arg[1]);
+	{
+		if (!splt_arg[1])
+			add_var(shell, splt_arg[0], splt_arg[1], 0);
+		else
+			add_var(shell, splt_arg[0], splt_arg[1], 1);
+	}
 }
 
 void	my_unset(t_mshell *shell, struct s_list_params *params)

@@ -42,6 +42,7 @@ typedef struct s_envvar
 {
 	char	*key;
 	char	*value;
+	int		display_flag;
 }	t_envvar;
 
 typedef struct s_quotes
@@ -92,6 +93,7 @@ void		error_exit(char *prog);
 void		free_node(void *node);
 void		free_params_lst(void *param_node);
 void		print_node(void *node);
+void		print_export(void *node);
 void		print_error(char *prog, char *arg);
 int			invalid_key(char *key);
 void		free_arr(char **arr);
@@ -108,7 +110,7 @@ void		parse_env(t_mshell *shell, char **env);
 t_list		*get_by_key(t_mshell *shell, char *key);
 int			set_by_key(t_mshell *shell, char *key, char *val);
 char		**lst_to_arr(t_mshell *shell);
-void		add_var(t_mshell *shell, char *key, char *val);
+void		add_var(t_mshell *shell, char *key, char *val, int display);
 void		set_val(char **splt_arg, t_mshell *shell);
 /* builtins */
 void		assign_func(t_list_params *param);

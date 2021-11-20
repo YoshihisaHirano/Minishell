@@ -61,10 +61,10 @@ int	check_pwds(t_mshell *shell, char *path)
 	}
 	pwd = get_by_key(shell, "PWD");
 	if (!pwd)
-		add_var(shell, "PWD", curr_path);
+		add_var(shell, "PWD", curr_path, 1);
 	old_pwd = get_by_key(shell, "OLDPWD");
 	if (!old_pwd)
-		add_var(shell, "OLDPWD", ft_strdup(curr_path));
+		add_var(shell, "OLDPWD", ft_strdup(curr_path), 1);
 	free(curr_path);
 	return (0);
 }

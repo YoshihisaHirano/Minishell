@@ -45,7 +45,7 @@ void	init_shell(t_mshell *shell, char **env)
 	parse_env(shell, env);
 	elt = get_by_key(shell, "SHLVL");
 	if (!elt)
-		add_var(shell, "SHLVL", "1");
+		add_var(shell, "SHLVL", "1", 1);
 	else
 	{
 		var = (t_envvar *)(elt->content);

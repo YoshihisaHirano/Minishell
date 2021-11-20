@@ -38,10 +38,30 @@ void	print_node(void *node)
 	t_envvar	*var;
 
 	var = (t_envvar *)node;
-	printf("%s=", var->key);
-	if (var->value)
-		printf("%s", var->value);
-	printf("\n");
+	if (var->display_flag)
+	{
+		printf("%s=", var->key);
+		if (var->value)
+			printf("%s", var->value);
+		printf("\n");
+	}
+}
+
+void	print_export(void *node)
+{
+	t_envvar	*var;
+
+	var = (t_envvar *)node;
+	printf("declare -x ");
+	if (var->display_flag)
+	{
+		printf("%s=", var->key);
+		if (var->value)
+			printf("\"%s\"", var->value);
+		printf("\n");
+	}
+	else
+		printf("%s\n", var->key);
 }
 
 void	print_err_msg(char *prog, char *arg, char *msg)

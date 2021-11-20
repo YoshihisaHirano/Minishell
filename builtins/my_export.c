@@ -70,7 +70,7 @@ int	append_val(char **splt_arg, t_mshell *shell, char *arg)
 	}
 	elt = get_by_key(shell, temp);
 	if (!elt)
-		add_var(shell, temp, splt_arg[1]);
+		add_var(shell, temp, splt_arg[1], 1);
 	else
 		appending(elt->content, splt_arg[1]);
 	free(temp);
@@ -117,10 +117,10 @@ void	my_export(t_mshell *shell, struct s_list_params *params)
 			continue ;
 		}
 		g_last_exit_code = 0;
-		if (!splt_arg[1])
-			continue ;
 		set_val(splt_arg, shell);
 		free_arr(splt_arg);
 	}
+	if (!cmd_arr[1])
+		ft_lstiter(shell->env_copy, print_export);
 	free_arr(cmd_arr);
 }
