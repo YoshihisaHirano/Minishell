@@ -18,7 +18,7 @@ void	del_var(t_mshell *shell, t_list *node)
 	t_list	*after_del;
 
 	before_del = shell->env_copy;
-	while (before_del->next != node)
+	while (before_del != node)
 		before_del = before_del->next;
 	after_del = node->next;
 	ft_lstdelone(node, free_node);
